@@ -1,0 +1,457 @@
+﻿<?php
+  
+class Dm_nha_tuyen_dungController {
+
+    const FOLDER_VIEW = 'Nha_tuyen_dung';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Dm_nha_tuyen_dung_model = new Nha_tuyen_dungModel();
+
+
+
+            // lấy giá trị search
+
+            $_Name = isset($_POST["nhatuyendung"]) ? $_POST["nhatuyendung"] : "";
+            $_TinhThanhs = isset($_POST["dm_tinh_thanh"]) ? $_POST["dm_tinh_thanh"] : "";
+            $_NganhNghes = isset($_POST["dm_nganh_nghe"]) ? $_POST["dm_nganh_nghe"] : "";
+            $_NoiBat = isset($_POST["dm_noi_bat"]) ? $_POST["dm_noi_bat"] : "5";
+            $_XacThuc = isset($_POST["dm_xac_thuc"]) ? $_POST["dm_xac_thuc"] : "5";
+            $_Active = isset($_POST["dm_active"]) ? $_POST["dm_active"] : "5";
+            $arr = array("number" => 1, "text" => "có");
+            $ar = array("number" => 0, "text" => "không");
+            $a = array($ar, $arr);
+            
+            
+            
+            
+            if(isset($_POST{'gui'})){
+                $Sen= new Send_mailModel();
+                 $_NoiDung = isset($_POST["txtGuiMail"]) ? $_POST["txtGuiMail"] : "";
+                 $_Email = isset($_POST["dm_ung_vien"]) ? $_POST["dm_ung_vien"] : "";
+                  $_Emails = implode(',', $_Email);
+                 $Sen->setMail($_Emails);
+                 $Sen->setBody($_NoiDung);
+                $Sen->setSubject('jhsdgfsaygf');
+               $Sen->doSend();
+            }
+        
+            // get lists            
+
+
+
+
+
+            if (isset($_POST["xacthuc"])) {
+                $array = $_POST["checklist"];
+                if ($array != null) {
+                    $update_array = array();
+                    foreach ($array as $value) {
+                        $update_array[] = $value;
+                    }
+                    if ($Dm_nha_tuyen_dung_model->update_array_xacthuc($update_array)) {
+
+                        UtilityController::messageSuccess();
+                    } else {
+                        UtilityController::messageError();
+                    }
+                }
+            }
+            if (isset($_POST["khongxacthuc"])) {
+                $array = $_POST["checklist"];
+                if ($array != null) {
+                    $update_array = array();
+                    foreach ($array as $value) {
+                        $update_array[] = $value;
+                    }
+                    if ($Dm_nha_tuyen_dung_model->update_array_khongxacthuc($update_array)) {
+
+                        UtilityController::messageSuccess();
+                    } else {
+                        UtilityController::messageError();
+                    }
+                }
+            }
+            if (isset($_POST["noibat"])) {
+                $array = $_POST["checklist"];
+                if ($array != null) {
+                    $update_array = array();
+                    foreach ($array as $value) {
+                        $update_array[] = $value;
+                    }
+                    if ($Dm_nha_tuyen_dung_model->update_array_noibat($update_array)) {
+
+                        UtilityController::messageSuccess();
+                    } else {
+                        UtilityController::messageError();
+                    }
+                }
+            }
+            if (isset($_POST["khongnoibat"])) {
+                $array = $_POST["checklist"];
+                if ($array != null) {
+                    $update_array = array();
+                    foreach ($array as $value) {
+                        $update_array[] = $value;
+                    }
+                    if ($Dm_nha_tuyen_dung_model->update_khongnoibat($update_array)) {
+
+                        UtilityController::messageSuccess();
+                    } else {
+                        UtilityController::messageError();
+                    }
+                }
+            }
+            if (isset($_POST["hoatdong"])) {
+                $array = $_POST["checklist"];
+                if ($array != null) {
+                    $update_array = array();
+                    foreach ($array as $value) {
+                        $update_array[] = $value;
+                    }
+                    if ($Dm_nha_tuyen_dung_model->update_array_hoatdong($update_array)) {
+
+                        UtilityController::messageSuccess();
+                    } else {
+                        UtilityController::messageError();
+                    }
+                }
+            }
+            if (isset($_POST["khonghoatdong"])) {
+                $array = $_POST["checklist"];
+                if ($array != null) {
+                    $update_array = array();
+                    foreach ($array as $value) {
+                        $update_array[] = $value;
+                    }
+                    if ($Dm_nha_tuyen_dung_model->update_khonghoatdong($update_array)) {
+
+                        UtilityController::messageSuccess();
+                    } else {
+                        UtilityController::messageError();
+                    }
+                }
+            }
+
+
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array = $_POST["checklist"];
+                        if ($array != null) {
+                            $array_delete = array();
+                            foreach ($array as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Dm_nha_tuyen_dung_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+            $Dm_nganh_ngheModel = new Dm_nganh_ngheModel();
+            $List_nganh_nghe = $Dm_nganh_ngheModel->getList();
+            $Dm_tinh_thanhModel = new Dm_tinh_thanhModel();
+            $List_tinh_thanh = $Dm_tinh_thanhModel->getList();
+            $Dm_Quy_Mo = new Dm_quy_mo_doanh_nghiepModel;
+            $List_Quy_Mo = $Dm_Quy_Mo->getList();
+
+
+
+
+
+            $Dm_nha_tuyen_dung_model->setName($_Name);
+            if (!empty($_TinhThanhs)) {
+                $_TinhThanhss = implode(',', $_TinhThanhs);
+                $Dm_nha_tuyen_dung_model->setTinhThanhs($_TinhThanhss);
+            }
+            if (!empty($_NganhNghes)) {
+                $_NganhNghess = implode(',', $_NganhNghes);
+                $Dm_nha_tuyen_dung_model->setNganhNghes($_NganhNghess);
+            }
+            if ($_NoiBat != 5) {
+                $Dm_nha_tuyen_dung_model->setIsNoiBat($_NoiBat);
+            }
+
+            if ($_XacThuc != 5) {
+                $Dm_nha_tuyen_dung_model->setIsXacThuc($_XacThuc);
+            }
+            if ($_Active != 5) {
+                $Dm_nha_tuyen_dung_model->setIsActive($_Active);
+            }
+            $Dm_nha_tuyen_dung_model->setRowStart($start);
+            $Dm_nha_tuyen_dung_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Dm_nha_tuyen_dung_model->getList();
+
+            $rowrount = $Dm_nha_tuyen_dung_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_nha_tuyen_dungController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        $Dm_nganh_ngheModel = new Dm_nganh_ngheModel();
+        $List_nganh_nghe = $Dm_nganh_ngheModel->getList();
+        $Dm_tinh_thanhModel = new Dm_tinh_thanhModel();
+        $List_tinh_thanh = $Dm_tinh_thanhModel->getList();
+        $Dm_Quy_Mo = new Dm_quy_mo_doanh_nghiepModel;
+        $List_Quy_Mo = $Dm_Quy_Mo->getList();
+
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            $Dm_nha_tuyen_dung_model = new Nha_tuyen_dungModel();
+            $User = new Sys_usersModel();
+            $_Id = '';
+            $_HoTen = '';
+            $_UserId = '';
+            $_Name = '';
+            $_DienThoai = '';
+            $_MST = '';
+            $_Fax = '';
+            $_DiaChi = '';
+            $_Website = '';
+            $_QuyMoName = '';
+            $_QuyMoId = '';
+            $_NguoiLienHe_HoTen = '';
+            $_NguoiLienHe_DienThoai = '';
+            $_NguoiLienHe_Email = '';
+            $_NguoiLienHe_ChucVu = '';
+            $_XacThuc = false;
+            $_NoiBat = false;
+            $_Active = false;
+            //$_Description = "";
+            //$_Order = $Dm_nha_tuyen_dung_model->getMaxOrder();
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+
+                $Dm_nha_tuyen_dung_model->setId($_Id);
+                $obj = $Dm_nha_tuyen_dung_model->getObj();
+
+
+                if (!is_null($obj)) {
+                    $_Id = $obj->Id;
+                    $_HoTen = $obj->Username;
+                    $_UserId = $obj->UserId;
+                    $_Name = $obj->Name;
+                    $_DienThoai = $obj->DienThoai;
+                    $_MST = $obj->MST;
+                    $_Fax = $obj->Fax;
+                    $_DiaChi = $obj->DiaChi;
+                    $_Website = $obj->Website;
+                    $_QuyMoName = $obj->QuyMoName;
+                    $_QuyMoId = $obj->QuyMoId;
+                    $_NguoiLienHe_HoTen = $obj->NguoiLienHe_HoTen;
+                    $_NguoiLienHe_DienThoai = $obj->NguoiLienHe_DienThoai;
+                    $_NguoiLienHe_Email = $obj->NguoiLienHe_Email;
+                    $_NguoiLienHe_ChucVu = $obj->NguoiLienHe_ChucVu;
+                    $_XacThuc = $obj->IsXacThuc;
+                    $_NoiBat = $obj->IsNoiBat;
+                    $_Active = $obj->IsActive;
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_nha_tuyen_dungController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function fill_ds_nganh_nghe_nha_tuyen_dung() {
+        if (isset($_POST)) {
+            $Id = isset($_POST["Id"]) ? $_POST["Id"] : "";
+            $Nha_tuyen_dung_nganh_ngheModel = new Nha_tuyen_dung_nganh_ngheModel();
+            $Nha_tuyen_dung_nganh_ngheModel->setNhaTuyenDungId($Id);
+            $List = $Nha_tuyen_dung_nganh_ngheModel->getList();
+            $str = "";
+            if (!is_null($List)) {
+                foreach ($List as $value) {
+                    $str .= $value["NganhNgheId"] . ",";
+                }
+            }
+            $str = rtrim($str, ",");
+
+            echo $str;
+        }
+    }
+
+    public function fill_ds_nganh_nghe_nha_tuyen_dung1() {
+
+        $str = '1,2';
+
+        echo $str;
+    }
+
+    public function User() {
+        if (isset($_POST)) {
+            $Id = isset($_POST["UserId"]) ? $_POST["UserId"] : "";
+        }
+    }
+
+    public function fill_ds_tinh_thanh_nha_tuyen_dung() {
+        if (isset($_POST)) {
+            $Id = isset($_POST["Id"]) ? $_POST["Id"] : "";
+            $Nha_tuyen_dung_tinh_thanhModel = new Nha_tuyen_dung_tinh_thanhModel();
+            $Nha_tuyen_dung_tinh_thanhModel->setNhaTuyenDungId($Id);
+            $List = $Nha_tuyen_dung_tinh_thanhModel->getList();
+
+            if (!is_null($List)) {
+                $str = "";
+
+                foreach ($List as $value) {
+
+                    $str .= $value["TinhThanhId"] . ",";
+                }
+            }
+            $str = rtrim($str, ",");
+
+
+            echo $str;
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            //hang nay de lay gia tri 
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["tencongty"]) ? $_POST["tencongty"] : "";
+            $_HoTen = isset($_POST["email"]) ? $_POST["email"] : "";
+            $_MST = isset($_POST["masothue"]) ? $_POST["masothue"] : "";
+            $_DienThoai = isset($_POST["dienthoai"]) ? $_POST["dienthoai"] : "";
+            $_Fax = isset($_POST["fax"]) ? $_POST["fax"] : "";
+            $_DiaChi = isset($_POST["diachi"]) ? $_POST["diachi"] : "";
+            $_Website = isset($_POST["web"]) ? $_POST["web"] : "";
+            $_QuyMoId = isset($_POST["dm_Quy_Mo"]) ? $_POST["dm_Quy_Mo"] : "";
+            $_NoiBatId = isset($_POST["NoiBat"]) ? $_POST["NoiBat"] : "";
+            $_XacThucId = isset($_POST["XacThuc"]) ? $_POST["XacThuc"] : "";
+            $_ActiveId = isset($_POST["Active"]) ? $_POST["Active"] : "";
+            $_NhatTuyenDungTinhThanhId = isset($_POST["dm_tinh_thanh"]) ? $_POST["dm_tinh_thanh"] : "";
+            $_NhatTuyenDungNganhNgheId = isset($_POST["dm_nganh_nghe"]) ? $_POST["dm_nganh_nghe"] : "";
+
+            $_NguoiLienHe_HoTen = isset($_POST["hotennguoilienhe"]) ? $_POST["hotennguoilienhe"] : "";
+            $_NguoiLienHe_ChucVu = isset($_POST["chucvunguoilienhe"]) ? $_POST["chucvunguoilienhe"] : "";
+            $_NguoiLienHe_DienThoai = isset($_POST["dienthoainguoilienhe"]) ? $_POST["dienthoainguoilienhe"] : "";
+            $_NguoiLienHe_Email = isset($_POST["nguoilienheemail"]) ? $_POST["nguoilienheemail"] : "";
+
+
+
+
+            ///////////
+            $_Description = isset($_POST["Description"]) ? $_POST["Description"] : "";
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+
+
+            //hang nay de truyen du lieu vao
+            $Dm_nha_tuyen_dung_model = new Nha_tuyen_dungModel();
+          
+            $Dm_nha_tuyen_dung_model->setName($_Name);
+            if(!isset($_GET{'id'})){
+            $Dm_nha_tuyen_dung_model->setUsername($_HoTen);
+  };
+            $Dm_nha_tuyen_dung_model->setMST($_MST);
+            $Dm_nha_tuyen_dung_model->setDienThoai($_DienThoai);
+            $Dm_nha_tuyen_dung_model->setFax($_Fax);
+            $Dm_nha_tuyen_dung_model->setDiaChi($_DiaChi);
+
+            $Dm_nha_tuyen_dung_model->setWebsite($_Website);
+            $Dm_nha_tuyen_dung_model->setQuyMoId($_QuyMoId);
+            $Dm_nha_tuyen_dung_model->setIsNoiBat($_NoiBatId);
+            $Dm_nha_tuyen_dung_model->setIsXacThuc($_XacThucId);
+            $Dm_nha_tuyen_dung_model->setIsActive($_ActiveId);
+            $Dm_nha_tuyen_dung_model->setNguoiLienHe_HoTen($_NguoiLienHe_HoTen);
+            $Dm_nha_tuyen_dung_model->setNguoiLienHe_ChucVu($_NguoiLienHe_ChucVu);
+            $Dm_nha_tuyen_dung_model->setNguoiLienHe_DienThoai($_NguoiLienHe_DienThoai);
+            $Dm_nha_tuyen_dung_model->setNguoiLienHe_Email($_NguoiLienHe_Email);
+            $Dm_nha_tuyen_dung_model->setTinhThanhs($_NhatTuyenDungTinhThanhId);
+            $Dm_nha_tuyen_dung_model->setNganhNghes($_NhatTuyenDungNganhNgheId);
+
+            /////////////////
+            $Dm_nha_tuyen_dung_model->setAlias(UtilityController::convert2Alias($_Name));
+
+            if (!empty($_Order)) {
+                $Dm_nha_tuyen_dung_model->setOrder($_Order);
+            }
+
+
+            $Dm_nha_tuyen_dung_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Dm_nha_tuyen_dung_model->setId($_Id);
+                if ($Dm_nha_tuyen_dung_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Dm_nha_tuyen_dung&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                $Dm_nha_tuyen_dung_model->setCreatedBy($username);
+                if ($Dm_nha_tuyen_dung_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+
+                UtilityController::gotoPage("index.php?ctl=Dm_nha_tuyen_dung&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+ 
+    public function kiem_tra_email() {
+        if (isset($_POST)) {
+            $email = isset($_POST["email"]) ? $_POST["email"] : "";
+            $oldemail = isset($_POST["Old_Email"]) ? $_POST["Old_Email"] : "";
+            $Sys_usersModel = new Sys_usersModel();
+            $Sys_usersModel->set_Username($email);
+            $Sys_usersModel->setOldEmail($oldemail);
+            $count = $Sys_usersModel->getCount();
+            if ($count > 0 && $email != $oldemail) {
+                echo "false";
+            } else {
+                echo "true";
+            }
+        }
+    }
+
+}

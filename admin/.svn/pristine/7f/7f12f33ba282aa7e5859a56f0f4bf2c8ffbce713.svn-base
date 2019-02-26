@@ -1,0 +1,61 @@
+﻿<?php
+$root_ctl = "Cau_hinh_goi_dich_vu_nha_tuyen_dung";
+?>
+<div class="card">
+    <div class="card-header">
+        <h2 class="m-b-10">Cập nhật gói dịch vụ
+            <small>Cho phép thêm mới, chỉnh sửa các thông tin</small>
+        </h2>
+        <div class="row">
+            <form class="form-horizontal row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label no-padding-right lb-required"><strong>Gói:</strong></label>
+                        <div class="col-md-9">
+                            <select class="form-control input-sm" name="goi"   >            
+                            <?php
+                            if (!is_null($List_goi_dich_vu)) {
+                                foreach ($List_goi_dich_vu as $value) { ?>
+                                <option value="<?= $value["Id"] ?>" <?php if($value["Id"]==$_Id) {echo 'selected';} ?> >  <?= $value["Name"] ?> </option>    
+                                    
+                               <?php }
+                            }
+                            ?>
+                        </select>
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label class="col-md-3 control-label no-padding-right lb-required date-picker"><strong>Từ Ngày:</strong></label>
+                        <div class="col-md-9">
+                            <input type="date" class="form-control input-sm" placeholder="" date-picker name="ApDungTu" value="<?= isset($_ApDungTu) ? $_ApDungTu : "" ?>" >
+                        </div>
+                    </div>                    
+                    <div class="form-group">
+                        <label class="col-md-3 control-label no-padding-right lb-required date-picker"><strong>Đến Ngày:</strong></label>
+                        <div class="col-md-9">
+                            <input type="date" class="form-control input-sm" placeholder="" name="ApDungTu" value="<?= isset($_ApDungDen) ? $_ApDungDen : "" ?>" >
+                        </div>
+                    </div>  
+                    <div class="form-group">
+                        <label class="col-md-3 control-label no-padding-right "><strong>Hoạt Động</strong></label>
+
+                        <input type="checkbox" class="form-control input-sm" <?php if($_IsActive==1){echo 'checked';} ?> placeholder="" name="hoatdong" value="true" >
+
+                    </div> 
+
+                    <div class="form-group m-b-10">
+                        <label  class="col-md-3"></label>
+                        <div class="col-md-9">
+                            <?php if ($_IsUpdate) { ?>
+                                <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+<?php } ?>   
+                            <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                        </div> 
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+

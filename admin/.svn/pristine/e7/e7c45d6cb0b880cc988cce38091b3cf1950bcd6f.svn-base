@@ -1,0 +1,229 @@
+<?php
+
+class _CoreSys_rolesModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    
+
+    // THUOC TINH CHUNG
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    public function getList() {
+        $sql = "SELECT * FROM sys_roles where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name='{$this->getName()}'";
+        }
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+
+        $result = $this->_getList($sql);
+
+        $array = array();
+        if ($result != null) {
+            foreach ($result as $value) {
+                $obj = new Sys_rolesModel();
+                $obj->setId($value["Id"]);
+                $obj->setName($value["Name"]);
+
+
+
+                $obj->setCreatedDate($value["CreatedDate"]);
+                $obj->setUpdatedDate($value["UpdatedDate"]);
+                $obj->setCreatedBy($value["CreatedBy"]);
+                $obj->setUpdatedBy($value["UpdatedBy"]);
+                $array[] = $obj;
+            }
+        }
+        return $array;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM sys_roles 
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name='{$this->getName()}'";
+        }
+
+
+        $sql .= " and CompanyId='{$this->getCompanyId()}'";
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM sys_roles where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = {$this->getId()}";
+        }
+
+        $value = $this->_getObject($sql);
+
+
+        if ($value) {
+            $this->setId($value->Id);
+            $this->setName($value->Name);
+
+
+            $this->setCreatedDate($value->CreatedDate);
+            $this->setUpdatedDate($value->UpdatedDate);
+            $this->setCreatedBy($value->CreatedBy);
+            $this->setUpdatedBy($value->UpdatedBy);
+        }
+        return $this;
+    }
+
+    public function insert() {
+        try {
+            $pdo = $this->getPDO();$pdo->beginTransaction();
+            $sql = "insert into sys_roles(
+                    `Name`,
+                    CreatedDate,
+                    UpdatedDate,
+                    CreatedBy,
+                    UpdatedBy,
+                    CompanyId
+                    )
+                     VALUES (
+                    '{$this->getName()}',
+                    now(),
+                    now(),
+                    '{$this->getCreatedBy()}',
+                    '{$this->getUpdatedBy()}','{$this->getCompanyId()}'
+
+                    )";
+                    
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+
+        try {
+            $pdo = $this->getPDO();$pdo->beginTransaction();
+
+            $sql = "update `sys_roles` set UpdatedDate=now(),";
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+           
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+
+            $pdo->exec($sql);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function delete_array(array $ids) {
+
+        try {
+            $pdo = $this->getPDO();$pdo->beginTransaction();
+            if (is_array($ids)) {
+                foreach ($ids as $value) {
+                    $sql_datxe = "delete from sys_roles  where Id={$value} and CompanyId='{$this->getCompanyId()}'";
+                    $pdo->exec($sql_datxe);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

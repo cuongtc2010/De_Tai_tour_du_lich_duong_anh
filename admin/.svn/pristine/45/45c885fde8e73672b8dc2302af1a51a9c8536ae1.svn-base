@@ -1,0 +1,58 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Nha_tuyen_dung_xem_ung_vienModel
+ *
+ * @author phuocnguyen
+ */
+class Nha_tuyen_dung_xem_ung_vienModel extends BaseModel {
+
+    private $NhaTuyenDungId;
+    private $UngVienId;
+    private $CreatedBy;
+
+    function getNhaTuyenDungId() {
+        return $this->NhaTuyenDungId;
+    }
+
+    function getUngVienId() {
+        return $this->UngVienId;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function setNhaTuyenDungId($NhaTuyenDungId) {
+        $this->NhaTuyenDungId = $NhaTuyenDungId;
+    }
+
+    function setUngVienId($UngVienId) {
+        $this->UngVienId = $UngVienId;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "INSERT INTO nha_tuyen_dung_xem_ung_vien(NhaTuyenDungId,UngVienId,CreatedDate,CreatedBy)";
+            $sql .= " VALUES({$this->getNhaTuyenDungId()},{$this->getUngVienId()},NOW(),'{$this->getCreatedBy()}')";
+            
+            $pdo->exec($sql);
+            $pdo->commit();
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+        }
+    }
+
+}

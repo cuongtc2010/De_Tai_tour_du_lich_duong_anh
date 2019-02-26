@@ -1,0 +1,31 @@
+<?php
+
+class Nha_tuyen_dung_luu_ung_vienModel extends _CoreNha_tuyen_dung_luu_ung_vienModel {
+
+    public function getListFull() {
+        $sql = "SELECT *,nha_tuyen_dung_luu_ung_vien.CreatedDate AS NgayLuu
+                FROM v_ung_vien
+                JOIN nha_tuyen_dung_luu_ung_vien ON v_ung_vien.Id=UngVienId
+                WHERE 1=1 ";
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        $sql .= " order by nha_tuyen_dung_luu_ung_vien.CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        return $this->_getList($sql);
+    }
+    public function getCountListFull() {
+        $sql = "SELECT count(*) as RowCount
+                FROM v_ung_vien
+                JOIN nha_tuyen_dung_luu_ung_vien ON v_ung_vien.Id=UngVienId
+                WHERE 1=1 ";
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        
+        return $this->_getCount($sql);
+    }
+
+}

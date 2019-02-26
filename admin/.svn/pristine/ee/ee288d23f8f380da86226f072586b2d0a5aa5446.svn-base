@@ -1,0 +1,3 @@
+<?php
+ class Quang_cao_vi_triModel extends _CoreQuang_cao_vi_triModel{
+}

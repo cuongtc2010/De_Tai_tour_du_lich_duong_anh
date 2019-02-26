@@ -1,0 +1,3 @@
+<?php
+ class Dm_quy_mo_doanh_nghiepModel extends _CoreDm_quy_mo_doanh_nghiepModel{
+}

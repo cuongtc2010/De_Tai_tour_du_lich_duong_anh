@@ -1,0 +1,3 @@
+<?php
+ class Dm_ngoai_nguModel extends _CoreDm_ngoai_nguModel{
+}

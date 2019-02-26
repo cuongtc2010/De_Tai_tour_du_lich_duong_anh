@@ -1,0 +1,807 @@
+<?php
+
+class _CoreTin_tuyen_dungModel extends BaseModel {
+
+    private $Id;
+    private $Ids;
+    private $UserId;
+    private $Name;
+    private $Alias;
+    private $NoiDung;
+    private $NgayHetHan;
+    private $LuotXem;
+    private $Image;
+    private $TinhThanhId;
+    private $GioiTinhId;
+    private $HinhThucLamViecId;
+    private $BangCapId;
+    private $MucLuongId;
+    private $CapBacId;
+    private $KinhNghiemId;
+    private $DoTuoiId;
+    private $MoTaCongViec;
+    private $QuyenLoi;
+    private $YeuCauKhac;
+    private $HoSoGomCo;
+    private $IsNangCao;
+    private $IsHapDan;
+    private $IsCrawler;
+    private $TinhThanhs;
+    private $NganhNghes;
+    private $TuyenGap;
+    private $TinhTrangId;
+    private $NhaTuyenDung;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getIds() {
+        return $this->Ids;
+    }
+
+    function setIds($Ids) {
+        $this->Ids = $Ids;
+    }
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getUserId() {
+        return $this->UserId;
+    }
+
+    function setUserId($UserId) {
+        $this->UserId = $UserId;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getAlias() {
+        return $this->Alias;
+    }
+
+    function setAlias($Alias) {
+        $this->Alias = $Alias;
+    }
+
+    function getNoiDung() {
+        return $this->NoiDung;
+    }
+
+    function setNoiDung($NoiDung) {
+        $this->NoiDung = $NoiDung;
+    }
+
+    function getNgayHetHan() {
+        return $this->NgayHetHan;
+    }
+
+    function setNgayHetHan($NgayHetHan) {
+        $this->NgayHetHan = $NgayHetHan;
+    }
+
+    function getLuotXem() {
+        return $this->LuotXem;
+    }
+
+    function setLuotXem($LuotXem) {
+        $this->LuotXem = $LuotXem;
+    }
+
+    function getTinhThanhs() {
+        return $this->TinhThanhs;
+    }
+
+    function getNganhNghes() {
+        return $this->NganhNghes;
+    }
+
+    function setTinhThanhs($TinhThanhs) {
+        $this->TinhThanhs = $TinhThanhs;
+    }
+
+    function setNganhNghes($NganhNghes) {
+        $this->NganhNghes = $NganhNghes;
+    }
+
+    function getImage() {
+        return $this->Image;
+    }
+
+    function setImage($Image) {
+        $this->Image = $Image;
+    }
+
+    function getTinhThanhId() {
+        return $this->TinhThanhId;
+    }
+
+    function setTinhThanhId($TinhThanhId) {
+        $this->TinhThanhId = $TinhThanhId;
+    }
+
+    function getGioiTinhId() {
+        return $this->GioiTinhId;
+    }
+
+    function setGioiTinhId($GioiTinhId) {
+        $this->GioiTinhId = $GioiTinhId;
+    }
+
+    function getHinhThucLamViecId() {
+        return $this->HinhThucLamViecId;
+    }
+
+    function setHinhThucLamViecId($HinhThucLamViecId) {
+        $this->HinhThucLamViecId = $HinhThucLamViecId;
+    }
+
+    function getBangCapId() {
+        return $this->BangCapId;
+    }
+
+    function setBangCapId($BangCapId) {
+        $this->BangCapId = $BangCapId;
+    }
+
+    function getMucLuongId() {
+        return $this->MucLuongId;
+    }
+
+    function setMucLuongId($MucLuongId) {
+        $this->MucLuongId = $MucLuongId;
+    }
+
+    function getCapBacId() {
+        return $this->CapBacId;
+    }
+
+    function setCapBacId($CapBacId) {
+        $this->CapBacId = $CapBacId;
+    }
+
+    function getKinhNghiemId() {
+        return $this->KinhNghiemId;
+    }
+
+    function setKinhNghiemId($KinhNghiemId) {
+        $this->KinhNghiemId = $KinhNghiemId;
+    }
+
+    function getDoTuoiId() {
+        return $this->DoTuoiId;
+    }
+
+    function setDoTuoiId($DoTuoiId) {
+        $this->DoTuoiId = $DoTuoiId;
+    }
+
+    function getMoTaCongViec() {
+        return $this->MoTaCongViec;
+    }
+
+    function setMoTaCongViec($MoTaCongViec) {
+        $this->MoTaCongViec = $MoTaCongViec;
+    }
+
+    function getQuyenLoi() {
+        return $this->QuyenLoi;
+    }
+
+    function setQuyenLoi($QuyenLoi) {
+        $this->QuyenLoi = $QuyenLoi;
+    }
+
+    function getYeuCauKhac() {
+        return $this->YeuCauKhac;
+    }
+
+    function setYeuCauKhac($YeuCauKhac) {
+        $this->YeuCauKhac = $YeuCauKhac;
+    }
+
+    function getHoSoGomCo() {
+        return $this->HoSoGomCo;
+    }
+
+    function setHoSoGomCo($HoSoGomCo) {
+        $this->HoSoGomCo = $HoSoGomCo;
+    }
+
+    function getIsNangCao() {
+        return $this->IsNangCao;
+    }
+
+    function setIsNangCao($IsNangCao) {
+        $this->IsNangCao = $IsNangCao;
+    }
+
+    function getIsHapDan() {
+        return $this->IsHapDan;
+    }
+
+    function setIsHapDan($IsHapDan) {
+        $this->IsHapDan = $IsHapDan;
+    }
+
+    function getIsCrawler() {
+        return $this->IsCrawler;
+    }
+
+    function setIsCrawler($IsCrawler) {
+        $this->IsCrawler = $IsCrawler;
+    }
+
+    function getTuyenGap() {
+        return $this->TuyenGap;
+    }
+
+    function setTuyenGap($TuyenGap) {
+        $this->TuyenGap = $TuyenGap;
+    }
+
+    function getTinhTrangId() {
+        return $this->TinhTrangId;
+    }
+
+    function setTinhTrangId($TinhTrangId) {
+        $this->TinhTrangId = $TinhTrangId;
+    }
+
+    function getNhaTuyenDung() {
+        return $this->NhaTuyenDung;
+    }
+
+    function setNhaTuyenDung($NhaTuyenDung) {
+        $this->NhaTuyenDung = $NhaTuyenDung;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT * FROM v_ds_tin_tuyen_dung where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getUserId())) {
+            $sql .= " and UserId='{$this->getUserId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+        }
+        if (!is_null($this->getNoiDung())) {
+            $sql .= " and NoiDung='{$this->getNoiDung()}'";
+        }
+        if (!is_null($this->getNgayHetHan())) {
+            $sql .= " and NgayHetHan='{$this->getNgayHetHan()}'";
+        }
+        if (!is_null($this->getLuotXem())) {
+            $sql .= " and LuotXem='{$this->getLuotXem()}'";
+        }
+        if (!is_null($this->getIds())) {
+            $sql .= " and Id in ({$this->getIds()})";
+        }
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM v_ds_tin_tuyen_dung 
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getUserId())) {
+            $sql .= " and UserId='{$this->getUserId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+        }
+        if (!is_null($this->getNoiDung())) {
+            $sql .= " and NoiDung='{$this->getNoiDung()}'";
+        }
+        if (!is_null($this->getNgayHetHan())) {
+            $sql .= " and NgayHetHan='{$this->getNgayHetHan()}'";
+        }
+        if (!is_null($this->getLuotXem())) {
+            $sql .= " and LuotXem='{$this->getLuotXem()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM v_ds_tin_tuyen_dung where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getUserId())) {
+            $sql .= " and UserId = '{$this->getUserId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and concat(Alias,'-',Id) = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into tin_tuyen_dung(       
+                `UserId`,
+                `Name`,
+                `NoiDung`,
+                `NgayHetHan`,
+                `LuotXem`,
+                `GioiTinhId`,
+                `HinhThucLamViecId`,
+                `BangCapId`,
+                `MucLuongId`,
+                `CapBacId`,
+                `KinhNghiemId`,
+                `DoTuoiId`,
+                `MoTaCongViec`,
+                `QuyenLoi`,
+                `YeuCauKhac`,
+                `HoSoGomCo`,
+                `IsNangCao`,
+                `IsHapDan`,
+                `IsCrawler`,
+                IsTuyenGap,
+                `TinhTrangId`,
+                `CreatedDate`,
+                `UpdatedDate`,
+                `CreatedBy`,
+                `UpdatedBy`)
+                VALUES (
+                (select UserId from nha_tuyen_dung where Id='{$this->getUserId()}'),
+                '{$this->getName()}',
+                '{$this->getNoiDung()}',
+                '{$this->getNgayHetHan()}',
+                '0',
+                '{$this->getGioiTinhId()}',
+                '{$this->getHinhThucLamViecId()}',
+                '{$this->getBangCapId()}',
+                '{$this->getMucLuongId()}',
+                '{$this->getCapBacId()}',
+                '{$this->getKinhNghiemId()}',
+                '{$this->getDoTuoiId()}',
+                '{$this->getMoTaCongViec()}',
+                '{$this->getQuyenLoi()}',
+                '{$this->getYeuCauKhac()}',
+                '{$this->getHoSoGomCo()}',
+                '1',
+                '1',
+                '0',
+                {$this->getTuyenGap()},
+                'Vừa tạo',
+                now(),
+                now(),
+                '{$this->getCreatedBy()}',
+                '{$this->getUpdatedBy()}'
+                 )";
+            $pdo->exec($sql);
+            $LastId = $pdo->lastInsertId();
+
+            if (!empty($this->getTinhThanhs())) {
+                $sql_insert_tinh_thanh = "INSERT INTO tin_tuyen_dung_tinh_thanh(TinTuyenDungId,TinhThanhId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getTinhThanhs() as $tinh) {
+                    $sql_insert_tinh_thanh .= "('{$LastId}','{$tinh}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_tinh_thanh = rtrim($sql_insert_tinh_thanh, ",");
+
+                $pdo->exec($sql_insert_tinh_thanh);
+            }
+            if (!empty($this->getNganhNghes())) {
+                $sql_insert_nganh_nghe = "insert into tin_tuyen_dung_nganh_nghe(TinTuyenDungId,NganhNgheId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getNganhNghes() as $nghe) {
+                    $sql_insert_nganh_nghe .= "('{$LastId}','{$nghe}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_nganh_nghe = rtrim($sql_insert_nganh_nghe, ",");
+
+                $pdo->exec($sql_insert_nganh_nghe);
+            }
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getMessage();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `tin_tuyen_dung` set UpdatedDate=now(),";
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= "`Alias`='{$this->getAlias()}',";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= "`NoiDung`='{$this->getNoiDung()}',";
+            }
+            if (!is_null($this->getNgayHetHan())) {
+                $sql .= "`NgayHetHan`='{$this->getNgayHetHan()}',";
+            }
+            if (!is_null($this->getLuotXem())) {
+                $sql .= "`LuotXem`='{$this->getLuotXem()}',";
+            }
+            if (!is_null($this->getImage())) {
+                $sql .= "`Image`='{$this->getImage()}',";
+            }
+            if (!is_null($this->getTuyenGap())) {
+                $sql .= "`IsTuyenGap`={$this->getTuyenGap()},";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+
+            $pdo->exec($sql);
+            $sql_del_tinh_thanh = "delete from tin_tuyen_dung_tinh_thanh where TinTuyenDungId='{$this->getId()}'";
+            $pdo->exec($sql_del_tinh_thanh);
+            if (!empty($this->getTinhThanhs())) {
+                $sql_insert_tinh_thanh = "INSERT INTO tin_tuyen_dung_tinh_thanh(TinTuyenDungId,TinhThanhId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getTinhThanhs() as $tinh) {
+                    $sql_insert_tinh_thanh .= "('{$this->getId()}','{$tinh}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_tinh_thanh = rtrim($sql_insert_tinh_thanh, ",");
+
+                $pdo->exec($sql_insert_tinh_thanh);
+            }
+            $sql_del_nganh_nghe = "delete from tin_tuyen_dung_nganh_nghe where TinTuyenDungId='{$this->getId()}'";
+            $pdo->exec($sql_del_nganh_nghe);
+            if (!empty($this->getNganhNghes())) {
+                $sql_insert_nganh_nghe = "insert into tin_tuyen_dung_nganh_nghe(TinTuyenDungId,NganhNgheId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getNganhNghes() as $nghe) {
+                    $sql_insert_nganh_nghe .= "('{$this->getId()}','{$nghe}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_nganh_nghe = rtrim($sql_insert_nganh_nghe, ",");
+                $pdo->exec($sql_insert_nganh_nghe);
+            }
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getMessage();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM tin_tuyen_dung WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from tin_tuyen_dung  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+    public function delete_home_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "update  tin_tuyen_dung set IsDelete=1,UpdatedDate=now() where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function insert_home() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into tin_tuyen_dung(
+            `UserId`,
+            `Name`,
+            `Alias`,
+            `NoiDung`,
+            `NgayHetHan`,
+            `LuotXem`,            
+            Image,
+            TinhTrangId,
+            IsTuyenGap,
+            CreatedDate,
+            UpdatedDate,
+            CreatedBy,
+            UpdatedBy)
+             VALUES (
+            '{$this->getUserId()}',
+            '{$this->getName()}',
+            '{$this->getAlias()}',
+            '{$this->getNoiDung()}',
+            '{$this->getNgayHetHan()}',
+            '{$this->getLuotXem()}',
+            '{$this->getImage()}',
+            'Đã duyệt',
+            '{$this->getTuyenGap()}',
+            now(),
+            now(),
+            '{$this->getCreatedBy()}',
+            '{$this->getUpdatedBy()}'
+
+            )";
+
+            $pdo->exec($sql);
+            $LastId = $pdo->lastInsertId();
+
+            if (!empty($this->getTinhThanhs())) {
+                $sql_insert_tinh_thanh = "INSERT INTO tin_tuyen_dung_tinh_thanh(TinTuyenDungId,TinhThanhId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getTinhThanhs() as $tinh) {
+                    $sql_insert_tinh_thanh .= "('{$LastId}','{$tinh}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_tinh_thanh = rtrim($sql_insert_tinh_thanh, ",");
+
+                $pdo->exec($sql_insert_tinh_thanh);
+            }
+            if (!empty($this->getNganhNghes())) {
+                $sql_insert_nganh_nghe = "insert into tin_tuyen_dung_nganh_nghe(TinTuyenDungId,NganhNgheId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getNganhNghes() as $nghe) {
+                    $sql_insert_nganh_nghe .= "('{$LastId}','{$nghe}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_nganh_nghe = rtrim($sql_insert_nganh_nghe, ",");
+
+                $pdo->exec($sql_insert_nganh_nghe);
+            }
+            $pdo->commit();
+            return $LastId;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getMessage();
+        }
+        return -1;
+    }
+
+    public function update_home() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `tin_tuyen_dung` set UpdatedDate=now(),";
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= "`Alias`='{$this->getAlias()}',";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= "`NoiDung`='{$this->getNoiDung()}',";
+            }
+            if (!is_null($this->getNgayHetHan())) {
+                $sql .= "`NgayHetHan`='{$this->getNgayHetHan()}',";
+            }
+            if (!is_null($this->getLuotXem())) {
+                $sql .= "`LuotXem`='{$this->getLuotXem()}',";
+            }
+            if (!is_null($this->getImage())) {
+                $sql .= "`Image`='{$this->getImage()}',";
+            }
+            if (!is_null($this->getTuyenGap())) {
+                $sql .= "`IsTuyenGap`={$this->getTuyenGap()},";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+
+            $pdo->exec($sql);
+            $sql_del_tinh_thanh = "delete from tin_tuyen_dung_tinh_thanh where TinTuyenDungId='{$this->getId()}'";
+            $pdo->exec($sql_del_tinh_thanh);
+            if (!empty($this->getTinhThanhs())) {
+                $sql_insert_tinh_thanh = "INSERT INTO tin_tuyen_dung_tinh_thanh(TinTuyenDungId,TinhThanhId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getTinhThanhs() as $tinh) {
+                    $sql_insert_tinh_thanh .= "('{$this->getId()}','{$tinh}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_tinh_thanh = rtrim($sql_insert_tinh_thanh, ",");
+
+                $pdo->exec($sql_insert_tinh_thanh);
+            }
+            $sql_del_nganh_nghe = "delete from tin_tuyen_dung_nganh_nghe where TinTuyenDungId='{$this->getId()}'";
+            $pdo->exec($sql_del_nganh_nghe);
+            if (!empty($this->getNganhNghes())) {
+                $sql_insert_nganh_nghe = "insert into tin_tuyen_dung_nganh_nghe(TinTuyenDungId,NganhNgheId,CreatedDate,UpdatedDate,CreatedBy,UpdatedBy) VALUES ";
+                foreach ($this->getNganhNghes() as $nghe) {
+                    $sql_insert_nganh_nghe .= "('{$this->getId()}','{$nghe}',now(),now(),'{$this->getCreatedBy()}','{$this->getUpdatedBy()}'),";
+                }
+                $sql_insert_nganh_nghe = rtrim($sql_insert_nganh_nghe, ",");
+                $pdo->exec($sql_insert_nganh_nghe);
+            }
+            $pdo->commit();
+            return $this->getId();
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getMessage();
+        }
+        return -1;
+    }
+
+    public function hapdan_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "UPDATE `tin_tuyen_dung` SET `IsHapDan`='1' WHERE `tin_tuyen_dung`.`Id`='{$value}'";
+                    $pdo->exec($sql);
+                }
+
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function khonghapdan_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "UPDATE `tin_tuyen_dung` SET `IsHapDan`='' WHERE `tin_tuyen_dung`.`Id`='{$value}'";
+                    $pdo->exec($sql);
+                }
+
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function gap_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "UPDATE `tin_tuyen_dung` SET `IsTuyenGap`='1' WHERE `tin_tuyen_dung`.`Id`='{$value}'";
+                    $pdo->exec($sql);
+                }
+
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function khonggap_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "UPDATE `tin_tuyen_dung` SET `IsTuyenGap`='' WHERE `tin_tuyen_dung`.`Id`='{$value}'";
+                    $pdo->exec($sql);
+                }
+
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getNganhNghe_ex() {
+        $sql = "SELECT Name FROM (SELECT tin_tuyen_dung_nganh_nghe.`NganhNgheId` FROM  `tin_tuyen_dung` INNER JOIN `tin_tuyen_dung_nganh_nghe` ON `tin_tuyen_dung`.`Id`=`tin_tuyen_dung_nganh_nghe`.`TinTuyenDungId` Where `tin_tuyen_dung`.`Id`={$this->getId()}  )a INNER JOIN `dm_nganh_nghe` ON a.NganhNgheId=`dm_nganh_nghe`.Id";
+        return $this->_getList($sql);
+    }
+
+    public function getTinhThanh_ex() {
+        $sql = "SELECT Name FROM (SELECT tin_tuyen_dung_tinh_thanh.`TinhThanhId` FROM  `tin_tuyen_dung` INNER JOIN `tin_tuyen_dung_tinh_thanh` ON `tin_tuyen_dung`.`Id`=`tin_tuyen_dung_tinh_thanh`.`TinTuyenDungId` Where `tin_tuyen_dung`.`Id`={$this->getId()}  )a INNER JOIN `dm_tinh_thanh` ON a.TinhThanhId=`dm_tinh_thanh`.Id";
+
+        return $this->_getList($sql);
+    }
+
+}

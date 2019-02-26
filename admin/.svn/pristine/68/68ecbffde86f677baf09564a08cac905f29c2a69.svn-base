@@ -1,0 +1,203 @@
+<?php
+
+class _CoreTin_tuyen_dung_tinh_thanhModel extends BaseModel {
+
+    private $TinTuyenDungId;
+    private $TinhThanhId;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getTinTuyenDungId() {
+        return $this->TinTuyenDungId;
+    }
+
+    function setTinTuyenDungId($TinTuyenDungId) {
+        $this->TinTuyenDungId = $TinTuyenDungId;
+    }
+
+    function getTinhThanhId() {
+        return $this->TinhThanhId;
+    }
+
+    function setTinhThanhId($TinhThanhId) {
+        $this->TinhThanhId = $TinhThanhId;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT dm_tinh_thanh.*,tin_tuyen_dung_tinh_thanh.TinhThanhId FROM tin_tuyen_dung_tinh_thanh
+                JOIN dm_tinh_thanh ON  tin_tuyen_dung_tinh_thanh.TinhThanhId=dm_tinh_thanh.Id
+                WHERE 1=1 ";
+        if (!is_null($this->getTinTuyenDungId())) {
+            $sql .= " and tin_tuyen_dung_tinh_thanh.TinTuyenDungId='{$this->getTinTuyenDungId()}'";
+        }
+        if (!is_null($this->getTinhThanhId())) {
+            $sql .= " and tin_tuyen_dung_tinh_thanh.TinhThanhId='{$this->getTinhThanhId()}'";
+        }
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM tin_tuyen_dung_tinh_thanh 
+                where 1=1 ";
+        if (!is_null($this->getTinTuyenDungId())) {
+            $sql .= " and TinTuyenDungId='{$this->getTinTuyenDungId()}'";
+        }
+        if (!is_null($this->getTinhThanhId())) {
+            $sql .= " and TinhThanhId='{$this->getTinhThanhId()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM tin_tuyen_dung_tinh_thanh where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into tin_tuyen_dung_tinh_thanh(
+`TinTuyenDungId`,
+`TinhThanhId`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy)
+ VALUES (
+'{$this->getTinTuyenDungId()}',
+'{$this->getTinhThanhId()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}'
+
+)";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `tin_tuyen_dung_tinh_thanh` set UpdatedDate=now(),";
+            if (!is_null($this->getTinTuyenDungId())) {
+                $sql .= "`TinTuyenDungId`='{$this->getTinTuyenDungId()}',";
+            }
+            if (!is_null($this->getTinhThanhId())) {
+                $sql .= "`TinhThanhId`='{$this->getTinhThanhId()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM tin_tuyen_dung_tinh_thanh WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from tin_tuyen_dung_tinh_thanh  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

@@ -1,0 +1,158 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Sys_company_infoModel
+ *
+ * @author phuocnguyen
+ */
+class Sys_company_infoModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $Address;
+    private $Phone;
+    private $Fax;
+    private $MST;
+    private $Email;
+    private $Logo;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function getAddress() {
+        return $this->Address;
+    }
+
+    function getPhone() {
+        return $this->Phone;
+    }
+
+    function getFax() {
+        return $this->Fax;
+    }
+
+    function getMST() {
+        return $this->MST;
+    }
+
+    function getEmail() {
+        return $this->Email;
+    }
+
+    function getLogo() {
+        return $this->Logo;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function setAddress($Address) {
+        $this->Address = $Address;
+    }
+
+    function setPhone($Phone) {
+        $this->Phone = $Phone;
+    }
+
+    function setFax($Fax) {
+        $this->Fax = $Fax;
+    }
+
+    function setMST($MST) {
+        $this->MST = $MST;
+    }
+
+    function setEmail($Email) {
+        $this->Email = $Email;
+    }
+
+    function setLogo($Logo) {
+        $this->Logo = $Logo;
+    }
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    public function getInfo() {
+        $sql = "select * from sys_company_info where Id='" . COMPANY_ID . "'";
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+
+            $pdo->beginTransaction();
+
+            $sql = "update `sys_company_info` set UpdatedDate=now(),";
+            $sql .= "`Name`='{$this->getName()}',";
+            $sql .= "`Address`='{$this->getAddress()}',";
+            $sql .= "`Phone`='{$this->getPhone()}',";
+            $sql .= "`Fax`='{$this->getFax()}',";
+            $sql .= "`MST`='{$this->getMST()}',";
+            $sql .= "`Email`='{$this->getEmail()}',";
+            $sql .= "`Logo`='{$this->getLogo()}',";
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='".COMPANY_ID."'";
+            
+            $pdo->exec($sql);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

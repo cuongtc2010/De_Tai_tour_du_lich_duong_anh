@@ -1,0 +1,76 @@
+<?php
+$root_ctl = "Sys_role_permisions";
+?>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">Cấp quyền sử dụng</a>
+                </li>                
+            </ul>
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">
+            <div class="page-content">
+                <div class="page-header">  
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">RoleId</label>
+                                <div class="col-md-9">
+                                    <select class="chosen-select" name="RoleId">  
+                                        <?php
+                                        if (!is_null($list_role)) {
+                                            foreach ($list_role as $value) {
+                                                if ($_RoleId == $value->getId()) {
+                                                    ?>
+                                                    <option value="<?= $value->getId() ?>" selected><?= $value->getName() ?></option>
+                                                <?php } else { ?>
+                                                    <option value="<?= $value->getId() ?>"><?= $value->getName() ?></option>
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="listvalue" id="listvalue"/>    
+                    </div>
+                    <div class="row text-center">                        
+                        <button type="submit" class="btn btn-sm btn-primary" name="btnSearch" value="Search"><i class="ace-icon glyphicon glyphicon-search"></i> Tìm kiếm </button>                                            
+                        <button type="submit" class="btn btn-sm btn-danger" name="btnCapQuyen" value="CapQuyen" onclick="return confirm('Bạn có chắc chắn muốn cấp quyền')"><i class="ace-icon fa fa-check-circle-o"></i> Cấp quyền </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-hover" id="simple-table">
+                            <thead>
+                                <tr>                                    
+                                    <th>Chức năng</th>                                    
+                                    <th><label><input type="checkbox"/> Được xem</label> </th>
+                                    <th><label><input type="checkbox"/> Được thêm/sửa</label> </th>
+                                    <th><label><input type="checkbox"/> Được xóa</label></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (!is_null($list)) {
+                                    $Sys_role_permisions_model->getListForTable($list, 0);
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

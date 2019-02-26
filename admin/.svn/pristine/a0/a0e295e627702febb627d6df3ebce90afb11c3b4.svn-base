@@ -1,0 +1,354 @@
+<?php
+
+class _CoreSys_usersModel extends BaseModel {
+
+    private $Id;
+    private $FullName;
+    private $_Username;
+    private $_Password;
+    private $RoleId;
+    private $Avartar;
+    private $LastLoginDate;
+    private $IsActive;
+    private $OldEmail;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getFullName() {
+        return $this->FullName;
+    }
+
+    function setFullName($FullName) {
+        $this->FullName = $FullName;
+    }
+
+    function get_Username() {
+        return $this->_Username;
+    }
+
+    function get_Password() {
+        return $this->_Password;
+    }
+
+    function set_Username($_Username) {
+        $this->_Username = $_Username;
+    }
+
+    function set_Password($_Password) {
+        $this->_Password = $_Password;
+    }
+
+    function getRoleId() {
+        return $this->RoleId;
+    }
+
+    function setRoleId($RoleId) {
+        $this->RoleId = $RoleId;
+    }
+
+    function getAvartar() {
+        return $this->Avartar;
+    }
+
+    function setAvartar($Avartar) {
+        $this->Avartar = $Avartar;
+    }
+
+    function getLastLoginDate() {
+        return $this->LastLoginDate;
+    }
+
+    function setLastLoginDate($LastLoginDate) {
+        $this->LastLoginDate = $LastLoginDate;
+    }
+
+    // THUOC TINH CHUNG
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    function getIsActive() {
+        return $this->IsActive;
+    }
+
+    function setIsActive($IsActive) {
+        $this->IsActive = $IsActive;
+    }
+
+    function getOldEmail() {
+        return $this->OldEmail;
+    }
+
+    function setOldEmail($OldEmail) {
+        $this->OldEmail = $OldEmail;
+    }
+
+    public function getList() {
+        $sql = "SELECT * FROM sys_users where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getFullName())) {
+            $sql .= " and FullName='{$this->getFullName()}'";
+        }
+        if (!is_null($this->get_Username())) {
+            $sql .= " and Username='{$this->get_Username()}'";
+        }
+        if (!is_null($this->get_Password())) {
+            $sql .= " and UserPassword='{$this->get_Password()}'";
+        }
+
+        if (!is_null($this->getRoleId())) {
+            $sql .= " and RoleId='{$this->getRoleId()}'";
+        }
+        if (!is_null($this->getAvartar())) {
+            $sql .= " and Avartar='{$this->getAvartar()}'";
+        }
+        if (!is_null($this->getLastLoginDate())) {
+            $sql .= " and LastLoginDate='{$this->getLastLoginDate()}'";
+        }
+        if (!is_null($this->getIsActive())) {
+            $sql .= " and IsActive='{$this->getIsActive()}'";
+        }
+
+        //$sql .= " and CompanyId='{$this->getCompanyId()}'";
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+
+        $result = $this->_getList($sql);
+
+        return $result;
+    }
+
+    public function getListLogin() {
+        $sql = "SELECT * FROM sys_users where 1=1 ";
+        if (!is_null($this->get_Username())) {
+            $sql .= " and Username='{$this->get_Username()}'";
+        }
+        if (!is_null($this->get_Password())) {
+            $sql .= " and UserPassword='{$this->get_Password()}'";
+        }
+        $sql .= " and ActiveCode IS NULL AND IsActive=1 and IsBlackList=0";
+
+        $result = $this->_getList($sql);
+
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM sys_users
+                where 1=1 ";
+
+
+        if (!is_null($this->get_Username())) {
+            $sql .= " and Username = '{$this->get_Username()}'";
+        }
+        if (!is_null($this->get_Password())) {
+            $sql .= " and UserPassword='{$this->get_Password()}'";
+        }
+
+        if (!is_null($this->getRoleId())) {
+            $sql .= " and RoleId='{$this->getRoleId()}'";
+        }
+        if (!is_null($this->getAvartar())) {
+            $sql .= " and Avartar='{$this->getAvartar()}'";
+        }
+        if (!is_null($this->getLastLoginDate())) {
+            $sql .= " and LastLoginDate='{$this->getLastLoginDate()}'";
+        }
+        if (!is_null($this->getIsActive())) {
+            $sql .= " and IsActive='{$this->getIsActive()}'";
+        }
+        if (!is_null($this->getOldEmail())) {
+            $sql .= " and Username<>'{$this->getOldEmail()}'";
+        }
+       //echo $sql;
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM sys_users where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = {$this->getId()}";
+        }
+        if (!is_null($this->get_Username())) {
+            $sql .= " and Username = '{$this->get_Username()}'";
+        }
+		
+        $value = $this->_getObject($sql);
+
+
+
+        return $value;
+    }
+
+    public function insert() {
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            $sql = "insert into sys_users(
+`FullName`,
+`Username`,
+`Password`,
+`RoleId`,
+`Avartar`,
+`LastLoginDate`,
+IsActive,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy,
+CompanyId
+)
+ VALUES (
+'{$this->getFullName()}',
+'{$this->getUsername()}',
+'{$this->getPassword()}',
+'{$this->getRoleId()}',
+'{$this->getAvartar()}',
+'{$this->getLastLoginDate()}',
+'{$this->getIsActive()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}','{$this->getCompanyId()}'
+
+)";
+
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+
+            $sql = "update `sys_users` set UpdatedDate=now(),";
+            if (!is_null($this->getFullName())) {
+                $sql .= "`FullName`='{$this->getFullName()}',";
+            }
+            if (!is_null($this->getUsername())) {
+                $sql .= "`Username`='{$this->getUsername()}',";
+            }
+            if (!is_null($this->getPassword())) {
+                $sql .= "`Password`='{$this->getPassword()}',";
+            }
+            if (!is_null($this->getRoleId())) {
+                $sql .= "`RoleId`='{$this->getRoleId()}',";
+            }
+            if (!is_null($this->getAvartar())) {
+                $sql .= "`Avartar`='{$this->getAvartar()}',";
+            } else {
+                $sql .= "`Avartar`=NULL,";
+            }
+            if (!is_null($this->getLastLoginDate())) {
+                $sql .= "`LastLoginDate`='{$this->getLastLoginDate()}',";
+            }
+            if (!is_null($this->getIsActive())) {
+                $sql .= "`IsActive`='{$this->getIsActive()}',";
+            } else {
+                $sql .= "`IsActive`=0,";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $sql .= " and CompanyId='{$this->getCompanyId()}'";
+            $pdo->exec($sql);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function delete_array(array $ids) {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            if (is_array($ids)) {
+                foreach ($ids as $value) {
+                    $sql_datxe = "delete from sys_users  where Id={$value}";
+                    $sql_datxe .= " and CompanyId='{$this->getCompanyId()}'";
+                    $pdo->exec($sql_datxe);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

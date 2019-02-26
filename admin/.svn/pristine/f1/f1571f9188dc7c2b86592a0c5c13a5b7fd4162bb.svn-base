@@ -1,0 +1,59 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of AccountController
+ *
+ * @author phuocnguyen
+ */
+class AccountController {
+
+    public function login() {
+        echo "X";
+    }
+
+    public function doLogin() {
+        if (isset($_POST)) {
+            $username = "";
+            $password = "";
+            if (isset($_POST["username"])) {
+                $username = $_POST["username"];
+            }
+            if (isset($_POST["password"])) {
+                $password = $_POST["password"];
+            }
+            $nguoidung = new Sys_usersModel();
+            $nguoidung->set_Username($username);
+            $nguoidung->set_Password(md5($password));
+            $accounts = $nguoidung->getList();
+            if (count($accounts) == 1) {
+
+                $_SESSION["user_info_admin"] = array(
+                    "userid" => $accounts[0]["Id"],
+                    "username" => $accounts[0]["Username"],
+                    "role" => $accounts[0]["RoleId"],
+                    "avatar"=>$accounts[0]["Avatar"]
+                );                
+                $nguoidung->setId($accounts[0]["Id"]);
+                $nguoidung->updateLoginId();
+                UtilityController::gotoPage("index.php");
+            } else {
+                echo UtilityController::message("Tài khoản không tồn tại");
+                UtilityController::gotoPage("Login.php");
+            }
+        } else {
+            UtilityController::gotoPage("Login.php");
+        }
+    }
+
+    public function doLogout() {
+        session_destroy();
+        UtilityController::gotoPage("Login.php");
+    }
+
+}

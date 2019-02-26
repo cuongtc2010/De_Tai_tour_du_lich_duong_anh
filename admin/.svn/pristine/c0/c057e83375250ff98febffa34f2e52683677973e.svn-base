@@ -1,0 +1,76 @@
+﻿<?php
+$root_ctl = "Goi_dich_vu";
+?>
+<div class="card">
+    <div class="card-header">
+        <h2 class="m-b-10">Cập nhật Gói dịch vụ
+            <small>Cho phép thêm mới, chỉnh sửa các thông tin</small>
+        </h2>
+        <div class="row">
+            <form class="form-horizontal row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+                <div class="col-md-7">
+                    <div class="form-group m-b-10">
+	<label class="col-md-3 control-label lb-required"><strong>Tên</strong></label>
+	<div class="col-md-9">
+		<div class="fg-line">
+		<input type="text" class="form-control input-sm" placeholder="" name="Name" value="<?= isset($_Name) ? $_Name : "" ?>" required>
+		</div>
+	</div>
+</div> 
+<div class="form-group m-b-10">
+	<label class="col-md-3 control-label "><strong>Số ngày</strong></label>
+	<div class="col-md-9">
+		<div class="fg-line">
+		<input type="text" class="form-control input-sm" placeholder="" name="SoNgay" value="<?= isset($_SoNgay) ? $_SoNgay : "" ?>" required>
+		</div>
+	</div>
+</div> 
+<div class="form-group m-b-10">
+	<label class="col-md-3 control-label "><strong>Số lượng tin đăng</strong></label>
+	<div class="col-md-9">
+		<div class="fg-line">
+		<input type="text" class="form-control input-sm" placeholder="" name="SoLuongTinDang" value="<?= isset($_SoLuongTinDang) ? $_SoLuongTinDang : "" ?>" required>
+		</div>
+	</div>
+</div> 
+<div class="form-group m-b-10">
+	<label class="col-md-3 control-label "><strong>Số lượng xem ứng viên</strong></label>
+	<div class="col-md-9">
+		<div class="fg-line">
+		<input type="text" class="form-control input-sm" placeholder="" name="SoLuongUngVien" value="<?= isset($_SoLuongUngVien) ? $_SoLuongUngVien : "" ?>" required>
+		</div>
+	</div>
+</div> 
+<div class="form-group m-b-10">
+	<label class="col-md-3 control-label lb-required"><strong>Mô tả</strong></label>
+	<div class="col-md-9">
+		<div class="fg-line">
+		<input type="text" class="form-control input-sm" placeholder="" name="Description" value="<?= isset($_Description) ? $_Description : "" ?>" >
+		</div>
+	</div>
+</div> 
+<div class="form-group m-b-10">
+	<label class="col-md-3 control-label "><strong>Thứ tự</strong></label>
+	<div class="col-md-9">
+		<div class="fg-line">
+		<input type="text" class="form-control input-sm" placeholder="" name="Order" value="<?= isset($_Order) ? $_Order : "" ?>" required>
+		</div>
+	</div>
+</div> 
+
+                    <div class="form-group">
+                        <label  class="col-md-3"></label>
+                        <div class="col-md-9">
+                            <?php if ($_IsUpdate) { ?>
+                                <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                            <?php } ?>
+                            <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+

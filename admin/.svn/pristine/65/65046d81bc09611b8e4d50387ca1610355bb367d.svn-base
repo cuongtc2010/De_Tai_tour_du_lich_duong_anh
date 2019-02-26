@@ -1,0 +1,201 @@
+<?php
+
+class _CoreNha_tuyen_dung_nganh_ngheModel extends BaseModel {
+
+    private $NhaTuyenDungId;
+    private $NganhNgheId;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getNhaTuyenDungId() {
+        return $this->NhaTuyenDungId;
+    }
+
+    function setNhaTuyenDungId($NhaTuyenDungId) {
+        $this->NhaTuyenDungId = $NhaTuyenDungId;
+    }
+
+    function getNganhNgheId() {
+        return $this->NganhNgheId;
+    }
+
+    function setNganhNgheId($NganhNgheId) {
+        $this->NganhNgheId = $NganhNgheId;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT nha_tuyen_dung_nganh_nghe.*,dm_nganh_nghe.Name,dm_nganh_nghe.Name_En,dm_nganh_nghe.Alias FROM nha_tuyen_dung_nganh_nghe join dm_nganh_nghe on nha_tuyen_dung_nganh_nghe.NganhNgheId=dm_nganh_nghe.Id  where 1=1 ";
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        if (!is_null($this->getNganhNgheId())) {
+            $sql .= " and NganhNgheId='{$this->getNganhNgheId()}'";
+        }
+
+        $sql .= " order by nha_tuyen_dung_nganh_nghe.CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM nha_tuyen_dung_nganh_nghe 
+                where 1=1 ";
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        if (!is_null($this->getNganhNgheId())) {
+            $sql .= " and NganhNgheId='{$this->getNganhNgheId()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM nha_tuyen_dung_nganh_nghe where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into nha_tuyen_dung_nganh_nghe(
+`NhaTuyenDungId`,
+`NganhNgheId`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy)
+ VALUES (
+'{$this->getNhaTuyenDungId()}',
+'{$this->getNganhNgheId()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}'
+
+)";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `nha_tuyen_dung_nganh_nghe` set UpdatedDate=now(),";
+            if (!is_null($this->getNhaTuyenDungId())) {
+                $sql .= "`NhaTuyenDungId`='{$this->getNhaTuyenDungId()}',";
+            }
+            if (!is_null($this->getNganhNgheId())) {
+                $sql .= "`NganhNgheId`='{$this->getNganhNgheId()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM nha_tuyen_dung_nganh_nghe WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from nha_tuyen_dung_nganh_nghe  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

@@ -1,0 +1,73 @@
+<?php
+
+class Sys_menu_functionsModel extends _CoreSys_menu_functionsModel {
+
+    
+
+    public function getListParent() {
+        $sql = "SELECT * FROM sys_menu_functions where 1=1 ";
+        $sql .= " and ParentId is NULL";        
+        $sql .= " order by CreatedDate desc";
+        $result = $this->_getList($sql);
+
+        $array = array();
+        if ($result != null) {
+            foreach ($result as $value) {
+                $obj = new Sys_menu_functionsModel();
+                $obj->setId($value["Id"]);
+                $obj->setParentId($value["ParentId"]);
+
+                $obj->setName($value["Name"]);
+                $obj->setUrl($value["Url"]);
+                $obj->setIcon($value["Icon"]);
+                $obj->setTarget($value["Target"]);
+
+
+                $obj->setCreatedDate($value["CreatedDate"]);
+                $obj->setUpdatedDate($value["UpdatedDate"]);
+                $obj->setCreatedBy($value["CreatedBy"]);
+                $obj->setUpdatedBy($value["UpdatedBy"]);
+                $array[] = $obj;
+            }
+        }
+        return $array;
+    }
+
+    public function getDropDown($array, $selected_id = 0) {
+        $str_result = "";
+        foreach ($array as $key => $item) {
+            if ($selected_id === $item->getId()) {
+                echo "<option value='{$item->getId()}' selected>" . $char . $item->getName() . "</option>";
+            } else {
+                echo "<option value='{$item->getId()}'>" . $item->getName() . "</option>";
+            }
+        }
+    }
+
+    public function getListForTable($array_categories, $tabid = 0, $selected_id = 0, $parent_id = 0, $char = '', $i = 1) {
+        $str_result = "";
+        $str = "";
+        $root_ctl = "Sys_menu_functions";
+        foreach ($array_categories as $key => $value) {
+            if ($value->getParentId() == $parent_id) {
+                $str = "<tr>";
+                $str .= "<td class='p-4 p-b-4'><div class='checkbox'><label><input name='checklist[]' type='checkbox' class='select-box' value='{$value->getId()}'><i class='input-helper'></i></label></div></td>";
+                $str .= "<td class='p-4 p-b-4'>" . $i . "</td>";
+                if ($char == '') {
+                    $str .= "<td class='p-4 p-b-4'><strong><a href='index.php?ctl={$root_ctl}&act=update&id={$value->getId()}&tabid={$tabid}' >" . $char . $value->getName() . "</a></strong></td>";
+                } else {
+                    $str .= "<td class='p-4 p-b-4'><a href='index.php?ctl={$root_ctl}&act=update&id={$value->getId()}&tabid={$tabid}' >" . $char . $value->getName() . "</a></td>";
+                }
+                $str .= "<td class='p-4 p-b-4'>{$value->getUrl()}</td>";
+                $str .= "<td class='p-4 p-b-4'>{$value->getIcon()}</td>";
+                $str .= "<td class='p-4 p-b-4'>{$value->getTarget()}</td>";
+                $str .= "</tr>";
+                echo $str;
+                $i++;
+                unset($array_categories[$key]);
+                $this->getListForTable($array_categories, $tabid, $selected_id, $value->getId(), $char . '|__', $i);
+            }
+        }
+    }
+
+}

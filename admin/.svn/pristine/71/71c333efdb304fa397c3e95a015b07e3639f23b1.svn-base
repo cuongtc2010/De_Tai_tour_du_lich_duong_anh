@@ -1,0 +1,3 @@
+<?php
+ class Dm_cap_bacModel extends _CoreDm_cap_bacModel{
+}

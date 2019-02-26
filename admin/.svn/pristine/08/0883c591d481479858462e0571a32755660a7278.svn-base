@@ -1,0 +1,3 @@
+<?php
+ class Dm_bang_capModel extends _CoreDm_bang_capModel{
+}

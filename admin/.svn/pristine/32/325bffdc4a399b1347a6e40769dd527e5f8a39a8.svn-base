@@ -1,0 +1,3 @@
+<?php
+ class Dm_do_tuoiModel extends _CoreDm_do_tuoiModel{
+}

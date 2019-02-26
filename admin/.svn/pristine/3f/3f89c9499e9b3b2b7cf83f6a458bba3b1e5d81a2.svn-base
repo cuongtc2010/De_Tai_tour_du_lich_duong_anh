@@ -1,0 +1,216 @@
+<?php
+
+class _CoreTemplate_send_mailModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $MoTa;
+    private $NoiDung;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getMoTa() {
+        return $this->MoTa;
+    }
+
+    function setMoTa($MoTa) {
+        $this->MoTa = $MoTa;
+    }
+
+    function getNoiDung() {
+        return $this->NoiDung;
+    }
+
+    function setNoiDung($NoiDung) {
+        $this->NoiDung = $NoiDung;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT * FROM template_send_mail where 1=1 ";
+
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM template_send_mail
+                where 1=1 ";
+
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM template_send_mail where 1=1 ";
+        if (!is_null($this->getName())) {
+            $sql .= " and Name = '{$this->getName()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into template_send_mail(
+`Name`,
+`MoTa`,
+`NoiDung`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy)
+ VALUES (
+'{$this->getName()}',
+'{$this->getMoTa()}',
+'{$this->getNoiDung()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}'
+
+)";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `template_send_mail` set UpdatedDate=now(),";
+            if (!is_null($this->getMoTa())) {
+                $sql .= "`MoTa`='{$this->getMoTa()}',";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= "`NoiDung`='{$this->getNoiDung()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Name='{$this->getName()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM template_send_mail WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from template_send_mail  where Name='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

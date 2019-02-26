@@ -1,0 +1,3 @@
+<?php
+ class Dm_gioi_tinhModel extends _CoreDm_gioi_tinhModel{
+}

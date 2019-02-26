@@ -1,0 +1,3 @@
+<?php
+ class Dm_ket_qua_tot_nghiepModel extends _CoreDm_ket_qua_tot_nghiepModel{
+}

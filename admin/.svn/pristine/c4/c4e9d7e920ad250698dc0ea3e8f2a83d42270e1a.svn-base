@@ -1,0 +1,339 @@
+﻿<?php
+
+class Goi_dich_vuController {
+
+    const FOLDER_VIEW = 'Goi_dich_vu';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Goi_dich_vu_model = new Goi_dich_vuModel();
+
+
+            // lấy giá trị search
+
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_SoNgay = isset($_POST["SoNgay"]) ? $_POST["SoNgay"] : "";
+            $_SoLuongTinDang = isset($_POST["SoLuongTinDang"]) ? $_POST["SoLuongTinDang"] : "";
+            $_SoLuongUngVien = isset($_POST["SoLuongUngVien"]) ? $_POST["SoLuongUngVien"] : "";
+            $_Description = isset($_POST["Description"]) ? $_POST["Description"] : "";
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Goi_dich_vu_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // get list            
+            $Goi_dich_vu_model->setName($_Name);
+            if (!empty($_SoNgay)) {
+                $Goi_dich_vu_model->setSoNgay($_SoNgay);
+            }
+            if (!empty($_SoLuongTinDang)) {
+                $Goi_dich_vu_model->setSoLuongTinDang($_SoLuongTinDang);
+            }
+            if (!empty($_SoLuongUngVien)) {
+                $Goi_dich_vu_model->setSoLuongUngVien($_SoLuongUngVien);
+            }
+            $Goi_dich_vu_model->setDescription($_Description);
+            if (!empty($_Order)) {
+                $Goi_dich_vu_model->setOrder($_Order);
+            }
+
+
+            $Goi_dich_vu_model->setRowStart($start);
+            $Goi_dich_vu_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Goi_dich_vu_model->getList();
+
+            $rowrount = $Goi_dich_vu_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Goi_dich_vuController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $_Id = "";
+            $_Name = "";
+            $_SoNgay = "";
+            $_SoLuongTinDang = "";
+            $_SoLuongUngVien = "";
+            $_Description = "";
+            $_Order = "";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Goi_dich_vu_model = new Goi_dich_vuModel();
+                $Goi_dich_vu_model->setId($_Id);
+                $obj = $Goi_dich_vu_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->Id;
+                    $_Name = $obj->Name;
+                    $_SoNgay = $obj->SoNgay;
+                    $_SoLuongTinDang = $obj->SoLuongTinDang;
+                    $_SoLuongUngVien = $obj->SoLuongUngVien;
+                    $_Description = $obj->Description;
+                    $_Order = $obj->Order;
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Goi_dich_vuController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_SoNgay = isset($_POST["SoNgay"]) ? $_POST["SoNgay"] : "";
+            $_SoLuongTinDang = isset($_POST["SoLuongTinDang"]) ? $_POST["SoLuongTinDang"] : "";
+            $_SoLuongUngVien = isset($_POST["SoLuongUngVien"]) ? $_POST["SoLuongUngVien"] : "";
+            $_Description = isset($_POST["Description"]) ? $_POST["Description"] : "";
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+
+            $Goi_dich_vu_model = new Goi_dich_vuModel();
+            $Goi_dich_vu_model->setName($_Name);
+            if (!empty($_SoNgay)) {
+                $Goi_dich_vu_model->setSoNgay($_SoNgay);
+            }
+            if (!empty($_SoLuongTinDang)) {
+                $Goi_dich_vu_model->setSoLuongTinDang($_SoLuongTinDang);
+            }
+            if (!empty($_SoLuongUngVien)) {
+                $Goi_dich_vu_model->setSoLuongUngVien($_SoLuongUngVien);
+            }
+            $Goi_dich_vu_model->setDescription($_Description);
+            if (!empty($_Order)) {
+                $Goi_dich_vu_model->setOrder($_Order);
+            }
+
+
+            $Goi_dich_vu_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Goi_dich_vu_model->setId($_Id);
+                if ($Goi_dich_vu_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Goi_dich_vu&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                $Goi_dich_vu_model->setCreatedBy($username);
+                if ($Goi_dich_vu_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Goi_dich_vu&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+     public function xuat_excel() {
+        if (isset($_POST)) {
+            $Dm_goi_dich_vu_model = new Dm_goi_dich_vuModel();
+
+            if (!empty($_POST['Ids'])) {
+                $Dm_goi_dich_vu_model->setIds($_POST['Ids']);
+            }
+            $_List = $Dm_goi_dich_vu_model->getList();
+            require (PHP_EXCEL_ADMIN_DIRECTORY);
+
+            $objPHPExcel = new PHPExcel;
+
+// Set properties
+
+            $objPHPExcel->getDefaultStyle()->getFont()->setName("Time New Roman");
+            $objPHPExcel->getDefaultStyle()->getFont()->setSize(10);
+
+
+
+// Add some data
+
+            $objPHPExcel->setActiveSheetIndex(0);
+            $Dm_goi_dich_vu_model->setRoleId($_SESSION["user_info_admin"]["role"]);
+            $i = "1";
+            $ii = "0";
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, '#');
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, 'Tiêu Đề');
+
+            foreach ($_List as $value) {
+                $i = $i + 1;
+                $ii = $ii + 1;
+                $column = 0;
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $ii);
+                $column = $column + 1;
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['Id']);
+                $column = $column + 1;
+                $Dm_nha_tuyen_dung_model->setId($value['Id']);
+                $str = "";
+                $str1 = "";
+                if ($_POST['nameexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Tên g');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['Name']);
+                    $column = $column + 1;
+                }
+                if ($_POST['tinhthanhexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Tỉnh Thành');
+                    foreach ($Dm_nha_tuyen_dung_model->getTinhThanh() as $val) {
+                        $str .= $val["Name"] . ",";
+                    }
+
+                    $str = rtrim($str, ",");
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $str);
+                    $column = $column + 1;
+                }
+                if ($_POST['nguoilienheemailexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Email người liên hệ');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['NguoiLienHe_Email']);
+                    $column = $column + 1;
+                }
+                if ($_POST['sodienthoainguoilienheexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Số điện thoại người liên hệ');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['NguoiLienHe_DienThoai']);
+                    $column = $column + 1;
+                }
+                if ($_POST['chucvunguoilienheexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Chức vụ người liên hệ');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['NguoiLienHe_ChucVu']);
+                    $column = $column + 1;
+                }
+                if ($_POST['tennguoilienheexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Tên người liên hệ');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['NguoiLienHe_HoTen']);
+                    $column = $column + 1;
+                }
+                if ($_POST['websiteexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Website');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['Website']);
+                    $column = $column + 1;
+                }
+                if ($_POST['quimoexcel'] == 'true') {
+
+                    $quimo = new Dm_quy_mo_doanh_nghiepModel();
+                    $quimo->setId($value['QuyMoId']);
+                    $listquimo = $quimo->getList();
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Qui mô');
+                    foreach ($listquimo as $v) {
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $v['Name']);
+                    }$column = $column + 1;
+                }
+
+                if ($_POST['masothueexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Mã số thuế');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['MST']);
+                    $column = $column + 1;
+                }
+                if ($_POST['diachiexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Địa chỉ');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['DiaChi']);
+                    $column = $column + 1;
+                }
+                if ($_POST['faxexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'FAX');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['Fax']);
+                    $column = $column + 1;
+                }
+                if ($_POST['sodienthoaiexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Điện thoại');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $value['DienThoai']);
+                    $column = $column + 1;
+                }
+
+                if ($_POST['nganhngheexcel'] == 'true') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, 1, 'Ngành Nghề');
+                    foreach ($Dm_nha_tuyen_dung_model->getNganhNghe() as $val) {
+                        $str1 .= $val["Name"] . ",";
+                    }
+                    $str1 = rtrim($str1, ",");
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($column, $i, $str1);
+                    $column = $column + 1;
+                }
+            }
+
+
+// Rename sheet
+
+            $objPHPExcel->getActiveSheet()->setTitle('Simple');
+            PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
+            foreach (range('A', 'Z') as $columnID) {
+                $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)
+                        ->setAutoSize(true);
+            }
+// Save Excel 2007 file
+
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+            $filename = UtilityController::gen_uuid();
+            $url_dl = ROOT_ADMIN_URL . "/_temp/" . $filename . ".xls";
+            $url1 = str_replace(".php", ".xls", __FILE__);
+            $url2 = str_replace(__CLASS__, $filename, $url1);
+            $url = str_replace("controllers", "_temp", $url2);
+            $objWriter->save($url);
+//                if (!empty($url)) {
+//                     UtilityController::gotoPage($url_dl);
+//                    //UtilityController::messageSuccess();
+//                    
+//                } else {
+//                    UtilityController::messageError();
+//                }
+            echo $url_dl;
+        }
+    }
+
+}

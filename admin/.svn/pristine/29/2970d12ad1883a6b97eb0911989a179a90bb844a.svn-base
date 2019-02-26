@@ -1,0 +1,337 @@
+<?php
+
+class _CoreSys_menu_functionsModel extends BaseModel {
+
+    private $Id;
+    private $ParentId;
+    private $Name;
+    private $Url;
+    private $Icon;
+    private $Target;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getParentId() {
+        return $this->ParentId;
+    }
+
+    function setParentId($ParentId) {
+        $this->ParentId = $ParentId;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getUrl() {
+        return $this->Url;
+    }
+
+    function setUrl($Url) {
+        $this->Url = $Url;
+    }
+
+    function getIcon() {
+        return $this->Icon;
+    }
+
+    function setIcon($Icon) {
+        $this->Icon = $Icon;
+    }
+
+    function getTarget() {
+        return $this->Target;
+    }
+
+    function setTarget($Target) {
+        $this->Target = $Target;
+    }
+
+    // THUOC TINH CHUNG
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    public function getList() {
+        $sql = "SELECT * FROM sys_menu_functions where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getParentId())) {
+            $sql .= " and ParentId='{$this->getParentId()}'";
+        }
+
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getUrl())) {
+            $sql .= " and Url='{$this->getUrl()}'";
+        }
+        if (!is_null($this->getIcon())) {
+            $sql .= " and Icon='{$this->getIcon()}'";
+        }
+        if (!is_null($this->getTarget())) {
+            $sql .= " and Target='{$this->getTarget()}'";
+        }
+
+        
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+
+        $result = $this->_getList($sql);
+
+        $array = array();
+        if ($result != null) {
+            foreach ($result as $value) {
+                $obj = new Sys_menu_functionsModel();
+                $obj->setId($value["Id"]);
+                $obj->setParentId($value["ParentId"]);
+
+                $obj->setName($value["Name"]);
+                $obj->setUrl($value["Url"]);
+                $obj->setIcon($value["Icon"]);
+                $obj->setTarget($value["Target"]);
+
+
+                $obj->setCreatedDate($value["CreatedDate"]);
+                $obj->setUpdatedDate($value["UpdatedDate"]);
+                $obj->setCreatedBy($value["CreatedBy"]);
+                $obj->setUpdatedBy($value["UpdatedBy"]);
+                $array[] = $obj;
+            }
+        }
+        return $array;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM sys_menu_functions 
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getParentId())) {
+            $sql .= " and ParentId='{$this->getParentId()}'";
+        }
+
+        if (!is_null($this->getName())) {
+            $sql .= " and Name='{$this->getName()}'";
+        }
+        if (!is_null($this->getUrl())) {
+            $sql .= " and Url='{$this->getUrl()}'";
+        }
+        if (!is_null($this->getIcon())) {
+            $sql .= " and Icon='{$this->getIcon()}'";
+        }
+        if (!is_null($this->getTarget())) {
+            $sql .= " and Target='{$this->getTarget()}'";
+        }
+
+        
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM sys_menu_functions where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = {$this->getId()}";
+        }
+        
+        $value = $this->_getObject($sql);
+
+
+        if ($value) {
+            $this->setId($value->Id);
+            $this->setParentId($value->ParentId);
+
+            $this->setName($value->Name);
+            $this->setUrl($value->Url);
+            $this->setIcon($value->Icon);
+            $this->setTarget($value->Target);
+
+
+            $this->setCreatedDate($value->CreatedDate);
+            $this->setUpdatedDate($value->UpdatedDate);
+            $this->setCreatedBy($value->CreatedBy);
+            $this->setUpdatedBy($value->UpdatedBy);
+        }
+        return $this;
+    }
+
+    public function insert() {
+        $parent = 'NULL';
+        if (!is_null($this->getParentId())) {
+            $parent = $this->getParentId();
+        }
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            $sql = "insert into sys_menu_functions(
+                    `ParentId`,
+                    `Name`,
+                    `Url`,
+                    `Icon`,
+                    `Target`,
+                    CreatedDate,
+                    UpdatedDate,
+                    CreatedBy,
+                    UpdatedBy
+                    )
+                     VALUES (
+                    {$parent},
+                    '{$this->getName()}',
+                    '{$this->getUrl()}',
+                    '{$this->getIcon()}',
+                    '{$this->getTarget()}',
+                    now(),
+                    now(),
+                    '{$this->getCreatedBy()}',
+                    '{$this->getUpdatedBy()}'
+
+                    )";
+
+            $pdo->exec($sql);
+            $lastId = $pdo->lastInsertId();
+            $sql_insert_role = "INSERT INTO sys_role_permisions(MenuFunctionId,RoleId,IsView,IsUpdate,IsDelete)
+                                SELECT 
+                                {$lastId} MenuFunctionId,
+                                Id RoleId,
+                                0 AS sView,
+                                0 AS IsUpdate,
+                                0 AS IsDelete
+                                FROM sys_roles";
+            $pdo->exec($sql_insert_role);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+
+            $sql = "update `sys_menu_functions` set UpdatedDate=now(),";
+            if (!is_null($this->getParentId())) {
+                $sql .= "`ParentId`='{$this->getParentId()}',";
+            } ELSE {
+                $sql .= "`ParentId`=NULL,";
+            }
+
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+            if (!is_null($this->getUrl())) {
+                $sql .= "`Url`='{$this->getUrl()}',";
+            }
+            if (!is_null($this->getIcon())) {
+                $sql .= "`Icon`='{$this->getIcon()}',";
+            }
+            if (!is_null($this->getTarget())) {
+                $sql .= "`Target`='{$this->getTarget()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}' ";
+
+            $pdo->exec($sql);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function delete_array(array $ids) {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            if (is_array($ids)) {
+                foreach ($ids as $value) {
+                    $sql_datxe = "delete from sys_menu_functions  where Id={$value} and CompanyId='{$this->getCompanyId()}'";
+                    $pdo->exec($sql_datxe);
+                    $sql_del_role = "delete from sys_role_permisions where MenuFunctionId={$value} and CompanyId='{$this->getCompanyId()}'";
+                    $pdo->exec($sql_del_role);
+                }
+
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            UtilityController::message("Không thể xóa do có dữ liệu đang được sử dụng");
+        }
+        return false;
+    }
+
+}

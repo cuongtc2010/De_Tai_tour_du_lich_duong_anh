@@ -1,0 +1,94 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Send_mailModel
+ *
+ * @author phuocnguyen
+ */
+class Send_mailModel {
+
+    private $Mail;
+    private $Name;
+    private $Subject;
+    private $Body;
+
+    function getMail() {
+        return $this->Mail;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function getSubject() {
+        return $this->Subject;
+    }
+
+    function getBody() {
+        return $this->Body;
+    }
+
+    function setMail($Mail) {
+        $this->Mail = $Mail;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function setSubject($Subject) {
+        $this->Subject = $Subject;
+    }
+
+    function setBody($Body) {
+        $this->Body = $Body;
+    }
+
+    public function doSend($array=null) {
+        require_once PHP_MAILER;
+        $mail = new PHPMailer();
+        //$mail->SMTPDebug = 3;                               // Enable verbose debug output
+        $mail->isSMTP();                                      // Set mailer to use SMTP
+        $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+        $mail->SMTPAuth = true;
+        $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted// Enable SMTP authentication
+        $mail->Username = 'backuphongdien@gmail.com';                 // SMTP username
+        $mail->Password = '1051190036a';                           // SMTP password        
+        $mail->Port = 587;
+//        $mail->Username = 'info@careerinvietnam.com';                 // SMTP username
+//        $mail->Password = 'Kf9i1q%1';                           // SMTP password
+//        $mail->Port = 25;
+        $mail->CharSet = 'UTF-8';
+
+        $mail->setFrom('info@careerinvietnam.com', 'VIECNET.COM');
+		if(is_array($array)){
+			foreach ($array as $item){
+				$mail->addBCC($item);
+			}
+		}else{
+			$mail->addAddress($this->getMail(), $this->getName());     // Add a recipient
+		}
+        //$mail->addAddress('ellen@example.com');               // Name is optional
+        //$mail->addReplyTo('info@example.com', 'Information');
+        //$mail->addCC('backuphongdien@gmail.com');        
+        //$mail->addBCC('bcc@example.com');
+        //$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+        //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+        $mail->isHTML(true);                                  // Set email format to HTML
+
+        $mail->Subject = $this->getSubject();
+        $mail->Body = $this->getBody();
+        //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+        return $mail->send();
+    }
+    
+    
+
+}

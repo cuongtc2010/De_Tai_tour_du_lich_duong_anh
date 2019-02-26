@@ -1,0 +1,5 @@
+<?php
+
+class Nha_tuyen_dung_nganh_ngheModel extends _CoreNha_tuyen_dung_nganh_ngheModel {
+    
+}

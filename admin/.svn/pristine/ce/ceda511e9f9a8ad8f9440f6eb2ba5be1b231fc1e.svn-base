@@ -1,0 +1,383 @@
+<?php
+
+class _CoreSupport_online_accountModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $Phone;
+    private $Email;
+    private $ChatAccount;
+    private $ChatAccountTypeId;
+    private $Order;
+    private $IsActive;
+    private $AccountTypeName;
+    private $AccountTypeIcon;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getPhone() {
+        return $this->Phone;
+    }
+
+    function setPhone($Phone) {
+        $this->Phone = $Phone;
+    }
+
+    function getEmail() {
+        return $this->Email;
+    }
+
+    function setEmail($Email) {
+        $this->Email = $Email;
+    }
+
+    function getChatAccount() {
+        return $this->ChatAccount;
+    }
+
+    function setChatAccount($ChatAccount) {
+        $this->ChatAccount = $ChatAccount;
+    }
+
+    function getChatAccountTypeId() {
+        return $this->ChatAccountTypeId;
+    }
+
+    function setChatAccountTypeId($ChatAccountTypeId) {
+        $this->ChatAccountTypeId = $ChatAccountTypeId;
+    }
+
+    function getOrder() {
+        return $this->Order;
+    }
+
+    function setOrder($Order) {
+        $this->Order = $Order;
+    }
+
+    function getIsActive() {
+        return $this->IsActive;
+    }
+
+    function setIsActive($IsActive) {
+        $this->IsActive = $IsActive;
+    }
+
+    // THUOC TINH CHUNG
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    function getAccountTypeName() {
+        return $this->AccountTypeName;
+    }
+
+    function setAccountTypeName($AccountTypeName) {
+        $this->AccountTypeName = $AccountTypeName;
+    }
+
+    function getAccountTypeIcon() {
+        return $this->AccountTypeIcon;
+    }
+
+    function setAccountTypeIcon($AccountTypeIcon) {
+        $this->AccountTypeIcon = $AccountTypeIcon;
+    }
+
+    public function getList() {
+        $sql = "SELECT support_online_account.*,chat_accout_type.Name AS AccountTypeName,chat_accout_type.Icon
+                FROM support_online_account JOIN chat_accout_type ON support_online_account.ChatAccountTypeId=chat_accout_type.Id WHERE 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and support_online_account.Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and support_online_account.Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getPhone())) {
+            $sql .= " and Phone LIKE '%{$this->getPhone()}%'";
+        }
+        if (!is_null($this->getEmail())) {
+            $sql .= " and Email LIKE '%{$this->getEmail()}%'";
+        }
+        if (!is_null($this->getChatAccount())) {
+            $sql .= " and ChatAccount LIKE '%{$this->getChatAccount()}%'";
+        }
+        if (!is_null($this->getChatAccountTypeId())) {
+            $sql .= " and ChatAccountTypeId='{$this->getChatAccountTypeId()}'";
+        }
+        if (!is_null($this->getOrder())) {
+            $sql .= " and support_online_account.Order='{$this->getOrder()}'";
+        }
+        if (!is_null($this->getIsActive())) {
+            $sql .= " and IsActive='{$this->getIsActive()}'";
+        }
+
+        $sql .= " and support_online_account.CompanyId='{$this->getCompanyId()}'";
+
+        $sql .= " order by support_online_account.`Order` asc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+
+        $result = $this->_getList($sql);
+
+        $array = array();
+        if ($result != null) {
+            foreach ($result as $value) {
+                $obj = new Support_online_accountModel();
+                $obj->setId($value["Id"]);
+                $obj->setName($value["Name"]);
+                $obj->setPhone($value["Phone"]);
+                $obj->setEmail($value["Email"]);
+                $obj->setChatAccount($value["ChatAccount"]);
+                $obj->setChatAccountTypeId($value["ChatAccountTypeId"]);
+                $obj->setOrder($value["Order"]);
+                $obj->setIsActive($value["IsActive"]);
+                $obj->setAccountTypeName($value["AccountTypeName"]);
+                $obj->setAccountTypeIcon($value["Icon"]);
+
+
+                $obj->setCreatedDate($value["CreatedDate"]);
+                $obj->setUpdatedDate($value["UpdatedDate"]);
+                $obj->setCreatedBy($value["CreatedBy"]);
+                $obj->setUpdatedBy($value["UpdatedBy"]);
+                $array[] = $obj;
+            }
+        }
+        return $array;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(support_online_account.Id) as RowCount
+                FROM support_online_account JOIN chat_accout_type ON support_online_account.ChatAccountTypeId=chat_accout_type.Id
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and support_online_account.Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and support_online_account.Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getPhone())) {
+            $sql .= " and Phone LIKE '%{$this->getPhone()}%'";
+        }
+        if (!is_null($this->getEmail())) {
+            $sql .= " and Email LIKE '%{$this->getEmail()}%'";
+        }
+        if (!is_null($this->getChatAccount())) {
+            $sql .= " and ChatAccount LIKE '%{$this->getChatAccount()}%'";
+        }
+        if (!is_null($this->getChatAccountTypeId())) {
+            $sql .= " and ChatAccountTypeId='{$this->getChatAccountTypeId()}'";
+        }
+        if (!is_null($this->getOrder())) {
+            $sql .= " and support_online_account.Order='{$this->getOrder()}'";
+        }
+        if (!is_null($this->getIsActive())) {
+            $sql .= " and support_online_account.IsActive='{$this->getIsActive()}'";
+        }
+
+        $sql .= " and support_online_account.CompanyId='{$this->getCompanyId()}'";
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT support_online_account.*,chat_accout_type.Name AS AccountTypeName FROM support_online_account JOIN chat_accout_type ON support_online_account.ChatAccountTypeId=chat_accout_type.Id where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and support_online_account.Id = {$this->getId()}";
+        }
+        $sql .= " and support_online_account.CompanyId='{$this->getCompanyId()}'";
+        $value = $this->_getObject($sql);
+
+
+        if ($value) {
+            $this->setId($value->Id);
+            $this->setName($value->Name);
+            $this->setPhone($value->Phone);
+            $this->setEmail($value->Email);
+            $this->setChatAccount($value->ChatAccount);
+            $this->setChatAccountTypeId($value->ChatAccountTypeId);
+            $this->setOrder($value->Order);
+            $this->setIsActive($value->IsActive);
+            $this->setAccountTypeName($value->AccountTypeName);
+
+
+            $this->setCreatedDate($value->CreatedDate);
+            $this->setUpdatedDate($value->UpdatedDate);
+            $this->setCreatedBy($value->CreatedBy);
+            $this->setUpdatedBy($value->UpdatedBy);
+        }
+        return $this;
+    }
+
+    public function insert() {
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            $sql = "insert into support_online_account(
+`Name`,
+`Phone`,
+`Email`,
+`ChatAccount`,
+`ChatAccountTypeId`,
+`Order`,
+`IsActive`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy,
+CompanyId
+)
+ VALUES (
+'{$this->getName()}',
+'{$this->getPhone()}',
+'{$this->getEmail()}',
+'{$this->getChatAccount()}',
+'{$this->getChatAccountTypeId()}',
+'{$this->getOrder()}',
+'{$this->getIsActive()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}','{$this->getCompanyId()}'
+
+)";
+
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+
+            $sql = "update `support_online_account` set UpdatedDate=now(),";
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+            if (!is_null($this->getPhone())) {
+                $sql .= "`Phone`='{$this->getPhone()}',";
+            }
+            if (!is_null($this->getEmail())) {
+                $sql .= "`Email`='{$this->getEmail()}',";
+            }
+            if (!is_null($this->getChatAccount())) {
+                $sql .= "`ChatAccount`='{$this->getChatAccount()}',";
+            }
+            if (!is_null($this->getChatAccountTypeId())) {
+                $sql .= "`ChatAccountTypeId`='{$this->getChatAccountTypeId()}',";
+            }
+            if (!is_null($this->getOrder())) {
+                $sql .= "`Order`='{$this->getOrder()}',";
+            }
+            if (!is_null($this->getIsActive())) {
+                $sql .= "`IsActive`='{$this->getIsActive()}',";
+            } else {
+                $sql .= "`IsActive`=0,";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+
+            $pdo->exec($sql);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function delete_array(array $ids) {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            if (is_array($ids)) {
+                foreach ($ids as $value) {
+                    $sql_datxe = "delete from support_online_account  where Id={$value}";
+                    $pdo->exec($sql_datxe);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

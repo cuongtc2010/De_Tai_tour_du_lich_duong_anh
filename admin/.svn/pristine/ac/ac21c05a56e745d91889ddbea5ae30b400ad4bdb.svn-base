@@ -1,0 +1,305 @@
+<?php
+
+class _CorePost_nhom_tinModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $Alias;
+    private $Description;
+    private $Order;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getAlias() {
+        return $this->Alias;
+    }
+
+    function setAlias($Alias) {
+        $this->Alias = $Alias;
+    }
+
+    function getDescription() {
+        return $this->Description;
+    }
+
+    function setDescription($Description) {
+        $this->Description = $Description;
+    }
+
+    function getOrder() {
+        return $this->Order;
+    }
+
+    function setOrder($Order) {
+        $this->Order = $Order;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        try {
+            $sql = "SELECT * FROM post_nhom_tin where 1=1 ";
+            if (!is_null($this->getId())) {
+                $sql .= " and Id='{$this->getId()}'";
+            }
+            if (!is_null($this->getName())) {
+                $sql .= " and Name LIKE '%{$this->getName()}%'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+            }
+            
+
+            $sql .= " order by CreatedDate desc";
+            if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+                $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+            }
+            $result = $this->_getList($sql);
+            return $result;
+        } catch (Exception $exc) {
+            if (DEBUG) {
+                echo $exc->getTraceAsString();
+            }
+        }
+        return null;
+    }
+
+    public function getCount() {
+        try {
+            $sql = "SELECT count(*) as RowCount
+                FROM post_nhom_tin 
+                where 1=1 ";
+            if (!is_null($this->getId())) {
+                $sql .= " and Id='{$this->getId()}'";
+            }
+            if (!is_null($this->getName())) {
+                $sql .= " and Name LIKE '%{$this->getName()}%'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+            }
+            if (!is_null($this->getDescription())) {
+                $sql .= " and Description LIKE '%{$this->getDescription()}%'";
+            }
+            if (!is_null($this->getOrder())) {
+                $sql .= " and Order='{$this->getOrder()}'";
+            }
+
+            if (DEBUG) {
+                echo "<code>====>" . get_class($this) . "<br>" . $sql . "</code><br>";
+            }
+            return $this->_getCount($sql);
+        } catch (Exception $exc) {
+            if (DEBUG) {
+                echo $exc->getTraceAsString();
+            }
+        }
+        return 0;
+    }
+
+    public function getObj() {
+        try {
+            $sql = "SELECT * FROM post_nhom_tin where 1=1 ";
+            if (!is_null($this->getId())) {
+                $sql .= " and Id = '{$this->getId()}'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and Alias = '{$this->getAlias()}'";
+            }
+            if (DEBUG) {
+                echo "<code>====>" . get_class($this) . "<br>" . $sql . "</code><br>";
+            }
+            $value = $this->_getObject($sql);
+            return $value;
+        } catch (Exception $exc) {
+            if (DEBUG) {
+                echo $exc->getTraceAsString();
+            }
+        }
+        return null;
+    }
+
+    public function insert() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $username = $_SESSION["user_info_admin"]["username"];
+            $pdo = $this->getPDO();
+            try {
+                $pdo->beginTransaction();
+                $sql = "insert into post_nhom_tin(
+`Name`,
+`Alias`,
+`Description`,
+`Order`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy)
+ VALUES (
+'{$this->getName()}',
+'{$this->getAlias()}',
+'{$this->getDescription()}',
+'{$this->getOrder()}',
+now(),
+now(),
+'{$username}',
+'{$username}'
+
+)";
+                if (DEBUG) {
+                    echo "<code>====>" . get_class($this) . "<br>" . $sql . "</code><br>";
+                }
+                $pdo->exec($sql);
+                $pdo->commit();
+                return true;
+            } catch (Exception $exc) {
+                $pdo->rollBack();
+                if (DEBUG) {
+                    echo $exc->getTraceAsString();
+                }
+            }
+        }
+        return false;
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $username = $_SESSION["user_info_admin"]["username"];
+            $pdo = $this->getPDO();
+            try {
+                $pdo->beginTransaction();
+                $sql = "update `post_nhom_tin` set UpdatedDate=now(),";
+                if (!is_null($this->getName())) {
+                    $sql .= "`Name`='{$this->getName()}',";
+                }
+                if (!is_null($this->getAlias())) {
+                    $sql .= "`Alias`='{$this->getAlias()}',";
+                }
+                if (!is_null($this->getDescription())) {
+                    $sql .= "`Description`='{$this->getDescription()}',";
+                }
+                if (!is_null($this->getOrder())) {
+                    $sql .= "`Order`='{$this->getOrder()}',";
+                }
+                $sql .= "UpdatedBy='{$username}'  Where Id='{$this->getId()}'";
+                if (DEBUG) {
+                    echo "<code>====>" . get_class($this) . "<br>" . $sql . "</code><br>";
+                }
+                $pdo->exec($sql);
+                $pdo->commit();
+                return true;
+            } catch (Exception $exc) {
+                $pdo->rollBack();
+                if (DEBUG) {
+                    echo $exc->getTraceAsString();
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        try {
+            $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM post_nhom_tin WHERE 1=1  ";
+            if (DEBUG) {
+                echo "<code>====>" . get_class($this) . "<br>" . $sql . "</code><br>";
+            }
+            return $this->_getMaxOrder($sql);
+        } catch (Exception $exc) {
+            if (DEBUG) {
+                echo $exc->getTraceAsString();
+            }
+        }
+        return 1;
+    }
+
+    public function delete($ids) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "delete from post_nhom_tin  where Id IN ({$ids})";
+            if (DEBUG) {
+                echo "<code>====>" . get_class($this) . "<br>" . $sql . "</code><br>";
+            }
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            if (DEBUG) {
+                echo $exc->getTraceAsString();
+            }
+        }
+        return false;
+    }
+
+}

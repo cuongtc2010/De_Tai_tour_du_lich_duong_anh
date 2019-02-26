@@ -1,0 +1,304 @@
+﻿<?php
+
+class _CoreDuyet_nha_tuyen_dung_goi_dich_vuModel extends BaseModel {
+
+    private $Id;
+    private $Idgoidichvu;
+    private $Name_En;
+    private $Name;
+    private $Alias;
+    private $Description;
+    private $Order;
+    private $CreatedDate;
+    private $IsActive;
+    private $ApDungTu;
+    private $ApDungDen;
+    private $NhaTuyenDungId;
+    private $GoiDichVuId;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getIdgoidichvu() {
+        return $this->Idgoidichvu;
+    }
+
+    function setIdgoidichvu($Idgoidichvu) {
+        $this->Idgoidichvu = $Idgoidichvu;
+    }
+
+        function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getGoiDichVuId() {
+        return $this->GoiDichVuId;
+    }
+
+    function setGoiDichVuId($GoiDichVuId) {
+        $this->GoiDichVuId = $GoiDichVuId;
+    }
+
+    function getNhaTuyenDungId() {
+        return $this->NhaTuyenDungId;
+    }
+
+    function setNhaTuyenDungId($NhaTuyenDungId) {
+        $this->NhaTuyenDungId = $NhaTuyenDungId;
+    }
+
+    function getApDungTu() {
+        return $this->ApDungTu;
+    }
+
+    function getApDungDen() {
+        return $this->ApDungDen;
+    }
+
+    function setApDungTu($ApDungTu) {
+        $this->ApDungTu = $ApDungTu;
+    }
+
+    function setApDungDen($ApDungDen) {
+        $this->ApDungDen = $ApDungDen;
+    }
+
+    function getIsActive() {
+        return $this->IsActive;
+    }
+
+    function setIsActive($IsActive) {
+        $this->IsActive = $IsActive;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getName_En() {
+        return $this->Name_En;
+    }
+
+    function setName_En($Name_En) {
+        $this->Name_En = $Name_En;
+    }
+
+    function getAlias() {
+        return $this->Alias;
+    }
+
+    function setAlias($Alias) {
+        $this->Alias = $Alias;
+    }
+
+    function getDescription() {
+        return $this->Description;
+    }
+
+    function setDescription($Description) {
+        $this->Description = $Description;
+    }
+
+    function getOrder() {
+        return $this->Order;
+    }
+
+    function setOrder($Order) {
+        $this->Order = $Order;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT 
+nha_tuyen_dung_goi_dich_vu.Id,
+nha_tuyen_dung.Name AS TenNhaTuyenDung,
+goi_dich_vu.Name AS TenGoiDichVu,
+goi_dich_vu.Id AS Ids,
+nha_tuyen_dung_goi_dich_vu.CreatedDate AS NgayGui,
+nha_tuyen_dung_goi_dich_vu.ApDungTu,
+nha_tuyen_dung_goi_dich_vu.ApDungDen,
+nha_tuyen_dung_goi_dich_vu.Description
+ FROM nha_tuyen_dung
+JOIN nha_tuyen_dung_goi_dich_vu ON nha_tuyen_dung.Id=nha_tuyen_dung_goi_dich_vu.NhaTuyenDungId
+JOIN goi_dich_vu ON nha_tuyen_dung_goi_dich_vu.GoiDichVuId=goi_dich_vu.Id
+WHERE nha_tuyen_dung_goi_dich_vu.IsActive=0";
+      
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM goi_dich_vu 
+                where 1=1 ";
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT goi_dich_vu.*,nha_tuyen_dung_goi_dich_vu.Id,nha_tuyen_dung_goi_dich_vu.NhaTuyenDungId,"
+                . "nha_tuyen_dung_goi_dich_vu.ApDungTu,nha_tuyen_dung_goi_dich_vu.GoiDichVuId,nha_tuyen_dung_goi_dich_vu.ApDungDen,nha_tuyen_dung_goi_dich_vu.IsActive "
+                . "FROM goi_dich_vu JOIN nha_tuyen_dung_goi_dich_vu ON goi_dich_vu.Id=nha_tuyen_dung_goi_dich_vu.GoiDichVuId where 1=1 ";
+
+        if (!is_null($this->getId())) {
+            $sql .= " and nha_tuyen_dung_goi_dich_vu.Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        if (!is_null($this->getIsActive())) {
+            $sql .= " and IsActive = '{$this->getIsActive()}'";
+        }
+
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into nha_tuyen_dung_goi_dich_vu(
+                    `NhaTuyenDungId`,
+                    `GoiDichVuId`,
+                    `ApDungTu`,
+                    `ApDungDen`,
+                    `IsActive`,
+                    CreatedDate,
+                    UpdatedDate,
+                    CreatedBy,
+                    UpdatedBy)
+                     VALUES (
+                    '{$this->getNhaTuyenDungId()}',
+                    '{$this->getGoiDichVuId()}',
+                    '{$this->getApDungTu()}',
+                    '{$this->getApDungDen()}',
+                    '{$this->getIsActive()}',
+                    now(),
+                    now(),
+                    '{$this->getCreatedBy()}',
+                    '{$this->getUpdatedBy()}'
+
+                    )";
+
+
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update(array $array) {
+
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            foreach($array as $value){
+            $sql = "UPDATE nha_tuyen_dung_goi_dich_vu SET ApDungTu=NOW(),IsActive=1,
+ApDungDen=(SELECT DATE_ADD(NOW(),INTERVAL (SELECT SoNgay FROM goi_dich_vu WHERE goi_dich_vu.Id ='{$value['Ids']}') DAY))
+WHERE Id='{$value['Id']}'";
+            $pdo->exec($sql);}
+           
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+  
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM goi_dich_vu WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from nha_tuyen_dung_goi_dich_vu  where Id='{$value['Id']}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

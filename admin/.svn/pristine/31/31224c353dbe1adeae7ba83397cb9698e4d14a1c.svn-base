@@ -1,0 +1,94 @@
+﻿<?php
+$root_ctl = "Duyet_nha_tuyen_dung_goi_dich_vu";
+?>
+<form class="row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="m-b-10">Duyệt Gói Dịch Vụ
+                <small>Duyệt và xóa gói dịch vụ</small>
+            </h2>
+            <div class="row">
+
+
+                <div class="col-sm-11 text-center">
+
+                    <button type="submit" name="duyet" class="btn btn-info btn-sm m-t-5 waves-effect"> Duyệt</button>
+                    <?php if ($_IsDelete) { ?>
+                        <button  type="submit" name="btnDelete" class="btn btn-danger btn-sm m-t-5 waves-effect" onclick="return confirm('Bạn có muốn xóa')"><i class="zmdi zmdi-delete"></i> Xóa</button>
+
+                    <?php } ?>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th width="10px">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" class="select-box" value="all"><i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="text-center" width="20px">#</th>
+                        <th>Doanh nghiệp</th>
+                        <th>Gói dịch vụ</th>
+                        <th>Ngày yêu cầu</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Ghi chú</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!is_null($list)) {
+                        $i = 1;
+                        foreach ($list as $value) {
+                            ?>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="select-box" name="checklist[]" value="<?=$value["Id"]?>|<?=$value["Ids"]?>"><i class="input-helper"></i>
+                                    </label>
+                                </div>
+                            </td>
+                            <td><?= $i++ ?></td>
+                            <td><?= $value["TenNhaTuyenDung"] ?></td>
+                            <td><?= $value["TenGoiDichVu"] ?></td>
+                            <td><?php $originalDate = $value["NgayGui"];
+                    echo $newDate = date("d/m/Y", strtotime($originalDate));
+                            ?></td>
+                            <td><?php
+                                $originalDate = $value["ApDungTu"];
+                                echo $newDate = date("d/m/Y", strtotime($originalDate));
+                                ?></td>
+                            <td><?php
+                                $originalDate = $value["ApDungDen"];
+                                echo $newDate = date("d/m/Y", strtotime($originalDate));
+                                ?></td>
+                            <td><?= $value["Description"] ?></td>
+
+        <!--<td><?= UtilityController::formatNumber($value["Order"]) ?></td>-->
+
+                        </tr>
+                        <?php
+                    }
+                }
+                ?>                
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <ul class="pagination text-center">
+<?= $phantrang ?>
+            </ul>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,3 @@
+<?php
+ class Dm_tin_hocModel extends _CoreDm_tin_hocModel{
+}

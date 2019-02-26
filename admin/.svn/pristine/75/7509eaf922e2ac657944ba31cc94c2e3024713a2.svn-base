@@ -1,0 +1,305 @@
+﻿<?php
+$root_ctl = "Nha_tuyen_dung";
+?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        load_nganh_nghe();
+        load_tinh_thanh();
+    });
+    function load_nganh_nghe() {
+        var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Nha_tuyen_dung&act=fill_ds_nganh_nghe_nha_tuyen_dung" ?>';
+        var postData = {
+            postType: "ajax",
+            Id: '<?= $_Id ?>'
+        };
+
+        var post = $.post(postPage, postData).done(function (data) {
+            $("select[name='dm_nganh_nghe[]']").val(data.split(',')).trigger("chosen:updated");
+        })
+                .fail(function () {
+
+                });
+    }
+    function load_tinh_thanh() {
+        var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Nha_tuyen_dung&act=fill_ds_tinh_thanh_nha_tuyen_dung" ?>';
+        var postData = {
+            postType: "ajax",
+            Id: '<?= $_Id ?>'
+        };
+
+        var post = $.post(postPage, postData).done(function (data) {
+            $("select[name='dm_tinh_thanh[]']").val(data.split(',')).trigger("chosen:updated");
+        })
+                .fail(function () {
+
+                });
+    }
+    function kiem_tra_email() {
+        var flag = false;
+        var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Nha_tuyen_dung&act=kiem_tra_email" ?>';
+        var email = $("input[name='email']").val();
+        var oldemail = $("input[name='Old_Email']").val();
+
+        var postData = {
+            postType: "ajax",
+            email: email,
+            oldemail: oldemail
+        };
+        $.ajax({
+            type: "POST",
+            url: postPage,
+            data: postData,
+            async: false,
+            cache: false,
+            success: function (msg) {
+                if (msg == "false") {
+                    alert("Email đã được sử dụng");
+                    $("input[name='email']").focus();
+                    flag = false;
+                } else {
+                    flag = true;
+                }
+            }
+        });
+
+        return flag;
+    }
+
+
+</script>
+
+
+<div class="card">
+    <div class="card-header"> 
+        <h2 class="m-b-10">Cập nhật nhà tuyển dụng
+            <small>Cho phép thêm mới, chỉnh sửa các thông tin</small>
+        </h2>
+        <div class="row">
+            <form class="form-horizontal row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+                <div class="col-md-12 m-b-5">
+                    <div class="m-b-5">Thông tin tài khoản</div>   
+                    <label class="col-lg-2 control-label lb-required">Email</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="email" class="form-control input-sm" placeholder=""  name="email" value="<?= isset($_HoTen) ? $_HoTen : "" ?>" required>   
+                        </div>
+                    </div>
+                    <?php if (!empty($_GET['id'])) { ?>
+                        <label class="col-lg-2 control-label" for=""  >           </label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                            <?php   echo '<a href="index.php?ctl=' .$root_ctl   .'&act=doimk&id='.$_Id.'&tabid='. $tabid. '" >Đổi mật khẩu</a>' ?>
+                            </div>
+                        </div> <?php } ?>
+
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <div class="m-b-5">Thông tin công ty</div>
+                    <label class="col-md-2 control-label lb-required">Tên công ty</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" class="form-control input-sm" placeholder="" name="tencongty" value="<?= isset($_Name) ? $_Name : "" ?>" required>   
+                        </div>
+                    </div>
+                    <label class="col-md-2 control-label lb-required">Mã số thuế</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" class="form-control input-sm" placeholder="" name="masothue" value="<?= isset($_MST) ? $_MST : "" ?>" required>       
+                        </div>
+                    </div>
+                    <label class="col-md-2 control-label"></label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="hidden" maxlength="11" class="form-control input-sm" placeholder="" name="vv" value="<?= isset($_HoTen) ? $_HoTen : "" ?>">       
+                        </div>
+                    </div>
+
+                </div>   
+
+
+                <div class="col-md-12 m-b-5">
+                    <label class="col-md-2 control-label lb-required">Điện thoại</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" maxlength="11" class="form-control input-sm" placeholder="" name="dienthoai" value="<?= isset($_DienThoai) ? $_DienThoai : "" ?>" required>       
+                        </div>
+                    </div>
+
+
+                    <label class="col-md-2 control-label ">Fax</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" maxlength="11" class="form-control input-sm" placeholder="" name="fax" value="<?= isset($_Fax) ? $_Fax : "" ?>" required>       
+                        </div>
+                    </div>
+                    <label class="col-md-2 control-label lb-required">Địa chỉ</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" class="form-control input-sm" placeholder="" name="diachi" value="<?= isset($_DiaChi) ? $_DiaChi : "" ?>" required>   
+                        </div>
+                    </div>
+
+                    <label class="col-md-2 control-label">Website</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" class="form-control input-sm" placeholder="" name="web" value="<?= isset($_Website) ? $_Website : "" ?>" >   
+                        </div>
+                    </div>
+                    <label class="col-md-2 control-label lb-required">Quy mô</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <select class="form-control input-sm" name="dm_Quy_Mo">
+                                <?php
+                                foreach ($List_Quy_Mo as $value) {
+                                    if (!empty($_QuyMoId)) {
+                                        ?>
+
+                                        <option  <?php
+                                        if ($value["Id"] == $_QuyMoId) {
+                                            echo("selected");
+                                        }
+                                        ?> value="<?= $value["Id"] ?> "><?= $value["Name"] ?></option>
+
+    <?php } else {
+        ?>                   
+                                        <option value="<?= $value['Id'] ?>" ><?= $value['Name'] ?></option>
+
+    <?php }
+}
+?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="col-md-2 control-label lb-required">Tỉnh thành</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <select class="chosen" multiple="" name="dm_tinh_thanh[]">                                
+                                <option disabled="">Chọn 1 hoặc nhiều tỉnh thành</option>
+                                <?php
+                                if (!is_null($List_tinh_thanh)) {
+                                    foreach ($List_tinh_thanh as $value) {
+                                        ?>
+                                        <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="col-md-2 control-label lb-required">Ngành nghề </label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <select class="chosen" multiple="" name="dm_nganh_nghe[]">                                
+                                <option disabled="">Chọn 1 hoặc nhiều ngành nghề</option>   
+                                <?php
+                                if (!is_null($List_nganh_nghe)) {
+                                    foreach ($List_nganh_nghe as $value) {
+                                        ?>
+                                        <option value="<?= $value["Id"] ?>" ><?= $value["Name"] ?></option>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <div class="m-b-5">Thông tin người liên hệ</div>   
+                    <label class="col-lg-2 control-label lb-required" >Họ tên</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" class="form-control input-sm" placeholder="" name="hotennguoilienhe" value="<?= isset($_NguoiLienHe_HoTen) ? $_NguoiLienHe_HoTen : "" ?>" required>   
+                        </div>
+                    </div>
+                    <label class="col-lg-2 control-label lb-required" for="">Chức vụ</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" class="form-control input-sm" placeholder="" name="chucvunguoilienhe" value="<?= isset($_NguoiLienHe_ChucVu) ? $_NguoiLienHe_ChucVu : "" ?>" required>   
+                        </div>
+                    </div>
+                    <label class="col-md-2 control-label lb-required">Điện thoại</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="text" maxlength="11" class="form-control input-sm" placeholder="" name="dienthoainguoilienhe" value="<?= isset($_NguoiLienHe_DienThoai) ? $_NguoiLienHe_DienThoai : "" ?>" required>       
+                        </div>
+                    </div>
+
+                    <label class="col-lg-2 control-label lb-required" for="">Email</label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="email" class="form-control input-sm" placeholder="" name="nguoilienheemail" value="<?= isset($_NguoiLienHe_Email) ? $_NguoiLienHe_Email : "" ?>" required>   
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-2"></div>
+                <div class="col-md-4 p-r-15">
+                    <div class="form-group m-b-5">
+                        <?php if (!empty($_NoiBat)) { ?>
+                            <input  type="Checkbox" name="NoiBat" value="1" <?php
+                                    if ($_NoiBat == 1) {
+                                        echo("checked");
+                                    }
+                                    ?>  >&nbsp;Nổi bật
+<?php } else { ?>
+                            <input  type="Checkbox" name="NoiBat" value="1" >&nbsp;Nổi bật
+<?php } ?>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4 p-r-15">
+                    <div class="form-group m-b-5">      
+                        <?php if (!empty($_XacThuc)) { ?>
+                            <input  type="Checkbox" name="XacThuc" value="true" <?php if ($_XacThuc == 1) {
+                                echo("checked");
+                            } ?>  >&nbsp;Xác Thực
+<?php } else { ?>
+                            <input  type="Checkbox" name="XacThuc" value="true" >&nbsp;Xác Thực
+<?php } ?>                       
+                    </div>
+                </div>
+                
+                <div class="col-md-2"></div>
+                <div class="col-md-4 p-r-15">
+                    <div class="form-group m-b-5">
+                        <?php if (!empty($_Active)) { ?>
+                        <input   type="Checkbox" name="Active" value="1" <?php
+                                    if ($_Active == 1) {
+                                        echo("checked");
+                                    }
+                                    ?>  >&nbsp;Hoạt động
+<?php } else { ?>
+                        <input   type="Checkbox" name="Active" value="1" >&nbsp;Hoạt động
+<?php } ?>
+               </div>
+                </div>
+
+                <div class="col-md-12 m-b-5">
+                    <div class="form-group">
+                        <label  class="col-md-3"></label>
+                        <div class="col-md-9">
+<?php if ($_IsUpdate) {?>
+  
+                                <input type="hidden" value="<?= $_HoTen ?>" name="Old_Email" />
+                                <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" onclick="return kiem_tra_email()"c ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+<?php } ?>           
+                            <?php if (!empty($_GET['id'])) { ?>
+                            <a href="index.php?ctl=Nha_tuyen_dung_goi_dich_vu&ntd=<?= $_Id ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-success"><i class="ace-icon fa fa-arrow-left"></i>Gói Dịch Vụ </a>
+                            <?php } ?>
+                            <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="UserId" value="<?= isset($_UserId) ? $_UserId : "" ?>">
+            </form>
+        </div>
+    </div>
+</div>
+

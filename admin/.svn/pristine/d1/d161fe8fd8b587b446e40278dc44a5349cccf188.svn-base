@@ -1,0 +1,3 @@
+<?php
+ class Dm_muc_luongModel extends _CoreDm_muc_luongModel{
+}

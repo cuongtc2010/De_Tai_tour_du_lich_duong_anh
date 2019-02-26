@@ -1,0 +1,449 @@
+﻿<?php
+$root_ctl = "Dm_ung_vien";
+?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        load_nganh_nghe();
+        load_tinh_thanh();
+    });
+    function load_nganh_nghe() {
+        var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Dm_ung_vien&act=fill_ds_nganh_nghe_ung_vien" ?>';
+        var postData = {
+            postType: "ajax",
+            Id: '<?= $_Id ?>'
+        };
+
+        var post = $.post(postPage, postData)
+                .done(function (data) {
+                    $("select[name='dm_nganh_nghe[]']").val(data.split(',')).trigger("chosen:updated");
+                })
+                .fail(function () {
+
+                });
+    }
+    function load_tinh_thanh() {
+        var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Dm_ung_vien&act=fill_ds_tinh_thanh_ung_vien" ?>';
+        var postData = {
+            postType: "ajax",
+            Id: '<?= $_Id ?>'
+        };
+
+        var post = $.post(postPage, postData)
+                .done(function (data) {
+                    $("select[name='dm_tinh_thanh[]']").val(data.split(',')).trigger("chosen:updated");
+                })
+                .fail(function () {
+
+                });
+    }
+    function kiem_tra_email() {
+    var flag=false;
+        var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Dm_ung_vien&act=kiem_tra_email" ?>';
+        var email = $("input[name='txtEmail']").val();
+        var oldemail = $("input[name='Old_Email']").val();
+        var postData = {
+            postType: "ajax",
+            _email: email,
+            oldemail:oldemail
+        };
+        $.ajax({
+            type: "POST",
+            url: postPage,
+            data: postData,
+            async: false,
+            cache: false,
+            success: function (msg) {
+                if (msg == "false") {
+                    alert("Email đã được sử dụng");
+                    $("input[name='txtEmail']").focus();
+                    flag= false;
+                }else{
+                    flag= true;
+                }
+            }
+        });
+        
+        return flag;
+    }
+
+</script>
+<div class="card">
+    <div class="card-header">
+        <h2 class="m-b-10">Cập nhật Ứng viên
+            <small>Cho phép thêm mới, chỉnh sửa các thông tin</small>
+        </h2>
+        <div class="row">
+            <form class="form-horizontal row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+                <div class="col-md-12 m-b-5">
+                    <fieldset>
+                        <legend><strong>Thông Tin Tài Khoản</strong></legend>
+                        <label class="col-lg-2 control-label">Email</label>
+                        <div class="col-md-10 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="email" class="form-control input-sm" placeholder="" name="txtEmail" value="<?= isset($_Email) ? $_Email : "" ?>" required>   
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                    <!--                    <label class="col-lg-2 control-label">Mật khẩu</label>
+                                        <div class="col-md-4 p-r-15">   
+                                            <div class="form-group m-b-5">
+                                                <input type="password" class="form-control input-sm" placeholder="" name="txtMatKhau" value="<?= isset($_MatKhau) ? $_MatKhau : "" ?>">   
+                                            </div>
+                                        </div>
+                                        <label class="col-lg-2 control-label lb-required">Nhập lại mật khẩu</label>
+                                        <div class="col-md-4 p-r-15">   
+                                            <div class="form-group m-b-5">
+                                                <input type="password" class="form-control input-sm" placeholder="" name="txtMatKhau" value="<?= isset($_MatKhau) ? $_MatKhau : "" ?>">   
+                                            </div>
+                                        </div>-->
+                </div>
+                <div class="col-md-12 m-b-5">
+
+                    <fieldset>
+                        <legend><strong>Thông Tin Ứng Viên</strong></legend>
+
+                        <label class="col-md-2 control-label lb-required">Vị Trí Việc Làm</label>
+                        <div class="col-md-10 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="text" class="form-control input-sm" placeholder="" name="txtViTri" value="<?= isset($_ViTri) ? $_ViTri : "" ?>" required>   
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required">Họ tên</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="text" class="form-control input-sm" placeholder="" name="txtHoTen" value="<?= isset($_HoTen) ? $_HoTen : "" ?>" required>       
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_gioi_tinh">Giới tính</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_gioi_tinh" required>
+                                    <option value="">-- Chọn Giới Tính --</option>
+                                    <?php
+                                    if (!is_null($List_gioi_tinh)) {
+                                        foreach ($List_gioi_tinh as $value) {
+                                            if ($value["Id"] == $_GioiTinh) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required">Điện thoại</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="text" maxlength="11" class="form-control input-sm" placeholder="" name="txtDienThoai" value="<?= isset($_DienThoai) ? $_DienThoai : "" ?>" required>       
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required">Ngày sinh</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="text" maxlength="11" class="form-control input-sm date-picker" placeholder="" name="txtNgaySinh" value="<?= isset($_NgaySinh) ? date('d/m/Y', strtotime($_NgaySinh)) : "5555" ?>" required>       
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required">Địa chỉ </label>
+                        <div class="col-md-10 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="text" class="form-control input-sm" placeholder="" name="txtDiaChi" value="<?= isset($_DiaChi) ? $_DiaChi : "" ?>" required>   
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required">Tỉnh thành</label>
+                        <div class="col-md-10 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="chosen" multiple="" name="dm_tinh_thanh[]">                                
+                                    <option disabled="">Chọn 1 hoặc nhiều tỉnh thành</option>
+                                    <?php
+                                    if (!is_null($List_tinh_thanh)) {
+                                        foreach ($List_tinh_thanh as $value) {
+                                            ?>
+                                            <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required">Ngành nghề</label>
+                        <div class="col-md-10 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="chosen" multiple="" name="dm_nganh_nghe[]">                                
+                                    <option disabled="">Chọn 1 hoặc nhiều ngành nghề</option>
+                                    <?php
+                                    if (!is_null($List_nganh_nghe)) {
+                                        foreach ($List_nganh_nghe as $value) {
+                                            ?>
+                                            <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+    <!--                            <input type="text" class="chosen" multiple="" placeholder="" name="txtNganhNghe" value="<?= isset($_NganhNghe) ? $_NganhNghe : "" ?>" required>   -->
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_cap_bac">Cấp bậc</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_cap_bac" required="">
+                                    <option value="">-- Chọn cấp bậc --</option>
+                                    <?php
+                                    if (!is_null($List_cap_bac)) {
+                                        foreach ($List_cap_bac as $value) {
+                                            if ($value["Id"] == $_CapBac) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_hon_nhan">Hôn nhân</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_hon_nhan" required="">
+                                    <option value="">-- Chọn tình trạng hôn nhân --</option>
+                                    <?php
+                                    if (!is_null($List_tinh_trang_hon_nhan)) {
+                                        foreach ($List_tinh_trang_hon_nhan as $value) {
+                                            if ($value["Id"] == $_TinhTrangHonNhan) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_bang_cap">Bằng cấp</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_bang_cap" required="">
+                                    <option value="">-- Bằng cấp --</option>
+                                    <?php
+                                    if (!is_null($List_bang_cap)) {
+                                        foreach ($List_bang_cap as $value) {
+                                            if ($value["Id"] == $_BangCap) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_kinh_nghiem">Kinh nghiệm</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_kinh_nghiem" required="">
+                                    <option value="">-- Chọn kinh nghiệm --</option>
+                                    <?php
+                                    if (!is_null($List_kinh_nghiem)) {
+                                        foreach ($List_kinh_nghiem as $value) {
+                                            if ($value["Id"] == $_KinhNghiem) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_tin_hoc">Tin học</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_tin_hoc" required="">
+                                    <option value="">-- Chọn tin học --</option>
+                                    <?php
+                                    if (!is_null($List_tin_hoc)) {
+                                        foreach ($List_tin_hoc as $value) {
+                                            if ($value["Id"] == $_TinHoc) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_trinh_do_tin_hoc">Trình độ tin học</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_trinh_do_tin_hoc" required="">
+                                    <option value="">-- Chọn trình độ tin học --</option>
+                                    <?php
+                                    if (!is_null($List_trinh_do_tin_hoc)) {
+                                        foreach ($List_trinh_do_tin_hoc as $value) {
+                                            if ($value["Id"] == $_TrinhDoTinHoc) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_ngoai_ngu">Ngoại ngữ</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_ngoai_ngu" required="">
+                                    <option value="">-- Chọn ngoại ngữ --</option>
+                                    <?php
+                                    if (!is_null($List_ngoai_ngu)) {
+                                        foreach ($List_ngoai_ngu as $value) {
+                                            if ($value["Id"] == $_NgoaiNgu) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_trinh_do_ngoai_ngu">Trình độ ngoại ngữ</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_trinh_do_ngoai_ngu" required="">
+                                    <option value="">-- Chọn trình độ ngoại ngữ --</option>
+                                    <?php
+                                    if (!is_null($List_trinh_do_ngoai_ngu)) {
+                                        foreach ($List_trinh_do_ngoai_ngu as $value) {
+                                            if ($value["Id"] == $_TrinhDoNgoaiNgu) {
+                                                ?>
+                                                <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                            <?php } else { ?>
+                                                <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_muc_luong">Mức lương</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_muc_luong" required="">
+                                    <option value="">-- Chọn mức lương --</option>
+                                    <?php
+                                    if (!is_null($List_muc_luong)) {
+                                        foreach ($List_muc_luong as $value) {
+                                            ?>
+                                            <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>   
+                                </select>
+                            </div> 
+                        </div>
+                        <label class="col-md-2 control-label lb-required" for="dm_hinh_thuc_lam_viec">Hình thức làm việc</label>
+                        <div class="col-md-4 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <select class="form-control input-sm" name="dm_hinh_thuc_lam_viec" required="">
+                                    <option value="">-- Chọn hình thức làm việc --</option>
+                                    <?php
+                                    if (!is_null($List_hinh_thuc_lam_viec)) {
+                                        foreach ($List_hinh_thuc_lam_viec as $value) {
+                                            ?>
+                                            <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 p-r-15">
+                        <div class="form-group m-b-5">
+                            <input type="Checkbox" name="txtXacThuc" value="<?= isset($_HoTen) ? $_HoTen : "Xác thực" ?>">&nbsp;Xác thực
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 p-r-15">
+                        <div class="form-group m-b-5">
+                            <input type="checkbox" name="txtNoiBat" value="Nổi bật" />&nbsp;Nổi bật
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <label class="col-lg-2 control-label"></label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <label class="control-label"><strong>Kinh Nghiệm Làm Việc</strong></label>
+                            <textarea rows="10" cols="132" name="KinhNghiemLamViec" value="<?= isset($_KinhNghiemLamViec) ? $_KinhNghiemLamViec : "" ?>"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <label class="col-lg-2 control-label"></label>
+                    <div class="col-md-4 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <label class="control-label"><strong>Học Vấn Bằng Cấp</strong></label>
+                            <textarea rows="10" cols="132" name="HocVanBangCap" value="<?= isset($_HocVanBangCap) ? $_KinhNghiemLamViec : "" ?>"></textarea>
+                        </div>
+                    </div>
+                </div>
+                </fieldset>
+                <div class="col-md-12 m-b-5">
+                    <div class="form-group">
+                        <label  class="col-md-3"></label>
+                        <div class="col-md-9">
+                            <input type="hidden" value="<?=$_UserId?>" name="UserId"/>
+                            <input type="hidden" value="<?=$_Email?>" name="Old_Email"/>
+                            <?php if ($_IsUpdate) { ?>
+                            <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" onclick="return kiem_tra_email()"><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                            <?php } ?>
+                            <button type="submit" class="btn btn-sm btn-success" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Gửi mail </button>
+                            <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+

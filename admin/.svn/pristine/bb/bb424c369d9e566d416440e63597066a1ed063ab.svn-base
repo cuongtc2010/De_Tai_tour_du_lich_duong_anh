@@ -1,0 +1,3 @@
+<?php
+ class Quang_caoModel extends _CoreQuang_caoModel{
+}

@@ -1,0 +1,111 @@
+<?php
+
+class Sys_role_permisionsModel extends _CoreSys_role_permisionsModel {
+
+    
+
+    public function getListMenuLeft($roleid, $parent = null) {
+        $sql = "SELECT  sys_menu_functions.*
+                FROM 
+                sys_role_permisions JOIN sys_menu_functions ON sys_role_permisions.MenuFunctionId=sys_menu_functions.Id
+                WHERE RoleId='{$roleid}' AND IsView=1
+                ";
+        if (!is_null($parent)) {
+            $sql .= " AND sys_menu_functions.ParentId='{$parent}'";
+        } else {
+            $sql .= " AND sys_menu_functions.ParentId IS NULL";
+        }
+        $sql.=" Order by sys_menu_functions.Order asc";
+
+        $result = $this->_getList($sql);
+
+        $array = array();
+        if ($result != null) {
+            foreach ($result as $value) {
+                $obj = new Sys_menu_functionsModel();
+                $obj->setId($value["Id"]);
+                $obj->setParentId($value["ParentId"]);
+
+                $obj->setName($value["Name"]);
+                $obj->setUrl($value["Url"]);
+                $obj->setIcon($value["Icon"]);
+                $obj->setTarget($value["Target"]);
+
+
+                $obj->setCreatedDate($value["CreatedDate"]);
+                $obj->setUpdatedDate($value["UpdatedDate"]);
+                $obj->setCreatedBy($value["CreatedBy"]);
+                $obj->setUpdatedBy($value["UpdatedBy"]);
+                $array[] = $obj;
+            }
+        }
+        return $array;
+    }
+
+    public function getCheckRole($action = 'view') {
+        $sql = "SELECT  IsView,IsUpdate,IsDelete
+                FROM 
+                sys_role_permisions JOIN sys_menu_functions ON sys_role_permisions.MenuFunctionId=sys_menu_functions.Id
+                WHERE 1=1
+                
+                AND RoleId={$this->getRoleId()}  AND MenuFunctionId={$this->getMenuFunctionId()}";
+
+        $value = $this->_getObject($sql);
+        if ($value) {
+            $this->setIsView($value->IsView);
+            $this->setIsUpdate($value->IsUpdate);
+            $this->setIsDelete($value->IsDelete);
+        }
+        return $this;
+    }
+
+    public function getListForTable($array_categories, $parent_id = 0, $char = '') {
+        $str_result = "";
+        $str = "";
+        $root_ctl = "Sys_menu_functions";
+        foreach ($array_categories as $key => $value) {
+            if ($value->getParentId() == $parent_id) {
+                $str = "<tr>";
+                if ($char == '') {
+                    $str .= "<td><strong>" . $char . $value->getName() . "</strong></td>";
+                } else {
+                    $str .= "<td>" . $char . $value->getName() . "</td>";
+                }
+                $str .= "<td><input type='checkbox' name='isView[]' value='{$value->getMenuFunctionId()}' " . (($value->getIsView()) ? "checked" : "") . "/></td>";
+                $str .= "<td><input type='checkbox' name='isUpdate[]' value='{$value->getMenuFunctionId()}' " . (($value->getIsUpdate()) ? "checked" : "") . "/></td>";
+                $str .= "<td><input type='checkbox' name='isDelete[]' value='{$value->getMenuFunctionId()}' " . (($value->getIsDelete()) ? "checked" : "") . "/></td>";
+                $str .= "</tr>";
+                echo $str;
+                unset($array_categories[$key]);
+                $this->getListForTable($array_categories, $value->getMenuFunctionId(), $char . '|__');
+            }
+        }
+    }
+
+    public function updateRole($sql_unset_role = '', $sql_isView = '', $sql_isUpdate = '', $sql_isDelete = '') {
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            if (!empty($sql_unset_role)) {
+                $pdo->exec($sql_unset_role);
+            }
+            if (!empty($sql_isView)) {
+                $pdo->exec($sql_isView);
+            }
+            if (!empty($sql_isUpdate)) {
+                $pdo->exec($sql_isUpdate);
+            }
+            if (!empty($sql_isDelete)) {
+                $pdo->exec($sql_isDelete);
+            }
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

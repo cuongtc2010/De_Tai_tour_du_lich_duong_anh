@@ -1,0 +1,3 @@
+<?php
+ class Ung_vien_nganh_ngheModel extends _CoreUng_vien_nganh_ngheModel{
+}

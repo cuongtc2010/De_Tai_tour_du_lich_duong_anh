@@ -1,0 +1,12 @@
+<?php
+
+class Support_online_accountModel extends _CoreSupport_online_accountModel {
+
+    
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM support_online_account WHERE 1=1  ";
+        $sql .= " and CompanyId='{$this->getCompanyId()}'";
+        return $this->_getMaxOrder($sql);
+    }
+
+}

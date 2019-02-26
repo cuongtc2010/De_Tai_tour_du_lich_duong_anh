@@ -1,0 +1,290 @@
+<?php
+
+class _CoreTin_nhan_thong_baoModel extends BaseModel {
+
+    private $Id;
+    private $SendUserId;
+    private $RecivedUserId;
+    private $IsRead;
+    private $NoiDung;
+    private $Url;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getSendUserId() {
+        return $this->SendUserId;
+    }
+
+    function setSendUserId($SendUserId) {
+        $this->SendUserId = $SendUserId;
+    }
+
+    function getRecivedUserId() {
+        return $this->RecivedUserId;
+    }
+
+    function setRecivedUserId($RecivedUserId) {
+        $this->RecivedUserId = $RecivedUserId;
+    }
+
+    function getIsRead() {
+        return $this->IsRead;
+    }
+
+    function setIsRead($IsRead) {
+        $this->IsRead = $IsRead;
+    }
+
+    function getNoiDung() {
+        return $this->NoiDung;
+    }
+
+    function setNoiDung($NoiDung) {
+        $this->NoiDung = $NoiDung;
+    }
+
+    function getUrl() {
+        return $this->Url;
+    }
+
+    function setUrl($Url) {
+        $this->Url = $Url;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT tin_nhan_thong_bao.*,
+                user_gui.FullName AS NguoiGui,
+                user_nhan.FullName AS NguoiNhan
+                FROM tin_nhan_thong_bao
+                JOIN sys_users user_gui ON tin_nhan_thong_bao.SendUserId =user_gui.Id
+                JOIN sys_users user_nhan ON tin_nhan_thong_bao.RecivedUserId=user_nhan.Id where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and tin_nhan_thong_bao.Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getSendUserId())) {
+            $sql .= " and tin_nhan_thong_bao.SendUserId='{$this->getSendUserId()}'";
+        }
+        if (!is_null($this->getRecivedUserId())) {
+            $sql .= " and RecivedUserId='{$this->getRecivedUserId()}'";
+        }
+        if (!is_null($this->getIsRead())) {
+            $sql .= " and IsRead='{$this->getIsRead()}'";
+        }
+        if (!is_null($this->getNoiDung())) {
+            $sql .= " and NoiDung='{$this->getNoiDung()}'";
+        }
+        if (!is_null($this->getUrl())) {
+            $sql .= " and Url LIKE '%{$this->getUrl()}%'";
+        }
+
+        $sql .= " order by tin_nhan_thong_bao.CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(tin_nhan_thong_bao.Id) as RowCount
+                user_gui.FullName AS NguoiGui,
+                user_nhan.FullName AS NguoiNhan
+                FROM tin_nhan_thong_bao
+                JOIN sys_users user_gui ON tin_nhan_thong_bao.SendUserId =user_gui.Id
+                JOIN sys_users user_nhan ON tin_nhan_thong_bao.RecivedUserId=user_nhan.Id
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and tin_nhan_thong_bao.Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getSendUserId())) {
+            $sql .= " and tin_nhan_thong_bao.SendUserId='{$this->getSendUserId()}'";
+        }
+        if (!is_null($this->getRecivedUserId())) {
+            $sql .= " and tin_nhan_thong_bao.RecivedUserId='{$this->getRecivedUserId()}'";
+        }
+        if (!is_null($this->getIsRead())) {
+            $sql .= " and IsRead='{$this->getIsRead()}'";
+        }
+        if (!is_null($this->getNoiDung())) {
+            $sql .= " and NoiDung='{$this->getNoiDung()}'";
+        }
+        if (!is_null($this->getUrl())) {
+            $sql .= " and Url LIKE '%{$this->getUrl()}%'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT tin_nhan_thong_bao.*,
+                user_gui.FullName AS NguoiGui,
+                user_nhan.FullName AS NguoiNhan
+                FROM tin_nhan_thong_bao
+                JOIN sys_users user_gui ON tin_nhan_thong_bao.SendUserId =user_gui.Id
+                JOIN sys_users user_nhan ON tin_nhan_thong_bao.RecivedUserId=user_nhan.Id where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into tin_nhan_thong_bao(
+                    `SendUserId`,
+                    `RecivedUserId`,
+                    `IsRead`,
+                    `NoiDung`,
+                    `Url`,
+                    CreatedDate,
+                    UpdatedDate,
+                    CreatedBy,
+                    UpdatedBy)
+                     VALUES (
+                    '{$this->getSendUserId()}',
+                    '{$this->getRecivedUserId()}',
+                    {$this->getIsRead()},
+                    '{$this->getNoiDung()}',
+                    '{$this->getUrl()}',
+                    now(),
+                    now(),
+                    '{$this->getCreatedBy()}',
+                    '{$this->getUpdatedBy()}'
+
+                    )";                    
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `tin_nhan_thong_bao` set UpdatedDate=now(),";
+            if (!is_null($this->getSendUserId())) {
+                $sql .= "`SendUserId`='{$this->getSendUserId()}',";
+            }
+            if (!is_null($this->getRecivedUserId())) {
+                $sql .= "`RecivedUserId`='{$this->getRecivedUserId()}',";
+            }
+            if (!is_null($this->getIsRead())) {
+                $sql .= "`IsRead`='{$this->getIsRead()}',";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= "`NoiDung`='{$this->getNoiDung()}',";
+            }
+            if (!is_null($this->getUrl())) {
+                $sql .= "`Url`='{$this->getUrl()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM tin_nhan_thong_bao WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from tin_nhan_thong_bao  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

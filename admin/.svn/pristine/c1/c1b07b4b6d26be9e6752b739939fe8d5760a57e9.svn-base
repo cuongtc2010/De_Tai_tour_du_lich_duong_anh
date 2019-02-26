@@ -1,0 +1,202 @@
+<?php
+
+class Support_online_accountController {
+
+    const FOLDER_VIEW = 'Support_online_account';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Support_online_account_model = new Support_online_accountModel();
+            $Chat_accout_type_model = new Chat_accout_typeModel();
+            $list_account_type_model = $Chat_accout_type_model->getList();
+
+            // lấy giá trị search
+
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_Phone = isset($_POST["Phone"]) ? $_POST["Phone"] : "";
+            $_Email = isset($_POST["Email"]) ? $_POST["Email"] : "";
+            $_ChatAccount = isset($_POST["ChatAccount"]) ? $_POST["ChatAccount"] : "";
+            $_ChatAccountTypeId = isset($_POST["ChatAccountTypeId"]) ? $_POST["ChatAccountTypeId"] : "";
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Support_online_account_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // get list            
+            if (!empty($_Name)) {
+                $Support_online_account_model->setName($_Name);
+            }
+            if (!empty($_Phone)) {
+                $Support_online_account_model->setPhone($_Phone);
+            }
+            if (!empty($_Email)) {
+                $Support_online_account_model->setEmail($_Email);
+            }
+            if (!empty($_ChatAccount)) {
+                $Support_online_account_model->setChatAccount($_ChatAccount);
+            }
+            if (!empty($_ChatAccountTypeId)) {
+                $Support_online_account_model->setChatAccountTypeId($_ChatAccountTypeId);
+            }
+
+
+            $Support_online_account_model->setRowStart($start);
+            $Support_online_account_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Support_online_account_model->getList();
+
+            $rowrount = $Support_online_account_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Support_online_accountController::FOLDER_VIEW . DS . "List.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            $Support_online_account_model = new Support_online_accountModel();
+            $Chat_accout_type_model = new Chat_accout_typeModel();
+            $list_account_type_model = $Chat_accout_type_model->getList();
+            $_Id = "";
+            $_Name = "";
+            $_Phone = "";
+            $_Email = "";
+            $_ChatAccount = "";
+            $_ChatAccountType = "";
+            $_Order = $Support_online_account_model->getMaxOrder();
+            $_IsActive = "";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+
+                $Support_online_account_model->setId($_Id);
+                $obj = $Support_online_account_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->getId();
+                    $_Name = $obj->getName();
+                    $_Phone = $obj->getPhone();
+                    $_Email = $obj->getEmail();
+                    $_ChatAccount = $obj->getChatAccount();
+                    $_ChatAccountTypeId = $obj->getChatAccountTypeId();
+                    $_Order = $obj->getOrder();
+                    $_IsActive = $obj->getIsActive();
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Support_online_accountController::FOLDER_VIEW . DS . "Update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_Phone = isset($_POST["Phone"]) ? $_POST["Phone"] : "";
+            $_Email = isset($_POST["Email"]) ? $_POST["Email"] : "";
+            $_ChatAccount = isset($_POST["ChatAccount"]) ? $_POST["ChatAccount"] : "";
+            $_ChatAccountTypeId = isset($_POST["ChatAccountTypeId"]) ? $_POST["ChatAccountTypeId"] : "";
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : 1;
+            $_IsActive = isset($_POST["IsActive"]) ? 1 : 0;
+
+            $Support_online_account_model = new Support_online_accountModel();
+            if (!empty($_Name)) {
+                $Support_online_account_model->setName($_Name);
+            }
+            if (!empty($_Phone)) {
+                $Support_online_account_model->setPhone($_Phone);
+            }
+            if (!empty($_Email)) {
+                $Support_online_account_model->setEmail($_Email);
+            }
+            if (!empty($_ChatAccount)) {
+                $Support_online_account_model->setChatAccount($_ChatAccount);
+            }
+            if (!empty($_ChatAccountTypeId)) {
+                $Support_online_account_model->setChatAccountTypeId($_ChatAccountTypeId);
+            }
+            if (!empty($_Order)) {
+                $Support_online_account_model->setOrder($_Order);
+            }
+            if (!empty($_IsActive)) {
+                $Support_online_account_model->setIsActive($_IsActive);
+            }
+
+            $Support_online_account_model->setCreatedDate(date('Y-m-d H:i:s'));
+            $Support_online_account_model->setUpdatedDate(date('Y-m-d H:i:s'));
+            $Support_online_account_model->setCreatedBy($username);
+            $Support_online_account_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Support_online_account_model->setId($_Id);
+                if ($Support_online_account_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Support_online_account&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                if ($Support_online_account_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Support_online_account&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+}

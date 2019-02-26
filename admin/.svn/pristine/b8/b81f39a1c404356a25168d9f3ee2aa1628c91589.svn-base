@@ -1,0 +1,3 @@
+<?php
+ class Tin_tuyen_dung_binh_luanModel extends _CoreTin_tuyen_dung_binh_luanModel{
+}

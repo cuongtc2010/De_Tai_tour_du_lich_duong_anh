@@ -1,0 +1,151 @@
+<?php
+
+
+class Nha_tuyen_dung_luu_ung_vienController {
+
+    const FOLDER_VIEW = 'Nha_tuyen_dung_luu_ung_vien';	
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Nha_tuyen_dung_luu_ung_vien_model = new Nha_tuyen_dung_luu_ung_vienModel();
+
+            
+			// lấy giá trị search
+            
+			$_NhaTuyenDungId = isset($_POST["NhaTuyenDungId"]) ? $_POST["NhaTuyenDungId"] : "";
+$_UngVienId = isset($_POST["UngVienId"]) ? $_POST["UngVienId"] : "";
+
+			
+            // delete
+			if($_IsDelete){
+				if (isset($_POST["btnDelete"])) {
+					if (isset($_POST["checklist"])) {
+						$array_id = $_POST["checklist"];
+						if ($array_id != null) {
+							$array_delete = array();
+							foreach ($array_id as $value) {
+								$array_delete[] = $value;
+							}
+							if ($Nha_tuyen_dung_luu_ung_vien_model->delete_array($array_delete)) {
+
+								UtilityController::messageSuccess();
+							} else {
+								UtilityController::messageError();
+							}
+						}
+					}
+				}
+			}
+
+
+            // get list            
+			if (!empty($_NhaTuyenDungId)) {$Nha_tuyen_dung_luu_ung_vien_model->setNhaTuyenDungId($_NhaTuyenDungId);}
+if (!empty($_UngVienId)) {$Nha_tuyen_dung_luu_ung_vien_model->setUngVienId($_UngVienId);}
+
+
+            $Nha_tuyen_dung_luu_ung_vien_model->setRowStart($start);
+            $Nha_tuyen_dung_luu_ung_vien_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Nha_tuyen_dung_luu_ung_vien_model->getList();
+
+            $rowrount = $Nha_tuyen_dung_luu_ung_vien_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Nha_tuyen_dung_luu_ung_vienController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];            
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+			
+            $_Id="";
+$_NhaTuyenDungId="";
+$_UngVienId="";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Nha_tuyen_dung_luu_ung_vien_model = new Nha_tuyen_dung_luu_ung_vienModel();
+                $Nha_tuyen_dung_luu_ung_vien_model->setId($_Id);
+                $obj = $Nha_tuyen_dung_luu_ung_vien_model->getObj();
+				if (!is_null($obj)) {
+					$_Id=$obj->getId();
+$_NhaTuyenDungId=$obj->getNhaTuyenDungId();
+$_UngVienId=$obj->getUngVienId();
+
+				}
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Nha_tuyen_dung_luu_ung_vienController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) { 
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();            
+            $_IsUpdate = $obj_check_role["update"];            
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+			
+			$username=$_SESSION["user_info_admin"]["username"];
+            $_NhaTuyenDungId = isset($_POST["NhaTuyenDungId"]) ? $_POST["NhaTuyenDungId"] : "";
+$_UngVienId = isset($_POST["UngVienId"]) ? $_POST["UngVienId"] : "";
+
+            $Nha_tuyen_dung_luu_ung_vien_model = new Nha_tuyen_dung_luu_ung_vienModel();
+			if (!empty($_NhaTuyenDungId)) {$Nha_tuyen_dung_luu_ung_vien_model->setNhaTuyenDungId($_NhaTuyenDungId);}
+if (!empty($_UngVienId)) {$Nha_tuyen_dung_luu_ung_vien_model->setUngVienId($_UngVienId);}
+            
+			
+            $Nha_tuyen_dung_luu_ung_vien_model->setUpdatedBy($username);
+			$_Id="";
+			if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+			}
+            if (!empty($_Id)) {
+                $Nha_tuyen_dung_luu_ung_vien_model->setId($_Id);
+                if ($Nha_tuyen_dung_luu_ung_vien_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Nha_tuyen_dung_luu_ung_vien&act=update&id=".$_Id."&tabid=".$tabid);
+            } else {
+				$Nha_tuyen_dung_luu_ung_vien_model->setCreatedBy($username);
+                if ($Nha_tuyen_dung_luu_ung_vien_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Nha_tuyen_dung_luu_ung_vien&act=update&tabid=".$tabid);
+            }
+            
+        }
+    }
+
+}

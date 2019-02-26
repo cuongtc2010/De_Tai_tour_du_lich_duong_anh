@@ -1,0 +1,166 @@
+﻿<?php
+$root_ctl = "Post_bai_viet";
+?>
+<script src="<?php echo ROOT_ADMIN_URL; ?>/plugin/ckeditor/ckeditor.js"></script>
+<div class="card">
+    <div class="card-header">
+        <h2 class="m-b-10">Cập nhật bài viết
+            <small>Cho phép thêm mới, chỉnh sửa các thông tin</small>
+        </h2>
+        <div class="row">
+            <form class="form-horizontal row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+                <div class="row">
+                    <script src="plugin/ckfinder/ckfinder_v1.js"></script>
+                    <script type="text/javascript">
+                        function BrowseServer() {
+                            var finder = new CKFinder();
+                            finder.BasePath = 'plugin/ckfinder/';
+                            finder.startupPath = "Images:/";
+                            finder.SelectFunction = SetFileField;
+                            finder.Popup();
+                        }
+                        function SetFileField(fileUrl) {
+                            //var _fileUrl = fileUrl.replace(/^.*[\/\\]/g, '');
+                            $("input[name='HinhAnh']").val(fileUrl);
+                            $('#img-slider').attr("src", fileUrl);
+                        }
+                        function DeleteImage() {
+                            var ok = confirm("Bạn có muốn xóa ảnh");
+                            if (ok) {
+                                $("input[name='Image']").val("");
+                                $('#img-slider').attr("src", "templates/images/no_images.png");
+                            }
+                        }
+                        function gotoPage() {
+                            var url = $("input[name='Url']").val();
+                            window.open(url, "_blank");
+                        }
+                    </script>
+                    <div class="col-md-8">
+                        <div class="form-group m-b-10">
+                            <label class="col-md-3 control-label lb-required"><strong>Tiêu đề</strong></label>
+                            <div class="col-md-9">
+                                <div class="fg-line">
+                                    <input type="text" class="form-control input-sm" placeholder="" name="Name" value="<?= isset($_Name) ? $_Name : "" ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-b-10">
+                            <label class="col-md-3 control-label lb-required"><strong>Thể loại</strong></label>
+                            <div class="col-md-9">
+                                <div class="fg-line">
+                                    <select class="form-control input-sm" name="dm_nhom_tin">										
+                                        <?php
+                                        if (!is_null($List_post_nhom_tin)) {
+                                            foreach ($List_post_nhom_tin as $value) {
+                                                if ($value["Id"] == $_NhomTinId) {
+                                                    ?>
+                                                    <option value="<?= $value["Id"] ?>" selected><?= $value["Name"] ?></option>    
+                                                <?php } else { ?>
+                                                    <option value="<?= $value["Id"] ?>"><?= $value["Name"] ?></option>    
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-b-10">
+                            <label class="col-md-3 control-label lb-required"><strong>Mô tả</strong></label>
+                            <div class="col-md-9">
+                                <div class="fg-line">
+                                    <textarea class="form-control input-sm" placeholder="" name="MoTa" rows="10" required><?= isset($_MoTa) ? $_MoTa : "" ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-b-10">
+                            <label class="col-md-3 control-label lb-required"><strong>Ngày hoạt động</strong></label>
+                            <div class="col-md-3">
+                                <div class="fg-line">
+                                    <input type="date" class="form-control input-sm" placeholder="" name="NgayHienThi" value="<?= isset($_NgayHienThi) ? $_NgayHienThi : "" ?>" required>   
+                                </div>
+                            </div>
+                            <label class="col-md-3 control-label"><strong>Ngày kết thúc</strong></label>
+                            <div class="col-md-3">
+                                <div class="fg-line">
+                                    <input type="date" class="form-control input-sm" placeholder="" name="NgayTatHienThi" value="<?= isset($_NgayTatHienThi) ? $_NgayTatHienThi : "" ?>">   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-b-10">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-9">
+                                <?php
+                                $Select = "";
+                                if (isset($_HienThiHinhAnh)) {
+                                    $Select = "checked";
+                                }
+                                ?>
+                                <div class="fg-line">
+                                    <label><input type="checkbox" name="HienThiHinhAnh" value="1" <?php echo $Select; ?>/>&nbsp;Hiển thị hình ảnh  </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">						
+                        <img src="<?= (!empty($_HinhAnh)) ? $_HinhAnh : "templates/img/no-image.jpg" ?>" class="img-responsive" id="img-slider" style="border:1px solid #ccc;cursor: pointer;width:100vw" onclick="BrowseServer()"/>
+                        <div class="row">
+                            <div class="col-md-6" style="padding-right: 0px">
+                                <button type="button" class="btn btn-primary btn-sm btn-block" onclick="BrowseServer()"><i class="fa fa-image"></i> Chọn ảnh</button>
+                            </div>
+                            <div class="col-md-6" style="padding-left: 0px">
+                                <button type="button" class="btn btn-danger btn-sm btn-block" onclick="DeleteImage()"><i class="fa fa-trash"></i> Xóa ảnh</button>
+                            </div>
+                        </div>
+                        <input type="hidden" class="form-control input-sm" placeholder="" name="HinhAnh" value="<?= $_HinhAnh ?>">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group m-b-10">
+                            <label class="col-md-2 control-label lb-required"><strong>Nội dung</strong></label>
+                            <div class="col-md-10">
+                                <div class="fg-line">
+                                    <textarea class="" name="NoiDung" ><?php
+                                        if (isset($_NoiDung)) {
+                                            echo $_NoiDung;
+                                        } else {
+                                            echo "";
+                                        }
+                                        ?></textarea>
+                                    <script type="text/javascript">
+                                        CKEDITOR.replace('NoiDung', {
+                                            height: '180px',
+                                            toolbarStartupExpanded: false
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="col-md-12 m-b-5">
+        <div class="form-group">
+            <label  class="col-md-3"></label>
+            <div class="col-md-9">
+                <?php if ($_IsUpdate) { ?>
+                    <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" onclick="return kiem_tra_email()"><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                <?php } ?>
+                <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+</div>
+</div>
+</div>
+

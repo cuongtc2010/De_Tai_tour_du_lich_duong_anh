@@ -1,0 +1,122 @@
+﻿<?php
+$root_ctl = "Sys_users";
+?>
+<script type="text/javascript">
+    function showHidePass() {
+        var frmDoiMatKhau = $("#frmDoiMatKhau");
+        var frmMatKhau = $("#frmMatKhau");
+        var Password = $("input[name='Password']");
+        var id = '<?= $_Id ?>';
+        if (id == '') {
+            frmDoiMatKhau.hide();
+        } else {
+            frmDoiMatKhau.show();
+            frmMatKhau.hide();
+        }
+    }
+    $(document).ready(function () {
+        var frmMatKhau = $("#frmMatKhau");
+        $("input[name='CheckDoiPass']").change(function () {
+            var isChecked = $(this).is(":checked");
+            if (isChecked) {
+                frmMatKhau.show();
+                $("input[name='Password']").attr("required");
+                
+            } else {
+                frmMatKhau.hide();
+                $("input[name='Password']").removeAttr("required");
+            }
+        });
+        showHidePass();
+    });
+</script>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">Users</a>
+                </li>
+                <li class="active">
+                    <a href="#">Cập nhật user</a>
+                </li>
+
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Quyền sử dụng</label>
+                                <div class="col-md-9">
+                                    <select class="chosen-select" name="RoleId">                                        
+                                        <?php
+                                        if (!is_null($list_role)) {
+                                            foreach ($list_role as $value) {
+                                                if ($_RoleId == $value->getId()) {
+                                                    ?>
+                                                    <option value="<?= $value->getId() ?>" selected><?= $value->getName() ?></option>
+                                                <?php } else { ?>
+                                                    <option value="<?= $value->getId() ?>"><?= $value->getName() ?></option>
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>  
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  lb-required">Họ tên</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Nhập họ tên" name="FullName" value="<?= isset($_FullName) ? $_FullName : "" ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Tên đăng nhập</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Nhập tên đăng nhập" name="Username" value="<?= isset($_Username) ? $_Username : "" ?>" required>
+                                    <input type="hidden" name="OldUsername" value="<?= isset($_Username) ? $_Username : "" ?>">
+                                </div>
+                            </div>
+                            <div class="form-group" id="frmDoiMatKhau">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">
+                                    <label><input type="checkbox" name="CheckDoiPass"> Đổi mật khẩu</label>
+                                </div>
+                            </div> 
+                            <div class="form-group" id="frmMatKhau">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Mật khẩu</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control input-sm  " placeholder="Mật khẩu" name="Password" value="<?= isset($_Password) ? $_Password : "" ?>" required autocomplete="off">
+                                </div>
+                            </div>  
+                            <div class="form-group" id="frmDoiMatKhau">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">
+                                    <label><input type="checkbox" name="IsActive" <?= ($_IsActive)?"checked":"" ?>> Kích hoạt tài khoản</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">    
+                                    <?php if ($_IsUpdate) { ?>                                
+                                        <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                                    <?php } ?>
+                                    <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.page-header -->
+            </div><!-- /.page-content -->
+        </form>
+    </div>
+
+</div>

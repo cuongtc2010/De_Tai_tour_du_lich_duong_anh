@@ -1,0 +1,60 @@
+﻿<?php
+$root_ctl = "Sys_users";
+?>
+<script type="text/javascript">
+    function checkPass() {
+        var newpass = $("input[name='NewPass']").val();
+        var renewpass = $("input[name='ReNewPass']").val();        
+        if(newpass!==renewpass){
+            alert("Nhập lại mật khẩu không đúng");
+            return false;
+        }
+        return true;
+    }
+    
+</script>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">Đổi mật khẩu</a>
+                </li>
+                
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doChangePass&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-5">                           
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  lb-required">Mật khẩu mới</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control input-sm  " placeholder="Nhập mật khẩu mới" name="NewPass" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Nhập lại mật khẩu</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control input-sm  "  name="ReNewPass" required>                                    
+                                </div>
+                            </div>                            
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">    
+                                    <button type="submit" onclick="return checkPass()" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.page-header -->
+            </div><!-- /.page-content -->
+        </form>
+    </div>
+
+</div>

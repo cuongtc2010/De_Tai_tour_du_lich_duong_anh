@@ -1,0 +1,173 @@
+<?php
+
+class Sys_menu_functionsController {
+
+    const FOLDER_VIEW = 'Sys_menu_functions';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 1 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+
+            $Sys_menu_functions_parent_model = new Sys_menu_functionsModel();
+            $List_parent_menu = $Sys_menu_functions_parent_model->getListParent();
+
+            
+            
+           $Sys_menu_functions_model = new Sys_menu_functionsModel();
+
+            // lấy giá trị search
+            //$_ParentId = isset($_POST["ParentId"]) ? $_POST["ParentId"] : "";
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Sys_menu_functions_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+            if (!empty($_Name)) {
+                $Sys_menu_functions_model->setName($_Name);
+            }
+            $Sys_menu_functions_model->setRowStart($start);
+            $Sys_menu_functions_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Sys_menu_functions_model->getList();
+
+            $rowrount = $Sys_menu_functions_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Sys_menu_functionsController::FOLDER_VIEW . DS . "List.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+
+
+            $_Id = "";
+            $_ParentId = "";
+
+            $_Name = "";
+            $_Url = "";
+            $_Icon = "";
+            $_Target = "";
+            $Sys_menu_functions_parent_model = new Sys_menu_functionsModel();
+            $List_parent_menu = $Sys_menu_functions_parent_model->getListParent();
+
+            $Sys_menu_functions_model = new Sys_menu_functionsModel();
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+
+                $Sys_menu_functions_model->setId($_Id);
+                $obj = $Sys_menu_functions_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->getId();
+                    $_ParentId = $obj->getParentId();
+
+                    $_Name = $obj->getName();
+                    $_Url = $obj->getUrl();
+                    $_Icon = $obj->getIcon();
+                    $_Target = $obj->getTarget();
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Sys_menu_functionsController::FOLDER_VIEW . DS . "Update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_ParentId = isset($_POST["ParentId"]) ? $_POST["ParentId"] : "";
+
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_Url = isset($_POST["Url"]) ? $_POST["Url"] : "";
+            $_Icon = isset($_POST["Icon"]) ? $_POST["Icon"] : "";
+            $_Target = isset($_POST["Target"]) ? $_POST["Target"] : "";
+
+            $Sys_menu_functions_model = new Sys_menu_functionsModel();
+            if (!empty($_ParentId)) {
+                $Sys_menu_functions_model->setParentId($_ParentId);
+            }
+            $Sys_menu_functions_model->setName($_Name);
+            $Sys_menu_functions_model->setUrl($_Url);
+            $Sys_menu_functions_model->setIcon($_Icon);
+            $Sys_menu_functions_model->setTarget($_Target);
+
+
+            $Sys_menu_functions_model->setCreatedDate(date('Y-m-d H:i:s'));
+            $Sys_menu_functions_model->setUpdatedDate(date('Y-m-d H:i:s'));
+            $Sys_menu_functions_model->setCreatedBy($username);
+            $Sys_menu_functions_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Sys_menu_functions_model->setId($_Id);
+                if ($Sys_menu_functions_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Sys_menu_functions&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                if ($Sys_menu_functions_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Sys_menu_functions&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+}

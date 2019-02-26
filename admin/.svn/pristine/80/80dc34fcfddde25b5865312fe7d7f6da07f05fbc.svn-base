@@ -1,0 +1,15 @@
+<?php
+ class Nha_tuyen_dungModel extends _CoreNha_tuyen_dungModel{
+     public function getThongTinGoiDichVu($ntd_id) {
+        $sql = "
+                SELECT goi_dich_vu.*,nha_tuyen_dung_goi_dich_vu.ApDungTu,nha_tuyen_dung_goi_dich_vu.ApDungDen FROM nha_tuyen_dung_goi_dich_vu
+                JOIN goi_dich_vu ON nha_tuyen_dung_goi_dich_vu.GoiDichVuId=goi_dich_vu.Id
+                WHERE NhaTuyenDungId='{$ntd_id}'
+                AND IsActive=1
+                AND DATE_FORMAT(NOW(),'%Y-%m-%d')<=ApDungDen
+                ORDER BY nha_tuyen_dung_goi_dich_vu.Id DESC
+                 LIMIT 0,1
+                ";
+        return $this->_getObject($sql);
+    }
+}?>

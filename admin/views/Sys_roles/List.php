@@ -1,0 +1,82 @@
+<?php
+$root_ctl = "Sys_roles";
+?>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">Nhóm quyền sử dụng</a>
+                </li>                
+            </ul>
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">
+            <div class="page-content">
+                <div class="page-header">  
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Tên </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Tìm tên" name="Name" value="<?= isset($_Name) ? $_Name : "" ?>" >
+                                </div>
+                            </div>
+
+                        </div>
+                        <input type="hidden" name="listvalue" id="listvalue"/>    
+                    </div>
+                    <div class="row text-center">
+                        <?php if ($_IsUpdate) { ?>
+                            <a class="btn btn-sm btn-primary" href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=update&tabid=<?= $tabid ?>" ><i class="fa fa-plus"></i> Thêm mới </a>                        
+                        <?php } ?>
+                        <button type="submit" class="btn btn-sm btn-primary" name="btnSearch" value="Search"><i class="ace-icon glyphicon glyphicon-search"></i> Tìm kiếm </button>                                            
+                        <?php if ($_IsDelete) { ?>
+                            <button type="submit" class="btn btn-sm btn-danger" name="btnDelete" value="Delete" onclick="return confirmDelete()"><i class="ace-icon glyphicon glyphicon-trash"></i> Xóa </button>
+                        <?php } ?>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-hover" id="simple-table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="10px"><input type="checkbox"></th>
+                                    <th class="text-center" width="10px">#</th>                                    
+                                    <th>Name</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (!is_null($list)) {
+                                    $i = 1;
+                                    foreach ($list as $value) {
+                                        ?>
+                                        <tr>
+                                            <td><input type="checkbox" name="checklist[]" value="<?= $value->getId() ?>"/></td>
+                                            <td><?= $i++ ?></td>
+                                            <td><a href="index.php?ctl=<?= $root_ctl ?>&act=update&id=<?= $value->getId() ?>&tabid=<?= $tabid ?>" ><?= $value->getName() ?></a></td>                                           
+
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                        <ul class="pagination pull-right">
+                            <?= $phantrang ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

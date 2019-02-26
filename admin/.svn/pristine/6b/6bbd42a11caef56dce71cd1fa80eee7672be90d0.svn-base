@@ -1,0 +1,3 @@
+<?php
+ class Dm_hinh_thuc_lam_viecModel extends _CoreDm_hinh_thuc_lam_viecModel{
+}

@@ -1,0 +1,102 @@
+<?php
+$root_ctl = "Support_online_account";
+?>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">Danh sách tài khoản hỗ trợ online</a>
+                </li>
+                <li class="active">
+                    <a href="#">Cập nhật tài khoản hỗ trợ online</a>
+                </li>
+
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Loại tài khoản</label>
+                                <div class="col-md-9">
+                                    <select name="ChatAccountTypeId" class="chosen-select">
+                                        <?php
+                                        if (!is_null($list_account_type_model)) {
+                                            foreach ($list_account_type_model as $value) {
+                                                if ($value->getId() == $_ChatAccountTypeId) {
+                                                    ?>
+                                                    <option value="<?= $value->getId() ?>" selected ><?= $value->getName() ?></option>            
+                                                <?php } else { ?>
+                                                    <option value="<?= $value->getId() ?>" ><?= $value->getName() ?></option>            
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>                                     
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required">Tài khoản</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Nhập tài khoản chát" name="ChatAccount" value="<?= isset($_ChatAccount) ? $_ChatAccount : "" ?>" required="">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Họ tên</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Nhập họ tên" name="Name" value="<?= isset($_Name) ? $_Name : "" ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Điện thoại</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Nhập điện thoại" name="Phone" value="<?= isset($_Phone) ? $_Phone : "" ?>" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Email</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Nhập email" name="Email" value="<?= isset($_Email) ? $_Email : "" ?>" >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right lb-required ">Thứ tự</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm NumberInt " placeholder="Nhập thứ tự hiển thị" name="Order" value="<?= isset($_Order) ? $_Order : "" ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right "></label>
+                                <div class="col-md-9">
+                                    <label><input type="checkbox"  name="IsActive" <?= isset($_IsActive) ? (($_IsActive) ? "checked" : "") : "" ?> > Kích hoạt</label>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">    
+                                    <?php if ($_IsUpdate) { ?>                                
+                                        <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                                    <?php } ?>
+                                    <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.page-header -->
+            </div><!-- /.page-content -->
+        </form>
+    </div>
+
+</div>

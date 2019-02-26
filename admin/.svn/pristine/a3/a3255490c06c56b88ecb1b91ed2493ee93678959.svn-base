@@ -1,0 +1,37 @@
+<?php
+
+class Post_bai_vietModel extends _CorePost_bai_vietModel {
+
+    public function getListHome() {
+        try {
+            $sql = "SELECT * FROM post_bai_viet where 1=1 ";            
+            if (!is_null($this->getName())) {
+                $sql .= " and Name LIKE '%{$this->getName()}%'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+            }
+            if (!is_null($this->getNhomTinId())) {
+                $sql .= " and NhomTinId='{$this->getNhomTinId()}'";
+            }
+            if (!is_null($this->getMoTa())) {
+                $sql .= " and MoTa LIKE '%{$this->getMoTa()}%'";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= " and NoiDung LIKE '%{$this->getNoiDung()}%'";
+            }
+            $sql.=" and DATE_FORMAT(NOW(),'%Y-%m-%d') BETWEEN NgayHienThi AND IFNULL(NgayTatHienThi,NOW())";
+
+            $sql .= " order by CreatedDate desc";
+            if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+                $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+            }
+            $result = $this->_getList($sql);
+            return $result;
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+        return null;
+    }
+
+}

@@ -1,0 +1,240 @@
+<?php
+
+class Post_bai_vietController {
+
+    const FOLDER_VIEW = 'Post_bai_viet';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Post_bai_viet_model = new Post_bai_vietModel();
+
+            // lấy giá trị search
+            $_Name = isset($_POST["txtTieuDe"]) ? $_POST["txtTieuDe"] : "";
+            $_Alias = isset($_POST["Alias"]) ? $_POST["Alias"] : "";
+            $_NhomTinId = isset($_POST["dm_nhom_tin"]) ? $_POST["dm_nhom_tin"] : "";
+            $_MoTa = isset($_POST["MoTa"]) ? $_POST["MoTa"] : "";
+            $_NoiDung = isset($_POST["NoiDung"]) ? $_POST["NoiDung"] : "";
+            $_HinhAnh = isset($_POST["HinhAnh"]) ? $_POST["HinhAnh"] : "";
+            $_HienThiHinhAnh = isset($_POST["HienThiHinhAnh"]) ? 1 : 0;
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+            $_NgayHienThi = isset($_POST["NgayHienThi"]) ? $_POST["NgayHienThi"] : "";
+            $_NgayTatHienThi = isset($_POST["NgayTatHienThi"]) ? $_POST["NgayTatHienThi"] : "";
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array = $_POST["checklist"];
+                        if ($array != null) {
+                            $array_delete = array();
+                            foreach ($array as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Post_bai_viet_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+            // delete
+//            if ($_IsDelete) {
+//                if (isset($_POST["btnDelete"])) {
+//                    if (isset($_POST["checklist"])) {
+//                        $array_id = $_POST["checklist"];
+//                        if ($array_id != null) {
+//                            $array_delete = array();
+//                            $ids = "";
+//                            foreach ($array_id as $value) {
+//                                $ids .= $value . ",";
+//                            }
+//                            if ($Post_bai_viet_model->delete($ids)) {
+//                                UtilityController::messageSuccess();
+//                            } else {
+//                                UtilityController::messageError();
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    UtilityController::message('Bạn chưa chọn bài viết cần xóa');
+//                }
+//            }
+
+            //getlist Dropdown
+            $Post_nhom_tinModel = new Post_nhom_tinModel();
+            $List_post_nhom_tin = $Post_nhom_tinModel->getList();
+
+            // get list
+
+            if (!empty($_Name)) {
+                $Post_bai_viet_model->setName($_Name);
+            }
+
+            if (!empty($_NhomTinId)) {
+                $Post_bai_viet_model->setNhomTinId($_NhomTinId);
+            }
+            if (!empty($_Order)) {
+                $Post_bai_viet_model->setOrder($_Order);
+            }
+            if (!empty($_NgayHienThi)) {
+                $Post_bai_viet_model->setNgayHienThi($_NgayHienThi);
+            }
+            if (!empty($_NgayTatHienThi)) {
+                $Post_bai_viet_model->setNgayTatHienThi($_NgayTatHienThi);
+            }
+
+
+            // set phan trang
+            $Post_bai_viet_model->setRowStart($start);
+            $Post_bai_viet_model->setNumLinePerPage($num_rows_per_page);
+
+            //lay danh sach
+            $list = $Post_bai_viet_model->getList();
+
+            $rowrount = $Post_bai_viet_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+
+            require_once ADMIN_VIEW_DIRECTORY . DS . Post_bai_vietController::FOLDER_VIEW . DS . "List.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            $Post_nhom_tinModel = new Post_nhom_tinModel();
+            $List_post_nhom_tin = $Post_nhom_tinModel->getList();
+
+            $_Id = "";
+            $_Name = "";
+            $_Alias = "";
+            $_NhomTinId = "";
+            $_MoTa = "";
+            $_NoiDung = "";
+            $_HinhAnh = "";
+            $_HienThiHinhAnh = "";
+            $_Order = "";
+            $_NgayHienThi = "";
+            $_NgayTatHienThi = "";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Post_bai_viet_model = new Post_bai_vietModel();
+                $Post_bai_viet_model->setId($_Id);
+                $obj = $Post_bai_viet_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->Id;
+                    $_Name = $obj->Name;
+                    $_Alias = $obj->Alias;
+                    $_NhomTinId = $obj->NhomTinId;
+                    $_MoTa = $obj->MoTa;
+                    $_NoiDung = $obj->NoiDung;
+                    $_HinhAnh = $obj->HinhAnh;
+                    $_HienThiHinhAnh = $obj->HienThiHinhAnh;
+                    $_Order = $obj->Order;
+                    $_NgayHienThi = $obj->NgayHienThi;
+                    $_NgayTatHienThi = $obj->NgayTatHienThi;
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Post_bai_vietController::FOLDER_VIEW . DS . "Update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $Post_bai_viet_model = new Post_bai_vietModel();
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_NhomTinId = isset($_POST["dm_nhom_tin"]) ? $_POST["dm_nhom_tin"] : "";
+            $_MoTa = isset($_POST["MoTa"]) ? $_POST["MoTa"] : "";
+            $_NoiDung = isset($_POST["NoiDung"]) ? $_POST["NoiDung"] : "";
+            $_HinhAnh = isset($_POST["HinhAnh"]) ? $_POST["HinhAnh"] : "";
+            $_HienThiHinhAnh = isset($_POST["HienThiHinhAnh"]) ? $_POST["HienThiHinhAnh"] : 0;
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+            $_NgayHienThi = isset($_POST["NgayHienThi"]) ? $_POST["NgayHienThi"] : NULL;
+            $_NgayTatHienThi = isset($_POST["NgayTatHienThi"]) ? $_POST["NgayTatHienThi"] : "";
+            $_Alias = $Post_bai_viet_model->alias($_Name);
+
+            $Post_bai_viet_model->setName($_Name);
+            $Post_bai_viet_model->setAlias($_Alias);
+            if (!empty($_NhomTinId)) {
+                $Post_bai_viet_model->setNhomTinId($_NhomTinId);
+            }
+            $Post_bai_viet_model->setMoTa($_MoTa);
+            $Post_bai_viet_model->setNoiDung($_NoiDung);
+            $Post_bai_viet_model->setHinhAnh($_HinhAnh);
+            $Post_bai_viet_model->setHienThiHinhAnh($_HienThiHinhAnh);
+            if (!empty($_Order)) {
+                $Post_bai_viet_model->setOrder($_Order);
+            }
+            if (!empty($_NgayHienThi)) {
+                $Post_bai_viet_model->setNgayHienThi($_NgayHienThi);
+            }
+            if (!empty($_NgayTatHienThi)) {
+                $Post_bai_viet_model->setNgayTatHienThi($_NgayTatHienThi);
+            }
+
+
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Post_bai_viet_model->setId($_Id);
+                if ($Post_bai_viet_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Post_bai_viet&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                if ($Post_bai_viet_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Post_bai_viet&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+}

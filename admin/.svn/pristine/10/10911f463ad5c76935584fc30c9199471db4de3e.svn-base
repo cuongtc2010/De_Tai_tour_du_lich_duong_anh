@@ -1,0 +1,86 @@
+<?php
+
+class Sys_role_permisionsController {
+
+    const FOLDER_VIEW = 'Sys_role_permisions';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $Sys_role_permisions_model = new Sys_role_permisionsModel();
+            $_RoleId = isset($_POST["RoleId"]) ? $_POST["RoleId"] : "";
+
+            // cap quyen
+            if (isset($_POST["btnCapQuyen"])) {
+                $sql_update_view = "";
+                if (isset($_POST["isView"])) {
+                    $array = $_POST["isView"];
+                    if ($array != null) {
+                        $sql_update_view = "update sys_role_permisions set IsView=1,UpdatedDate=now(),UpdatedBy='{$username}' where RoleId=" . intval($_RoleId) . " and MenuFunctionId IN (";
+                        foreach ($array as $value) {
+                            $sql_update_view .= intval($value) . ",";
+                        }
+                        $sql_update_view = substr($sql_update_view, 0, strlen($sql_update_view) - 1) . ")";
+                    }
+                }
+
+
+                $sql_update_update = "";
+                if (isset($_POST["isUpdate"])) {
+                    $array = $_POST["isUpdate"];
+                    if ($array != null) {
+                        $sql_update_update = "update sys_role_permisions set IsUpdate=1,UpdatedDate=now(),UpdatedBy='{$username}' where RoleId=" . intval($_RoleId) . " and MenuFunctionId IN (";
+                        foreach ($array as $value) {
+                            $sql_update_update .= intval($value) . ",";
+                        }
+                        $sql_update_update = substr($sql_update_update, 0, strlen($sql_update_update) - 1) . ")";
+                    }
+                }
+
+                $sql_update_delete = "";
+                if (isset($_POST["isDelete"])) {
+                    $array = $_POST["isDelete"];
+                    if ($array != null) {
+                        $sql_update_delete = "update sys_role_permisions set IsDelete=1,UpdatedDate=now(),UpdatedBy='{$username}'  where RoleId=" . intval($_RoleId) . " and MenuFunctionId IN (";
+                        foreach ($array as $value) {
+                            $sql_update_delete .= intval($value) . ",";
+                        }
+                        $sql_update_delete = substr($sql_update_delete, 0, strlen($sql_update_delete) - 1) . ")";
+                    }
+                }
+
+                $sql_unset_role = "update sys_role_permisions set IsDelete=0,IsUpdate=0,IsView=0,UpdatedDate=now(),UpdatedBy='{$username}' where RoleId=" . intval($_RoleId);
+
+                if ($Sys_role_permisions_model->updateRole($sql_unset_role, $sql_update_view, $sql_update_update, $sql_update_delete)) {
+                    
+                }
+            }
+        }
+
+
+
+        $Sys_rolesModel = new Sys_rolesModel();
+        $list_role = $Sys_rolesModel->getList();
+        $list = null;
+        if (!empty($_RoleId)) {
+            $Sys_role_permisions_model->setRoleId($_RoleId);
+            $Sys_role_permisions_model->setRoleId($_RoleId);
+            $list = $Sys_role_permisions_model->getList();
+        }
+        require_once ADMIN_VIEW_DIRECTORY . DS . Sys_role_permisionsController::FOLDER_VIEW . DS . "List.php";
+    }
+
+}

@@ -1,0 +1,467 @@
+﻿<?php
+
+class Dm_ung_vienController {
+
+    const FOLDER_VIEW = 'Dm_ung_vien';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Ung_vien_model = new Dm_ung_vienModel();
+
+
+            // lấy giá trị search
+
+
+            $_HoTen = isset($_POST["txtUngVien"]) ? $_POST["txtUngVien"] : "";
+            $_TinhThanh = isset($_POST["dm_tinh_thanh"]) ? $_POST["dm_tinh_thanh"] : "";
+            $_NganhNghe = isset($_POST["dm_nganh_nghe"]) ? $_POST["dm_nganh_nghe"] : "";
+            $_BangCap = isset($_POST["dm_bang_cap"]) ? $_POST["dm_bang_cap"] : "";
+            $_CapBac = isset($_POST["dm_cap_bac"]) ? $_POST["dm_cap_bac"] : "";
+            $_KinhNghiem = isset($_POST["dm_kinh_nghiem"]) ? $_POST["dm_kinh_nghiem"] : "";
+            $_HinhThucLamViec = isset($_POST["dm_hinh_thuc_lam_viec"]) ? $_POST["dm_hinh_thuc_lam_viec"] : "";
+            $_TinhTrangHonNhan = isset($_POST["dm_tinh_trang_hon_nhan"]) ? $_POST["dm_tinh_trang_hon_nhan"] : "";
+            $_TinHoc = isset($_POST["dm_tin_hoc"]) ? $_POST["dm_tin_hoc"] : "";
+            $_NgoaiNgu = isset($_POST["dm_ngoai_ngu"]) ? $_POST["dm_ngoai_ngu"] : "";
+
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Ung_vien_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // get list dropdown
+            $Dm_tinh_thanhModel = new Dm_tinh_thanhModel();
+            $List_tinh_thanh = $Dm_tinh_thanhModel->getList();
+
+            $Dm_nganh_ngheModel = new Dm_nganh_ngheModel();
+            $List_nganh_nghe = $Dm_nganh_ngheModel->getList();
+
+            $Dm_Bang_CapModel = new Dm_bang_capModel();
+            $List_bang_cap = $Dm_Bang_CapModel->getList();
+
+            $Dm_cap_bacModel = new Dm_cap_bacModel();
+            $List_cap_bac = $Dm_cap_bacModel->getList();
+
+            $Dm_kinh_nghiemModel = new Dm_kinh_nghiemModel();
+            $List_kinh_nghiem = $Dm_kinh_nghiemModel->getList();
+
+            $Dm_hinh_thuc_lam_viecModel = new Dm_hinh_thuc_lam_viecModel();
+            $List_hinh_thuc_lam_viec = $Dm_hinh_thuc_lam_viecModel->getList();
+
+            $Dm_tinh_trang_hon_nhanModel = new Dm_tinh_trang_hon_nhanModel();
+            $List_tinh_trang_hon_nhan = $Dm_tinh_trang_hon_nhanModel->getList();
+
+            $Dm_tin_hocModel = new Dm_tin_hocModel();
+            $List_tin_hoc = $Dm_tin_hocModel->getList();
+
+            $Dm_ngoai_nguModel = new Dm_ngoai_nguModel();
+            $List_ngoai_ngu = $Dm_ngoai_nguModel->getList();
+
+            // get list            
+            if (!empty($_UserId)) {
+                $Ung_vien_model->setUserId($_UserId);
+            }
+            if (!empty($_HoTen)) {
+                $Ung_vien_model->setHoTen($_HoTen);
+            }
+//            if (!empty($_GioiTinh)) {
+//                $Ung_vien_model->setGioiTinhId($_GioiTinh);
+//            }
+//            $Ung_vien_model->setDienThoai($_DienThoai);
+//            if (!empty($_UserId)) {
+//                $Ung_vien_model->setGioiTinhId($_GioiTinh);
+//            }
+            //$Ung_vien_model->setUsername($_Username);
+//            $Ung_vien_model->setDiaChi($_DiaChi);
+            if (!empty($_TinhThanh)) {
+                $Ung_vien_model->setTinhThanhId($_TinhThanh);
+            }
+            if (!empty($_BangCap)) {
+                $Ung_vien_model->setBangCapId($_BangCap);
+            }
+            if (!empty($_CapBac)) {
+                $Ung_vien_model->setCapBacId($_CapBac);
+            }
+            if (!empty($_KinhNghiem)) {
+                $Ung_vien_model->setKinhNghiemId($_KinhNghiem);
+            }
+            if (!empty($_HinhThucLamViec)) {
+                $Ung_vien_model->setHinhThucLamViecId($_HinhThucLamViec);
+            }
+            if (!empty($_TinhTrangHonNhan)) {
+                $Ung_vien_model->setTinhTrangHonNhanId($_TinhTrangHonNhan);
+            }
+            if (!empty($_TinHoc)) {
+                $Ung_vien_model->setTinHocId($_TinHoc);
+            }
+            if (!empty($_TrinhDoTinHoc)) {
+                $Trinh_do_tin_hocmodel->setTrinhDoTinHocId($_TrinhDoTinHoc);
+            }
+            if (!empty($_NgoaiNgu)) {
+                $Ung_vien_model->setNgoaiNguId($_NgoaiNgu);
+            }
+
+            if (!empty($_NganhNghe)) {
+                $Ung_vien_model->setNganhNgheLamViecs($_NganhNghe);
+            }
+
+            // còn thiếu 1 số chổ search nữa nhe
+
+
+
+            $Ung_vien_model->setRowStart($start);
+            $Ung_vien_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Ung_vien_model->getList();
+
+            $rowrount = $Ung_vien_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_ung_vienController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            $Ung_vien_model = new Dm_ung_vienModel();
+
+
+
+
+            $Dm_tinh_thanhModel = new Dm_tinh_thanhModel();
+            $List_tinh_thanh = $Dm_tinh_thanhModel->getList();
+
+            $Dm_nganh_ngheModel = new Dm_nganh_ngheModel();
+            $List_nganh_nghe = $Dm_nganh_ngheModel->getList();
+
+            $Dm_Bang_CapModel = new Dm_bang_capModel();
+            $List_bang_cap = $Dm_Bang_CapModel->getList();
+
+            $Dm_cap_bacModel = new Dm_cap_bacModel();
+            $List_cap_bac = $Dm_cap_bacModel->getList();
+
+            $Dm_kinh_nghiemModel = new Dm_kinh_nghiemModel();
+            $List_kinh_nghiem = $Dm_kinh_nghiemModel->getList();
+
+            $Dm_hinh_thuc_lam_viecModel = new Dm_hinh_thuc_lam_viecModel();
+            $List_hinh_thuc_lam_viec = $Dm_hinh_thuc_lam_viecModel->getList();
+
+            $Dm_tinh_trang_hon_nhanModel = new Dm_tinh_trang_hon_nhanModel();
+            $List_tinh_trang_hon_nhan = $Dm_tinh_trang_hon_nhanModel->getList();
+
+            $Dm_tin_hocModel = new Dm_tin_hocModel();
+            $List_tin_hoc = $Dm_tin_hocModel->getList();
+
+            $Dm_trinh_do_tin_hocModel = new Dm_trinh_do_tin_hocModel();
+            $List_trinh_do_tin_hoc = $Dm_trinh_do_tin_hocModel->getList();
+
+            $Dm_ngoai_nguModel = new Dm_ngoai_nguModel();
+            $List_ngoai_ngu = $Dm_ngoai_nguModel->getList();
+
+            $Dm_gioi_tinhModel = new Dm_gioi_tinhModel();
+            $List_gioi_tinh = $Dm_gioi_tinhModel->getList();
+
+            $Dm_trinh_do_ngoai_nguModel = new Dm_trinh_do_ngoai_nguModel();
+            $List_trinh_do_ngoai_ngu = $Dm_trinh_do_ngoai_nguModel->getList();
+
+            $Dm_muc_luongModel = new Dm_muc_luongModel();
+            $List_muc_luong = $Dm_muc_luongModel->getList();
+
+            $_Id = "";
+            $_UserId = "";
+            $_HoTen = "";
+            $_ViTri = "";
+            $_Alias = "";
+            $_GioiTinh = "";
+            $_TinhTrangHonNhan = "";
+            $_HinhThucLamViec = "";
+            $_TinhThanh = "";
+            $_BangCap = "";
+            $_MucLuong = "";
+            $_NgoaiNgu = "";
+            $_TrinhDoNgoaiNgu = "";
+            $_TinHoc = "";
+            $_TrinhDoTinHoc = "";
+            $_KinhNghiem = "";
+            $_CapBac = "";
+            $_NgaySinh = "";
+            $_DienThoai = "";
+            $_DiaChi = "";
+            $_Email = "";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+
+                $Ung_vien_model->setId($_Id);
+                $obj = $Ung_vien_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->Id;
+                    $_UserId = $obj->UserId;
+                    $_HoTen = $obj->HoTen;
+                    $_ViTri = $obj->ViTri;
+                    $_Alias = $obj->Alias;
+                    $_GioiTinh = $obj->GioiTinhId;
+                    $_TinhTrangHonNhan = $obj->TinhTrangHonNhanId;
+                    $_HinhThucLamViec = $obj->HinhThucLamViecId;
+                    $_TinhThanh = $obj->TinhThanhName;
+                    $_BangCap = $obj->BangCapId;
+                    $_MucLuong = $obj->MucLuongId;
+                    $_NgoaiNgu = $obj->NgoaiNguId;
+                    $_TrinhDoNgoaiNgu = $obj->TrinhDoNgoaiNguId;
+                    $_TinHoc = $obj->TinHocId;
+                    $_TrinhDoTinHoc = $obj->TrinhDoTinHocId;
+                    $_KinhNghiem = $obj->KinhNghiemId;
+                    $_CapBac = $obj->CapBacId;
+                    $_NgaySinh = $obj->NgaySinh;
+                    $_DienThoai = $obj->DienThoai;
+                    $_DiaChi = $obj->DiaChi;
+                    $_Email = $obj->Username;
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_ung_vienController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_UserId = isset($_POST["UserId"]) ? $_POST["UserId"] : "";
+            $_HoTen = isset($_POST["txtHoTen"]) ? $_POST["txtHoTen"] : "";
+            $_ViTri = isset($_POST["txtViTri"]) ? $_POST["txtViTri"] : "";
+            $_Alias = isset($_POST["Alias"]) ? $_POST["Alias"] : "";
+            $_Email = isset($_POST["txtEmail"]) ? $_POST["txtEmail"] : "";
+
+            $_GioiTinhId = isset($_POST["dm_gioi_tinh"]) ? $_POST["dm_gioi_tinh"] : "";
+            $_TinhTrangHonNhanId = isset($_POST["dm_hon_nhan"]) ? $_POST["dm_hon_nhan"] : "";
+            $_HinhThucLamViecId = isset($_POST["dm_hinh_thuc_lam_viec"]) ? $_POST["dm_hinh_thuc_lam_viec"] : "";
+            $_TinhThanhId = isset($_POST["dm_tinh_thanh"]) ? $_POST["dm_tinh_thanh"] : "";
+            $_NganhNgheId = isset($_POST["dm_nganh_nghe"]) ? $_POST["dm_nganh_nghe"] : "";
+            $_BangCapId = isset($_POST["dm_bang_cap"]) ? $_POST["dm_bang_cap"] : "";
+            $_MucLuongId = isset($_POST["dm_muc_luong"]) ? $_POST["dm_muc_luong"] : "";
+            $_NgoaiNguId = isset($_POST["dm_ngoai_ngu"]) ? $_POST["dm_ngoai_ngu"] : "";
+            $_TrinhDoNgoaiNguId = isset($_POST["dm_trinh_do_ngoai_ngu"]) ? $_POST["dm_trinh_do_ngoai_ngu"] : "";
+            $_TinHocId = isset($_POST["dm_tin_hoc"]) ? $_POST["dm_tin_hoc"] : "";
+            $_TrinhDoTinHocId = isset($_POST["dm_trinh_do_tin_hoc"]) ? $_POST["dm_trinh_do_tin_hoc"] : "";
+            $_KinhNghiemId = isset($_POST["dm_kinh_nghiem"]) ? $_POST["dm_kinh_nghiem"] : "";
+            $_CapBacId = isset($_POST["dm_cap_bac"]) ? $_POST["dm_cap_bac"] : "";
+            $_NgaySinh = isset($_POST["txtNgaySinh"]) ? $_POST["txtNgaySinh"] : "";
+            $_DienThoai = isset($_POST["txtDienThoai"]) ? $_POST["txtDienThoai"] : "";
+            $_DiaChi = isset($_POST["txtDiaChi"]) ? $_POST["txtDiaChi"] : "";
+            $_LuotXem = isset($_POST["txtLuotXem"]) ? $_POST["txtLuotXem"] : "0";
+            $_SoNamKn = isset($_POST["txtSoNamKinhNghiem"]) ? $_POST["txtSoNamKinhNghiem"] : "0";
+            $_KinhNghiemLamViec = isset($_POST["txtKinhNghiemLamViec"]) ? $_POST["txtKinhNghiemLamViec"] : "0";
+            $_HocVanBangCap = isset($_POST["txtHocVanBangCap"]) ? $_POST["txtHocVanBangCap"] : "";
+//            echo "<pre>";
+//            print_r($_POST);
+//            echo "</pre>";
+            $Ung_vien_model = new Dm_ung_vienModel();
+            // cái nào là khóa ngoại khi search thì kiểm tra !empty (khác rỗng trước khi set)
+            if (!empty($_UserId)) {
+                $Ung_vien_model->setUserId($_UserId);
+            }
+            $Ung_vien_model->setHoTen($_HoTen);
+            $Ung_vien_model->set_Username($_Email);
+            $Ung_vien_model->setViTri($_ViTri);
+            $Ung_vien_model->setAlias($_Alias);
+            if (!empty($_GioiTinhId)) {
+                $Ung_vien_model->setGioiTinhId($_GioiTinhId);
+            }
+            if (!empty($_TinhTrangHonNhanId)) {
+                $Ung_vien_model->setTinhTrangHonNhanId($_TinhTrangHonNhanId);
+            }
+            if (!empty($_HinhThucLamViecId)) {
+                $Ung_vien_model->setHinhThucLamViecId($_HinhThucLamViecId);
+            }
+//            if (!empty($_TinhThanhId)) {
+//                $Ung_vien_model->setTinhThanhId($_TinhThanhId);
+//            }
+            if (!empty($_BangCapId)) {
+                $Ung_vien_model->setBangCapId($_BangCapId);
+            }
+            if (!empty($_MucLuongId)) {
+                $Ung_vien_model->setMucLuongId($_MucLuongId);
+            }
+            if (!empty($_NgoaiNguId)) {
+                $Ung_vien_model->setNgoaiNguId($_NgoaiNguId);
+            }
+            if (!empty($_TrinhDoNgoaiNguId)) {
+                $Ung_vien_model->setTrinhDoNgoaiNguId($_TrinhDoNgoaiNguId);
+            }
+            if (!empty($_TinHocId)) {
+                $Ung_vien_model->setTinHocId($_TinHocId);
+            }
+            if (!empty($_TrinhDoTinHocId)) {
+                $Ung_vien_model->setTrinhDoTinHocId($_TrinhDoTinHocId);
+            }
+            if (!empty($_KinhNghiemId)) {
+                $Ung_vien_model->setKinhNghiemId($_KinhNghiemId);
+            }
+            if (!empty($_CapBacId)) {
+                $Ung_vien_model->setCapBacId($_CapBacId);
+            }
+            if (!empty($_NgaySinh)) {
+                $Ung_vien_model->setNgaySinh(UtilityController::formatToMySQL($_NgaySinh));
+            }
+
+            $Ung_vien_model->setDienThoai($_DienThoai);
+            $Ung_vien_model->setDiaChi($_DiaChi);
+            $Ung_vien_model->setLuotXem($_LuotXem);
+            $Ung_vien_model->setSoNamKn($_SoNamKn);
+            $Ung_vien_model->setKinhNghiemLamViec($_KinhNghiemLamViec);
+            $Ung_vien_model->setHocVanBangCap($_HocVanBangCap);
+            $Ung_vien_model->setTinhThanhs($_TinhThanhId);
+            $Ung_vien_model->setNganhNghes($_NganhNgheId);
+
+            $Ung_vien_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Ung_vien_model->setId($_Id);
+                if ($Ung_vien_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Dm_ung_vien&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                $Ung_vien_model->setCreatedBy($username);
+                if ($Ung_vien_model->insert()) {
+                    
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+
+                UtilityController::gotoPage("index.php?ctl=Dm_ung_vien&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+    public function excel() {
+        require(PHP_EXCEL_ADMIN_DIRECTORY);
+        $objPHPExcel = new PHPExcel;
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('Times New Roman');
+        $objPHPExcel->getDefaultStyle()->getFont()->setSize(10);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+        $objSheet = $objPHPExcel->getActiveSheet();
+        $objSheet->setTitle('BANG DIEM ');
+        $objSheet->setCellValue('A2', 'TRƯỜNG ĐẠI HỌC CẦN THƠ');
+        $objSheet->setCellValue('G2', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM');
+        $objSheet->setCellValue('G3', 'ĐỘC LẬP - TỰ DO - HẠNH PHÚC');
+        $objSheet->setCellValue('A3', 'TRUNG TÂM GDQP - AN');
+        $objSheet->setCellValue('A5', 'ĐIỂM MÔN GIÁO DỤC QUỐC PHÒNG');
+        $objSheet->setCellValue('A6', '');
+        $objSheet->setCellValue('A7', '');
+        $filename = UtilityController::gen_uuid();
+        $url = ROOT_ADMIN_URL . "/_temp/" . $filename.".xls";
+        $objWriter->save($url);
+        echo $url;
+    }
+
+    public function fill_ds_nganh_nghe_ung_vien() {
+        if (isset($_POST)) {
+            $Id = isset($_POST["Id"]) ? $_POST["Id"] : "";
+            $Ung_vien_nganh_ngheModel = new Ung_vien_nganh_ngheModel();
+            $Ung_vien_nganh_ngheModel->setUngVienId($Id);
+            $List = $Ung_vien_nganh_ngheModel->getList();
+            $str = "";
+            if (!is_null($List)) {
+                foreach ($List as $value) {
+                    $str .= $value["Id"] . ",";
+                }
+            }
+            $str = rtrim($str, ",");
+
+            echo $str;
+        }
+    }
+
+    public function fill_ds_tinh_thanh_ung_vien() {
+        if (isset($_POST)) {
+            $Id = isset($_POST["Id"]) ? $_POST["Id"] : "";
+            $Ung_vien_tinh_thanhModel = new Ung_vien_tinh_thanhModel();
+            $Ung_vien_tinh_thanhModel->setUngVienId($Id);
+            $List = $Ung_vien_tinh_thanhModel->getList();
+            $str = "";
+            if (!is_null($List)) {
+                foreach ($List as $value) {
+                    $str .= $value["Id"] . ",";
+                }
+            }
+            $str = rtrim($str, ",");
+
+            echo $str;
+        }
+    }
+
+    public function kiem_tra_email() {
+        if (isset($_POST)) {
+            $email = isset($_POST["_email"]) ? $_POST["_email"] : "";
+            $oldemail = isset($_POST["oldemail"]) ? $_POST["oldemail"] : "";
+            $Sys_usersModel = new Sys_usersModel();
+            $Sys_usersModel->set_Username($email);
+            $Sys_usersModel->setOldEmail($oldemail);
+            $count = $Sys_usersModel->getCount();
+            if ($count > 0) {
+                echo "false";
+            } else {
+                echo "true";
+            }
+        }
+    }
+
+}

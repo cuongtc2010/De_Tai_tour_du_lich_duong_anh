@@ -1,0 +1,3 @@
+<?php
+ class Ung_vien_luu_tin_tuyen_dungModel extends _CoreUng_vien_luu_tin_tuyen_dungModel{
+}

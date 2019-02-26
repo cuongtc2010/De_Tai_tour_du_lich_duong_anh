@@ -1,0 +1,74 @@
+﻿<?php
+$root_ctl = "Tin_nhan_thong_bao";
+?>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?=$tabid?>">Tin_nhan_thong_bao</a>
+                </li>
+                <li class="active">
+                    <a href="#">Cập nhật Tin_nhan_thong_bao</a>
+                </li>
+              
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&tabid=<?=$tabid?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-5">
+							<div class="form-group">
+	<label class="col-md-3 control-label no-padding-right lb-required"><strong>SendUserId:</strong></label>
+	<div class="col-md-9">
+		<input type="text" class="form-control input-sm" placeholder="" name="SendUserId" value="<?= isset($_SendUserId) ? $_SendUserId : "" ?>" required>
+	</div>
+</div> 
+<div class="form-group">
+	<label class="col-md-3 control-label no-padding-right lb-required"><strong>RecivedUserId:</strong></label>
+	<div class="col-md-9">
+		<input type="text" class="form-control input-sm" placeholder="" name="RecivedUserId" value="<?= isset($_RecivedUserId) ? $_RecivedUserId : "" ?>" required>
+	</div>
+</div> 
+<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right "></label>
+<div class="col-md-9">
+<label><input type="checkbox"  name="IsRead" <?=   isset($_IsRead) ? (($_IsRead) ? "checked" : "") : "" ?> > IsRead</label>
+</div>
+</div>
+<div class="form-group">
+	<label class="col-md-3 control-label no-padding-right lb-required"><strong>NoiDung:</strong></label>
+	<div class="col-md-9">
+		<input type="text" class="form-control input-sm" placeholder="" name="NoiDung" value="<?= isset($_NoiDung) ? $_NoiDung : "" ?>" required>
+	</div>
+</div> 
+<div class="form-group">
+	<label class="col-md-3 control-label no-padding-right lb-required"><strong>Url:</strong></label>
+	<div class="col-md-9">
+		<input type="text" class="form-control input-sm" placeholder="" name="Url" value="<?= isset($_Url) ? $_Url : "" ?>" >
+	</div>
+</div> 
+
+                                                       
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">    
+									<?php if ($_IsUpdate) { ?>                                
+                                    <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+									<?php } ?>
+                                    <a href="index.php?ctl=<?= $root_ctl ?>&tabid=<?=$tabid?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.page-header -->
+            </div><!-- /.page-content -->
+        </form>
+    </div>
+
+</div>

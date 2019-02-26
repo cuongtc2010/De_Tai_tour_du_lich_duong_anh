@@ -1,0 +1,42 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Register_onesignal_appController
+ *
+ * @author phuocnguyen
+ */
+class Register_onesignal_appController {
+
+    public function doSubscribed() {
+        try {
+            $AppId = $_POST["Id"];
+            $UserId = isset($_SESSION["user_info_admin"]) ? $_SESSION["user_info_admin"]["userid"] : 0;
+            $Sys_usesr_onesignalModel = new Sys_usesr_onesignalModel();
+            $Sys_usesr_onesignalModel->setAppId($AppId);
+            $Sys_usesr_onesignalModel->setUserId($UserId);
+            $Sys_usesr_onesignalModel->setIsAdmin(1);
+            $Sys_usesr_onesignalModel->insert();
+        } catch (Exception $ex) {
+            
+        }
+    }
+
+    public function doUnSubscribed() {
+        try {
+            $AppId = $_POST["Id"];
+            $UserId = isset($_SESSION["user_info_admin"]) ? $_SESSION["user_info_admin"]["userid"] : 0;
+            $Sys_usesr_onesignalModel = new Sys_usesr_onesignalModel();
+            $Sys_usesr_onesignalModel->setAppId($AppId);
+            $Sys_usesr_onesignalModel->delete();
+        } catch (Exception $ex) {
+            
+        }
+    }
+
+}

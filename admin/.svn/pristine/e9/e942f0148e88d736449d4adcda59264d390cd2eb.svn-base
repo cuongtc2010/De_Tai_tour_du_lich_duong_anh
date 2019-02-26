@@ -1,0 +1,395 @@
+﻿<?php
+$root_ctl = "Nha_tuyen_dung";
+?>
+
+<script src="<?php echo ROOT_ADMIN_URL; ?>/plugin/ckeditor/ckeditor.js"></script>
+
+
+
+<style>
+    .table-bordered, .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th{
+        padding: 5px;
+    }
+</style>
+<form class="row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="m-b-10">Nhà tuyển dụng
+                <small>Xem danh sách, tìm kiếm và xóa dữ liệu</small>
+            </h2>
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="form-group fg-line m-b-5">
+                        <label class="sr-only">Nhà tuyển dụng</label>
+                        <input type="text" name="nhatuyendung" class="form-control input-sm" placeholder="Nhập tên nhà tuyển dụng cần tìm..." value="<?=  isset($_Name) ? $_Name : ""; ?>">
+                    </div>
+                </div>
+               
+                <div class="col-md-12">   
+                    <div class="form-group m-b-5">
+                        <select class="chosen" multiple="" name="dm_tinh_thanh[]" data-placeholder="Chọn 1 hoặc nhiều tỉnh thành">                                
+                            <option disabled="">Chọn 1 hoặc nhiều tỉnh thành</option>
+                            <?php
+                            if (!is_null($List_tinh_thanh)) {
+                                foreach ($List_tinh_thanh as $value) {
+                                    ?>
+                                    <option value="<?= $value["Id"] ?>" <?php
+                                    if (!empty($_TinhThanhs)) {
+                                        foreach ($_TinhThanhs as $val) {
+                                            if ($value["Id"] == $val) {
+                                                echo "selected=''";
+                                            }
+                                        }
+                                    }
+                                    ?>  > <?= $value["Name"] ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                        </select>
+                    </div>
+                </div>
+               
+                <div class="col-md-12">   
+                    <div class="form-group m-b-5">
+                        <select class="chosen" multiple="" name="dm_nganh_nghe[]" data-placeholder="Chọn 1 hoặc nhiều ngành nghề">
+
+                            <option disabled="">Chọn 1 hoặc nhiều ngành nghề</option> 
+
+                            <?php
+                            if (!is_null($List_nganh_nghe)) {
+                                foreach ($List_nganh_nghe as $value) {
+                                    ?>
+                                    <option value="<?= $value["Id"] ?>" <?php
+                                    if (!empty($_NganhNghes)) {
+                                        foreach ($_NganhNghes as $val) {
+                                            if ($value["Id"] == $val) {
+                                                echo "selected=''";
+                                            }
+                                        }
+                                    }
+                                    ?> > <?= $value["Name"] ?></option>
+
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 p-r-15">
+                    <div class="form-group m-b-5">
+                        <label class="sr-only" for="dm_noi_bat">Nổi Bật</label>
+                        <select class="form-control input-sm" name="dm_noi_bat">
+                            <option value="5">-- Chọn Nổi Bật --</option>
+                            <?php
+                            if (!is_null($a)) {
+                                foreach ($a as $value) {
+                                    if ($value['number'] == $_NoiBat) {
+                                        ?>
+                                        <option value="<?= $value['number'] ?>" selected><?= $value['text'] ?></option>    
+                                    <?php } else { ?>
+                                        <option value="<?= $value['number'] ?>" ><?= $value['text'] ?></option>  
+
+                                        <?php
+                                    }
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 p-r-15">
+                    <div class="form-group m-b-5">
+                        <label class="sr-only" for="dm_xac_thuc">Xác Thực</label>
+                        <select class="form-control input-sm" name="dm_xac_thuc">
+                            <option value="5">-- Chọn Xác Thực --</option>
+                            <?php
+                            if (!is_null($a)) {
+                                foreach ($a as $value) {
+                                    if ($value['number'] == $_XacThuc) {
+                                        ?>
+                                        <option value="<?= $value['number'] ?>" selected><?= $value['text'] ?></option>    
+                                    <?php } else { ?>
+                                        <option value="<?= $value['number'] ?>" ><?= $value['text'] ?></option>  
+
+                                        <?php
+                                    }
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 p-r-15">
+                    <div class="form-group m-b-5">
+                        <label class="sr-only" for="dm_active">Hoạt động</label>
+                        <select class="form-control input-sm" name="dm_active">
+                            <option value="5">-- Hoạt động --</option>
+                            <?php
+                            if (!is_null($a)) {
+                                foreach ($a as $value) {
+                                    if ($value['number'] == $_Active) {
+                                        ?>
+                                        <option value="<?= $value['number'] ?>" selected><?= $value['text'] ?></option>    
+                                    <?php } else { ?>
+                                        <option value="<?= $value['number'] ?>" ><?= $value['text'] ?></option>  
+
+                                        <?php
+                                    }
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <!-- jjjjjjjjjjjjjjjjjjjjjjjjjjjj -->
+
+
+
+                <!-- jjjjjjjjjjjjjjjjjjjjjjjjjjjj -->
+
+                <div class="col-sm-12 text-center">
+                    <button type="submit" name="timkiem" class="btn btn-info btn-sm m-t-5 waves-effect"><i class="zmdi zmdi-search"></i> Tìm kiếm</button>
+
+                    <div class="btn-group m-t-5">
+                        <button type="button" class="btn btn-primary dropdown-toggle waves-effect" name="chucnang" data-toggle="dropdown" aria-expanded="false">                           
+                            Chức Năng
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <button type="submit" name="xacthuc" class="btn btn-default btn-sm m-t-5 waves-effect btn-block"> Xác Thực</button>            
+                            <button type="submit" name="khongxacthuc" class="btn btn-default btn-sm m-t-5 waves-effect btn-block"> Không Xác Thực</button>            
+                            <button type="submit" name="noibat" class="btn btn-default btn-sm m-t-5 waves-effect btn-block"> Nổi Bật</button>            
+                            <button type="submit" name="khongnoibat" class="btn btn-default btn-sm m-t-5 waves-effect btn-block"> Không Nổi Bật</button>            
+                            <button type="submit" name="hoatdong" class="btn btn-default btn-sm m-t-5 waves-effect btn-block"> Hoạt Động</button>            
+                            <button type="submit" name="khonghoatdong" class="btn btn-default btn-sm m-t-5 waves-effect btn-block"> Không Hoạt Động</button>    
+                        </ul>
+                    </div>
+                    <?php if ($_IsUpdate) { ?>
+                        <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=update&tabid=<?= $tabid ?>" class="btn btn-primary btn-sm m-t-5 waves-effect"><i class="zmdi zmdi-plus"></i> Thêm mới</a>
+                    <?php } ?>
+
+
+
+
+
+                    <button type="button" class="btn btn-success btn-sm m-t-5 waves-effect" data-toggle="modal" data-target="#nhatuyendung_excel"><i class="zmdi zmdi-file-text"></i> Xuất Excel</button>
+                    <div class="modal fade" id="nhatuyendung_excel" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Tạo danh sách nhà tuyển dụng</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group col-md-12">
+                                        <table class="table table-bordered">
+                                                <tr>
+                                            <td align='left'><label><input type="checkbox" name="nameexcel" checked/>&nbsp;Tên nhà tuyển dụng</label></td>
+                                            <td align='left'><label> <input type="checkbox" name="tinhthanhexcel" checked />&nbsp;Tỉnh Thành</label></td>
+                                            <td align='left'><label><input type="checkbox" name="nganhngheexcel" checked />&nbsp;Ngành Nghề</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td align='left'><label><input type="checkbox" name="sodienthoaiexcel" checked/>&nbsp; Số điện thoại</label></td>
+                                            <td align='left'><label><input type="checkbox" name="faxexcel" checked />&nbsp;Fax</label></td>
+                                            <td align='left'><label> <input type="checkbox" name="diachiexcel" checked />&nbsp;Địa chỉ</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td align='left'><label> <input type="checkbox" name="masothueexcel" checked/>&nbsp; Mã số thuế</label></td>
+                                            <td align='left'><label><input type="checkbox" name="quimoexcel" checked />&nbsp;Qui mô</label></td>
+                                            <td align='left'><label><input type="checkbox" name="websiteexcel" checked />&nbsp;Web</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td align='left'><label><input type="checkbox" name="tennguoilienheexcel" checked />&nbsp;Tên người liên hệ</label></td>
+                                            <td align='left'><label></label><input type="checkbox" name="chucvunguoilienheexcel" checked />&nbsp;Chức vụ người liên hệ</td>
+                                            <td align='left'><label><input type="checkbox" name="sodienthoainguoilienheexcel" checked/>&nbsp;Số điện thoại người liên hệ</label></td>
+                                        </tr>
+                                        <tr>
+                                          <td align='left'><label><input type="checkbox" name="nguoilienheemailexcel" checked />&nbsp;Email người liên hệ</label></td>
+                                          <td align='left'><label> </label></td>
+                                          <td align='left'><label></label></td>
+                                        </tr>
+                                       
+                                        </table>
+                                        
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                   
+                                    <button type="button" onclick="xuat_excel()" name="xuatexcel" class="btn bgm-bluegray btn-sm m-t-5 waves-effect">In danh sách</button>
+                                    <button type="button" class="btn btn-danger btn-sm m-t-5 waves-effect" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success btn-sm m-t-5 waves-effect" data-toggle="modal" data-target="#ungvien_tn"><i class="zmdi zmdi-file-text"></i> Gửi Mail </button>
+                    <div class="modal fade" id="ungvien_tn" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>GỬI TIN NHẮN ĐẾN ỨNG VIÊN</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <label class="col-md-2 lb-required">Nội dung</label>
+                                    <div class="col-md-10 p-r-15 m-b-5">
+                                        <textarea class="ckeditor" name="txtGuiMail"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="gui" class="btn bgm-bluegray btn-sm m-t-5 waves-effect">Gửi Tin Nhắn</button>
+                                    <button type="button" class="btn btn-danger btn-sm m-t-5 waves-effect" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <?php if ($_IsDelete) { ?>
+                        <button type="submit" name="btnDelete" class="btn btn-danger btn-sm m-t-5 waves-effect" onclick="return confirm('Bạn có muốn xóa')"><i class="zmdi zmdi-delete"></i> Xóa</button>
+                    <?php } ?>
+
+                    <div class="modal fade" id="ungvien_tn" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                       
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th width="10px">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" class="select-box check_all" onclick="check_all()"><i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="text-center" width="20px">#</th>
+                        <th width="200px">Name</th>
+                        <th width="100px">Email</th>
+                        <th width="100px" ><left>Điện Thoại</left></th>
+                <th width="300px">Địa Chỉ</th>
+                <th width="150px" > Ngày Đăng Kí </th>
+                <th width="30px">Nổi Bật</th>
+                <th width="30px">Xác Thực</th>
+                <th width="30px">Hoạt động</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!is_null($list)) {
+                        $i = 1;
+                        $Ids="";
+                        foreach ($list as $value) {  $Ids.=$value['Id'].",";
+                            ?> 
+                            <tr>
+                                <td>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="select-box check_item" name="checklist[]" value="<?= $value["Id"] ?>" onclick="check_item()"><i class="input-helper"></i>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td><?= $i++ ?></td>
+                                <td><a href="index.php?ctl=<?= $root_ctl ?>&act=update&id=<?= $value["Id"] ?>&tabid=<?= $tabid ?>" ><?= $value["Name"] ?></a></td>                                                                           
+                                <td><?= $value["Username"] ?></td>
+                                <td><?= $value["DienThoai"] ?></td>
+                                <td><?= $value["DiaChi"] ?></td>
+                                <td> <left> <?= date('d/m/Y', strtotime($value["CreatedDate"])) ?>  </left></td>
+                        <td>  
+                            <?php if ($value["IsNoiBat"] == "1") { ?>
+                            <center>  <img src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/ok.png" alt="" title="" border="0"> </center>
+                        <?php } else { ?>
+                            <center> <img src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/no.gif" alt="" title="" border="0">  <?php } ?></center>
+                        </td>
+                        <td>  
+                            <?php if ($value["IsXacThuc"] == "1") { ?>
+                            <center> <img src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/ok.png" alt="" title="" border="0"> </center>
+                        <?php } else { ?>
+                            <center>  <img style="" src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/no.gif" alt="" title="" border="0"> </center>
+                        <?php } ?>
+                        </td>
+                        </td>
+                        <td>  
+                            <?php if ($value["IsActive"] == "1") { ?>
+                            <center> <img src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/ok.png" alt="" title="" border="0"> </center>
+                        <?php } else { ?>
+                            <center>  <img style="" src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/no.gif" alt="" title="" border="0"> </center>
+                        <?php } ?>
+                        </td>
+
+                        </tr>
+                        <?php
+                    }
+                }
+                ?>                
+                </tbody>
+            </table>
+             <script type="text/javascript">
+                                        function xuat_excel() { 
+                                            var postPage = '<?= ROOT_ADMIN_URL . "/index.php?ctl=Nha_tuyen_dung&act=xuat_excel" ?>';
+                                            var nameexcel = $("input[name='nameexcel']").is(":checked");
+                                            var tinhthanhexcel = $("input[name='tinhthanhexcel']").is(":checked");
+                                            var nganhngheexcel = $("input[name='nganhngheexcel']").is(":checked");
+                                            var sodienthoaiexcel = $("input[name='sodienthoaiexcel']").is(":checked");
+                                            var faxexcel = $("input[name='faxexcel']").is(":checked");
+                                            var diachiexcel = $("input[name='diachiexcel']").is(":checked");
+                                            var masothueexcel = $("input[name='masothueexcel']").is(":checked");
+                                            var quimoexcel = $("input[name='quimoexcel']").is(":checked");
+                                            var websiteexcel = $("input[name='websiteexcel']").is(":checked");
+                                            var tennguoilienheexcel = $("input[name='tennguoilienheexcel']").is(":checked");
+                                            var chucvunguoilienheexcel = $("input[name='chucvunguoilienheexcel']").is(":checked");
+                                            var sodienthoainguoilienheexcel = $("input[name='sodienthoainguoilienheexcel']").is(":checked");
+                                            var nguoilienheemailexcel = $("input[name='nguoilienheemailexcel']").is(":checked");
+                                         
+
+                                            var postData = {
+                                                postType: "ajax",
+                                                nameexcel: nameexcel,                                             
+                                                tinhthanhexcel: tinhthanhexcel,
+                                                nganhngheexcel:  nganhngheexcel,
+                                                sodienthoaiexcel: sodienthoaiexcel,
+                                                faxexcel: faxexcel,
+                                                diachiexcel: diachiexcel,
+                                                masothueexcel: masothueexcel,
+                                                quimoexcel: quimoexcel,
+                                                Ids:'<?=  rtrim($Ids, ",");?>',
+                                                websiteexcel: websiteexcel,
+                                                tennguoilienheexcel: tennguoilienheexcel,
+                                                chucvunguoilienheexcel: chucvunguoilienheexcel,
+                                                sodienthoainguoilienheexcel: sodienthoainguoilienheexcel,
+                                                nguoilienheemailexcel: nguoilienheemailexcel,
+                                            };
+                                            var post = $.post(postPage, postData).done(function (data) {
+                                                //alert(data);
+                                                window.location.href = data;
+                                            })
+                                                    .fail(function () {
+
+                                                    });
+                                        }
+                                    </script>
+        </div>
+        <div class="text-center">
+            <ul class="pagination text-center">
+                <?= $phantrang ?>
+            </ul>
+        </div>
+    </div>
+</form>

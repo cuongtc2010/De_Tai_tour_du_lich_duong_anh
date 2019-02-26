@@ -1,0 +1,276 @@
+<?php
+
+class _CoreDm_do_tuoiModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $Name_En;
+    private $Alias;
+    private $Order;
+    private $IsDefault;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getName_En() {
+        return $this->Name_En;
+    }
+
+    function setName_En($Name_En) {
+        $this->Name_En = $Name_En;
+    }
+
+    function getAlias() {
+        return $this->Alias;
+    }
+
+    function setAlias($Alias) {
+        $this->Alias = $Alias;
+    }
+
+    function getOrder() {
+        return $this->Order;
+    }
+
+    function setOrder($Order) {
+        $this->Order = $Order;
+    }
+
+    function getIsDefault() {
+        return $this->IsDefault;
+    }
+
+    function setIsDefault($IsDefault) {
+        $this->IsDefault = $IsDefault;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT * FROM dm_do_tuoi where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getName_En())) {
+            $sql .= " and Name_En LIKE '%{$this->getName_En()}%'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+        }
+        if (!is_null($this->getOrder())) {
+            $sql .= " and Order='{$this->getOrder()}'";
+        }
+        if (!is_null($this->getIsDefault())) {
+            $sql .= " and IsDefault='{$this->getIsDefault()}'";
+        }
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM dm_do_tuoi 
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getName_En())) {
+            $sql .= " and Name_En LIKE '%{$this->getName_En()}%'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+        }
+        if (!is_null($this->getOrder())) {
+            $sql .= " and Order='{$this->getOrder()}'";
+        }
+        if (!is_null($this->getIsDefault())) {
+            $sql .= " and IsDefault='{$this->getIsDefault()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM dm_do_tuoi where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into dm_do_tuoi(
+`Name`,
+`Name_En`,
+`Alias`,
+`Order`,
+`IsDefault`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy)
+ VALUES (
+'{$this->getName()}',
+'{$this->getName_En()}',
+'{$this->getAlias()}',
+'{$this->getOrder()}',
+'{$this->getIsDefault()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}'
+
+)";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `dm_do_tuoi` set UpdatedDate=now(),";
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+            if (!is_null($this->getName_En())) {
+                $sql .= "`Name_En`='{$this->getName_En()}',";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= "`Alias`='{$this->getAlias()}',";
+            }
+            if (!is_null($this->getOrder())) {
+                $sql .= "`Order`='{$this->getOrder()}',";
+            }
+            if (!is_null($this->getIsDefault())) {
+                $sql .= "`IsDefault`='{$this->getIsDefault()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM dm_do_tuoi WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from dm_do_tuoi  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

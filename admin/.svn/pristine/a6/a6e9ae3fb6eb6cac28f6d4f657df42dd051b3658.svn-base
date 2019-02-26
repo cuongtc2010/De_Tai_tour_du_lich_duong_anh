@@ -1,0 +1,3 @@
+<?php
+ class Dm_tinh_trang_hon_nhanModel extends _CoreDm_tinh_trang_hon_nhanModel{
+}

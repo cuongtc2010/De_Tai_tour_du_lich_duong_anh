@@ -1,0 +1,143 @@
+<?php
+
+class Dm_phuong_xaController {
+
+    const FOLDER_VIEW = 'Dm_phuong_xa';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Dm_phuong_xa_model = new Dm_phuong_xaModel();
+
+
+            // lấy giá trị search
+
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Dm_phuong_xa_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // get list            
+            $Dm_phuong_xa_model->setName($_Name);
+
+
+            $Dm_phuong_xa_model->setRowStart($start);
+            $Dm_phuong_xa_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Dm_phuong_xa_model->getList();
+
+            $rowrount = $Dm_phuong_xa_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_phuong_xaController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $_Id = "";
+            $_Name = "";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Dm_phuong_xa_model = new Dm_phuong_xaModel();
+                $Dm_phuong_xa_model->setId($_Id);
+                $obj = $Dm_phuong_xa_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->getId();
+                    $_Name = $obj->getName();
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_phuong_xaController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+
+            $Dm_phuong_xa_model = new Dm_phuong_xaModel();
+            $Dm_phuong_xa_model->setName($_Name);
+
+
+            $Dm_phuong_xa_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Dm_phuong_xa_model->setId($_Id);
+                if ($Dm_phuong_xa_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Dm_phuong_xa&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                $Dm_phuong_xa_model->setCreatedBy($username);
+                if ($Dm_phuong_xa_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Dm_phuong_xa&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+}

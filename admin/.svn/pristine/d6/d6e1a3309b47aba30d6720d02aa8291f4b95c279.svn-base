@@ -1,0 +1,134 @@
+<?php
+$root_ctl = "Support_online_account";
+?>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">Quản lý tài khoản hỗ trợ online</a>
+                </li>                
+            </ul>
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&tabid=<?= $tabid ?>">
+            <div class="page-content">
+                <div class="page-header">  
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Tên</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Tìm Name" name="Name" value="<?= isset($_Name) ? $_Name : "" ?>" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Điện thoại</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Tìm Phone" name="Phone" value="<?= isset($_Phone) ? $_Phone : "" ?>" >
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Tài khoản chat</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control input-sm  " placeholder="Tìm ChatAccount" name="ChatAccount" value="<?= isset($_ChatAccount) ? $_ChatAccount : "" ?>" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right  ">Loại tài khoản</label>
+                                <div class="col-md-9">
+                                    <select name="ChatAccountTypeId" class="chosen-select">
+                                        <option value="">-- Tất cả --</option>
+                                        <?php
+                                        if (!is_null($list_account_type_model)) {
+                                            foreach ($list_account_type_model as $value) {
+                                                if ($value->getId() == $_ChatAccountTypeId) {
+                                                    ?>
+                                                    <option value="<?= $value->getId() ?>" selected ><?= $value->getName() ?></option>            
+                                                <?php } else { ?>
+                                                    <option value="<?= $value->getId() ?>" ><?= $value->getName() ?></option>            
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>                                     
+                                </div>
+                            </div>  
+                        </div>
+                        <input type="hidden" name="listvalue" id="listvalue"/>    
+                    </div>
+                    <div class="row text-center">
+                        <?php if ($_IsUpdate) { ?>
+                            <a class="btn btn-sm btn-primary" href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=update&tabid=<?= $tabid ?>" ><i class="fa fa-plus"></i> Thêm mới </a>                        
+                        <?php } ?>
+                        <button type="submit" class="btn btn-sm btn-primary" name="btnSearch" value="Search"><i class="ace-icon glyphicon glyphicon-search"></i> Tìm kiếm </button>                                            
+                        <?php if ($_IsDelete) { ?>
+                            <button type="submit" class="btn btn-sm btn-danger" name="btnDelete" value="Delete" onclick="return confirmDelete()"><i class="ace-icon glyphicon glyphicon-trash"></i> Xóa </button>
+                        <?php } ?>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-hover" id="simple-table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="10px"><input type="checkbox"></th>
+                                    <th class="text-center" width="10px">#</th>                                    
+                                    <th>Họ Tên</th>
+                                    <th>Điện thoại</th>
+                                    <th>Email</th>
+                                    <th>Tài khoản chát</th>
+                                    <th>Loại</th>
+                                    <th width="30px">Thứ tự</th>
+                                    <th width="30px">Hoạt động</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (!is_null($list)) {
+                                    $i = 1;
+                                    foreach ($list as $value) {
+                                        ?>
+                                        <tr>
+                                            <td><input type="checkbox" name="checklist[]" value="<?= $value->getId() ?>"/></td>
+                                            <td><?= $i++ ?></td>
+                                            <td><a href="index.php?ctl=<?= $root_ctl ?>&act=update&id=<?= $value->getId() ?>&tabid=<?= $tabid ?>" ><?= $value->getName() ?></a></td>                                                                                       
+                                            <td><?= $value->getPhone() ?></td>
+                                            <td><?= $value->getEmail() ?></td>
+                                            <td><?= $value->getChatAccount() ?></td>
+                                            <td><?= $value->getAccountTypeName() ?></td>
+                                            <td><?= $value->getOrder() ?></td>
+                                            <td align="center">
+                                                <?php if ($value->getIsActive()) { ?>
+                                                    <img src="templates/images/ok.gif" title="Hoạt động"/>    
+                                                <?php } else { ?>
+                                                    <img src="templates/images/no.gif" title="Không hoạt động"/>
+                                                <?php } ?>
+                                            </td>                                            
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                        <ul class="pagination pull-right">
+                            <?= $phantrang ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+<?php
+$root_ctl = "Nha_tuyen_dung";
+?>
+<div class="card">
+    <div class="card-header">
+        <h2 class="m-b-10">Cập nhật mật hẩu
+            <small>Đổi mật khẩu nhà tuyển dụng</small>
+        </h2>
+        <div class="row">
+            <form class="form-horizontal row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=DoiMk&tabid=<?= $tabid ?><?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+                <div class="col-md-12 m-b-5">
+                    <fieldset>
+                        <legend><strong>Thông Tin Tài Khoản</strong></legend>
+                        <label class="col-lg-2 control-label">Email</label>
+                        <div class="col-md-10 p-r-15">   
+                            <div class="form-group m-b-5">
+                                <input type="email" class="form-control input-sm" disabled name="txtEmail" value="<?= isset($_Email) ? $_Email : "" ?>" required>   
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <label class="col-lg-2 control-label lb-required">Mật khẩu mới</label>
+                    <div class="col-md-10 p-r-15">   
+                        <div class="form-group m-b-5">
+                            <input type="password" class="form-control input-sm" name="txtMatKhau" required>   
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 m-b-5">
+                    <div class="form-group">
+                        <label  class="col-md-3"></label>
+                        <div class="col-md-9">
+                            <input type="hidden" value="<?= $_UserId ?>" name="UserId"/>
+                            <?php if ($_IsUpdate) { ?>
+                                <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" onclick="return kiem_tra_email()"><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                            <?php } ?>
+
+                            <a href="index.php?ctl=<?= $root_ctl ?>&act=update&id=<?= $_Id ?>&tabid=<?= $tabid ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+

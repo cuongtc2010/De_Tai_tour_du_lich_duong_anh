@@ -1,0 +1,96 @@
+﻿<?php
+$root_ctl = "Nha_tuyen_dung_goi_dich_vu";
+?>
+<script src="<?php echo ROOT_ADMIN_URL; ?>/plugin/ckeditor/ckeditor.js"></script>
+<form class="row p-10" role="form" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&ntd=<?= $_GET['ntd'] ?>&tabid=<?= $tabid ?>">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="m-b-10">Gói Dịch Vụ
+                <small>Thêm và xóa gói dịch vụ</small>
+            </h2>
+            <div class="row">
+
+
+                <div class="col-sm-12 text-center">
+                    <?php if ($_IsUpdate) { ?>
+                        <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=update&ntd=<?= $ntd ?>&tabid=<?= $tabid ?>" class="btn btn-primary btn-sm m-t-5 waves-effect"><i class="zmdi zmdi-plus"></i> Thêm mới</a>
+                    <?php } ?>
+                    <?php if ($_IsDelete) { ?>
+
+                        <button type="submit" name="hoatdong" class="btn btn-info btn-sm m-t-5 waves-effect"> Hoạt Động</button>            
+                        <button type="submit" name="khonghoatdong" class="btn btn-info btn-sm m-t-5 waves-effect"> Không Hoạt Động</button>    
+                        <button  type="submit" name="btnDelete" class="btn btn-danger btn-sm m-t-5 waves-effect" onclick="return confirm('Bạn có muốn xóa')"><i class="zmdi zmdi-delete"></i> Xóa</button>
+                        <a href="index.php?ctl=Nha_tuyen_dung&&act=update&id=<?= $_GET['ntd'] ?>&tabid=<?= $tabid ?>" class="btn btn-danger btn-sm m-t-5 waves-effect"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                    <?php } ?>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th width="10px">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" class="select-box" value="all"><i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="text-center" width="20px">#</th>
+                        <th>Tên Gói</th>
+                        <th>Số lượng tin đăng</th>
+                        <th>Ứng viên</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Hoạt động</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!is_null($list)) {
+                        $i = 1;
+                        foreach ($list as $value) {
+                            ?>
+                            <tr>
+                                <td>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="select-box" name="checklist[]" value="<?= $value["Id"] ?>"><i class="input-helper"></i>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td><?= $i++ ?></td>
+                                <td><a href="index.php?ctl=<?= $root_ctl ?>&act=update&id=<?= $value["Id"] ?>&tabid=<?= $tabid ?>&ntd=<?= $value["NhaTuyenDungId"] ?>"> <?= $value["Name"] ?></a></td>                                                                       
+                                <td><?= $value["SoLuongTinDang"] ?></td>
+                                <td><?= $value["SoLuongUngVien"] ?></td>
+                                <td><?php $originalDate = $value["ApDungTu"];
+                    echo $newDate = date("d/m/Y", strtotime($originalDate)); ?></td>
+                                <td><?php $originalDate = $value["ApDungDen"];
+                    echo $newDate = date("d/m/Y", strtotime($originalDate)); ?></td>
+                                <td>  <?php if ($value["IsActive"] == "1") { ?>
+                            <left> <img src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/ok.png" alt="" title="" border="0"> </left>
+                        <?php } else { ?>
+                            <left>  <img src="<?php echo ROOT_ADMIN_URL; ?>/templates/img/no.gif" alt="" title="" border="0"> </left>
+        <?php } ?>
+                        </td>
+                        <!--<td><?= UtilityController::formatNumber($value["Order"]) ?></td>-->
+
+                        </tr>
+                        <?php
+                    }
+                }
+                ?>                
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <ul class="pagination text-center">
+<?= $phantrang ?>
+            </ul>
+        </div>
+    </div>
+</form>

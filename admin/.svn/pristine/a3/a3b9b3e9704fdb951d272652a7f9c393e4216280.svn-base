@@ -1,0 +1,154 @@
+<?php
+
+class Dm_gioi_tinhController {
+
+    const FOLDER_VIEW = 'Dm_gioi_tinh';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Dm_gioi_tinh_model = new Dm_gioi_tinhModel();
+
+
+            // lấy giá trị search
+
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Dm_gioi_tinh_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // get list            
+            $Dm_gioi_tinh_model->setName($_Name);
+            $Dm_gioi_tinh_model->setRowStart($start);
+            $Dm_gioi_tinh_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Dm_gioi_tinh_model->getList();
+
+            $rowrount = $Dm_gioi_tinh_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_gioi_tinhController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            $Dm_gioi_tinh_model = new Dm_gioi_tinhModel();
+            $_Id = "";
+            $_Name = "";
+            $_Name_En = "";
+            $_Alias = "";
+            $_Order = $Dm_gioi_tinh_model->getMaxOrder();
+            $_IsDefault = "";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+
+                $Dm_gioi_tinh_model->setId($_Id);
+                $obj = $Dm_gioi_tinh_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->Id;
+                    $_Name = $obj->Name;
+                    $_Name_En = $obj->Name_En;
+                    $_Alias = $obj->Alias;
+                    $_Order = $obj->Order;
+                    $_IsDefault = $obj->IsDefault;
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Dm_gioi_tinhController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_Name_En = isset($_POST["Name_En"]) ? $_POST["Name_En"] : "";         
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+
+            $Dm_gioi_tinh_model = new Dm_gioi_tinhModel();
+            $Dm_gioi_tinh_model->setName($_Name);
+            $Dm_gioi_tinh_model->setName_En($_Name_En);
+            $Dm_gioi_tinh_model->setAlias(UtilityController::convert2Alias($_Name));
+            if (!empty($_Order)) {
+                $Dm_gioi_tinh_model->setOrder($_Order);
+            }        
+            $Dm_gioi_tinh_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Dm_gioi_tinh_model->setId($_Id);
+                if ($Dm_gioi_tinh_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Dm_gioi_tinh&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                $Dm_gioi_tinh_model->setCreatedBy($username);
+                if ($Dm_gioi_tinh_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Dm_gioi_tinh&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+}

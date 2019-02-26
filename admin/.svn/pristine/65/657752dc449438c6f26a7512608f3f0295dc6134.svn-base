@@ -1,0 +1,577 @@
+<?php
+
+class _CorePost_bai_vietModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $Alias;
+    private $NhomTinId;
+    private $MoTa;
+    private $NoiDung;
+    private $HinhAnh;
+    private $HienThiHinhAnh;
+    private $Order;
+    private $NgayHienThi;
+    private $NgayTatHienThi;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getAlias() {
+        return $this->Alias;
+    }
+
+    function setAlias($Alias) {
+        $this->Alias = $Alias;
+    }
+
+    function getNhomTinId() {
+        return $this->NhomTinId;
+    }
+
+    function setNhomTinId($NhomTinId) {
+        $this->NhomTinId = $NhomTinId;
+    }
+
+    function getMoTa() {
+        return $this->MoTa;
+    }
+
+    function setMoTa($MoTa) {
+        $this->MoTa = $MoTa;
+    }
+
+    function getNoiDung() {
+        return $this->NoiDung;
+    }
+
+    function setNoiDung($NoiDung) {
+        $this->NoiDung = $NoiDung;
+    }
+
+    function getHinhAnh() {
+        return $this->HinhAnh;
+    }
+
+    function setHinhAnh($HinhAnh) {
+        $this->HinhAnh = $HinhAnh;
+    }
+
+    function getHienThiHinhAnh() {
+        return $this->HienThiHinhAnh;
+    }
+
+    function setHienThiHinhAnh($HienThiHinhAnh) {
+        $this->HienThiHinhAnh = $HienThiHinhAnh;
+    }
+
+    function getOrder() {
+        return $this->Order;
+    }
+
+    function setOrder($Order) {
+        $this->Order = $Order;
+    }
+
+    function getNgayHienThi() {
+        return $this->NgayHienThi;
+    }
+
+    function setNgayHienThi($NgayHienThi) {
+        $this->NgayHienThi = $NgayHienThi;
+    }
+
+    function getNgayTatHienThi() {
+        return $this->NgayTatHienThi;
+    }
+
+    function setNgayTatHienThi($NgayTatHienThi) {
+        $this->NgayTatHienThi = $NgayTatHienThi;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        try {
+            $sql = "SELECT *,CASE ABS(DATEDIFF(UpdatedDate,NOW())) WHEN 0 THEN 1 ELSE  0 END as ShowNewImage FROM post_bai_viet where 1=1 ";
+            if (!is_null($this->getId())) {
+                $sql .= " and Id='{$this->getId()}'";
+            }
+            if (!is_null($this->getName())) {
+                $sql .= " and Name LIKE '%{$this->getName()}%'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+            }
+            if (!is_null($this->getNhomTinId())) {
+                $sql .= " and NhomTinId='{$this->getNhomTinId()}'";
+            }
+            if (!is_null($this->getMoTa())) {
+                $sql .= " and MoTa LIKE '%{$this->getMoTa()}%'";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= " and NoiDung='{$this->getNoiDung()}'";
+            }
+            if (!is_null($this->getHinhAnh())) {
+                $sql .= " and HinhAnh LIKE '%{$this->getHinhAnh()}%'";
+            }
+            if (!is_null($this->getHienThiHinhAnh())) {
+                $sql .= " and HienThiHinhAnh='{$this->getHienThiHinhAnh()}'";
+            }
+            if (!is_null($this->getOrder())) {
+                $sql .= " and Order='{$this->getOrder()}'";
+            }
+            if (!is_null($this->getNgayHienThi())) {
+                $sql .= " and NgayHienThi='{$this->getNgayHienThi()}'";
+            }
+            if (!is_null($this->getNgayTatHienThi())) {
+                $sql .= " and NgayTatHienThi='{$this->getNgayTatHienThi()}'";
+            }
+
+            $sql .= " order by CreatedDate desc";
+            if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+                $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+            }
+            $result = $this->_getList($sql);
+            return $result;
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+        return null;
+    }
+
+    public function getCount() {
+        try {
+            $sql = "SELECT count(*) as RowCount
+                FROM post_bai_viet 
+                where 1=1 ";
+            if (!is_null($this->getId())) {
+                $sql .= " and Id='{$this->getId()}'";
+            }
+            if (!is_null($this->getName())) {
+                $sql .= " and Name LIKE '%{$this->getName()}%'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and Alias LIKE '%{$this->getAlias()}%'";
+            }
+            if (!is_null($this->getNhomTinId())) {
+                $sql .= " and NhomTinId='{$this->getNhomTinId()}'";
+            }
+            if (!is_null($this->getMoTa())) {
+                $sql .= " and MoTa LIKE '%{$this->getMoTa()}%'";
+            }
+            if (!is_null($this->getNoiDung())) {
+                $sql .= " and NoiDung='{$this->getNoiDung()}'";
+            }
+            if (!is_null($this->getHinhAnh())) {
+                $sql .= " and HinhAnh LIKE '%{$this->getHinhAnh()}%'";
+            }
+            if (!is_null($this->getHienThiHinhAnh())) {
+                $sql .= " and HienThiHinhAnh='{$this->getHienThiHinhAnh()}'";
+            }
+            if (!is_null($this->getOrder())) {
+                $sql .= " and Order='{$this->getOrder()}'";
+            }
+            if (!is_null($this->getNgayHienThi())) {
+                $sql .= " and NgayHienThi='{$this->getNgayHienThi()}'";
+            }
+            if (!is_null($this->getNgayTatHienThi())) {
+                $sql .= " and NgayTatHienThi='{$this->getNgayTatHienThi()}'";
+            }
+
+
+            return $this->_getCount($sql);
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+        return 0;
+    }
+
+    public function getObj() {
+        try {
+            $sql = "SELECT * FROM post_bai_viet where 1=1 ";
+            if (!is_null($this->getId())) {
+                $sql .= " and Id = '{$this->getId()}'";
+            }
+            if (!is_null($this->getAlias())) {
+                $sql .= " and concat(Alias,'-',Id) = '{$this->getAlias()}'";
+            }
+
+            $value = $this->_getObject($sql);
+            return $value;
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+        return null;
+    }
+
+    public function insert() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $username = $_SESSION["user_info_admin"]["username"];
+            $pdo = $this->getPDO();
+            try {
+                $pdo->beginTransaction();
+                $sql = "insert into post_bai_viet(
+                    `Name`,
+                    `Alias`,
+                    `NhomTinId`,
+                    `MoTa`,
+                    `NoiDung`,
+                    `HinhAnh`,
+                    `HienThiHinhAnh`,
+                    `Order`,
+                    `NgayHienThi`,
+                    `NgayTatHienThi`,
+                    CreatedDate,
+                    UpdatedDate,
+                    CreatedBy,
+                    UpdatedBy)
+                     VALUES (
+                    '{$this->getName()}',
+                    '{$this->getAlias()}',
+                    '{$this->getNhomTinId()}',
+                    '{$this->getMoTa()}',
+                    '{$this->getNoiDung()}',
+                    '{$this->getHinhAnh()}',
+                    '{$this->getHienThiHinhAnh()}',
+                    '1',
+                    '{$this->getNgayHienThi()}',
+                    '{$this->getNgayTatHienThi()}',
+                    now(),
+                    now(),
+                    '{$username}',
+                    '{$username}'
+                    )";
+                $pdo->exec($sql);
+                $pdo->commit();
+                return true;
+            } catch (Exception $exc) {
+                $pdo->rollBack();
+                echo $exc->getTraceAsString();
+            }
+        }
+        return false;
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $username = $_SESSION["user_info_admin"]["username"];
+            $pdo = $this->getPDO();
+            try {
+                $pdo->beginTransaction();
+                $sql = "update `post_bai_viet` set UpdatedDate=now(),";
+                if (!is_null($this->getName())) {
+                    $sql .= "`Name`='{$this->getName()}',";
+                }
+                if (!is_null($this->getAlias())) {
+                    $sql .= "`Alias`='{$this->getAlias()}',";
+                }
+                if (!is_null($this->getNhomTinId())) {
+                    $sql .= "`NhomTinId`='{$this->getNhomTinId()}',";
+                }
+                if (!is_null($this->getMoTa())) {
+                    $sql .= "`MoTa`='{$this->getMoTa()}',";
+                }
+                if (!is_null($this->getNoiDung())) {
+                    $sql .= "`NoiDung`='{$this->getNoiDung()}',";
+                }
+                if (!is_null($this->getHinhAnh())) {
+                    $sql .= "`HinhAnh`='{$this->getHinhAnh()}',";
+                }
+                if (!is_null($this->getHienThiHinhAnh())) {
+                    $sql .= "`HienThiHinhAnh`='{$this->getHienThiHinhAnh()}',";
+                }
+                if (!is_null($this->getOrder())) {
+                    $sql .= "`Order`='{$this->getOrder()}',";
+                }
+                if (!is_null($this->getNgayHienThi())) {
+                    $sql .= "`NgayHienThi`='{$this->getNgayHienThi()}',";
+                }
+                if (!is_null($this->getNgayTatHienThi())) {
+                    $sql .= "`NgayTatHienThi`='{$this->getNgayTatHienThi()}',";
+                }
+                $sql .= "UpdatedBy='{$username}'  Where Id='{$this->getId()}'";
+
+                $pdo->exec($sql);
+                $pdo->commit();
+                return true;
+            } catch (Exception $exc) {
+                $pdo->rollBack();
+                echo $exc->getTraceAsString();
+            }
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        try {
+            $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM post_bai_viet WHERE 1=1  ";
+
+            return $this->_getMaxOrder($sql);
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
+        return 1;
+    }
+
+    public function delete($ids) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "delete from post_bai_viet  where Id IN ({$ids})";
+
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from post_bai_viet where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function alias($_Name) {
+        //Tạo alias
+        $vMap = array(
+            'é' => 'e',
+            'è' => 'e',
+            'ẻ' => 'e',
+            'ẽ' => 'e',
+            'ẹ' => 'e',
+            'ý' => 'y',
+            'ỳ' => 'y',
+            'ỷ' => 'y',
+            'ỹ' => 'y',
+            'ỵ' => 'y',
+            'ú' => 'u',
+            'ù' => 'u',
+            'ủ' => 'u',
+            'ũ' => 'u',
+            'ụ' => 'u',
+            'ư' => 'u',
+            'ứ' => 'u',
+            'ừ' => 'u',
+            'ử' => 'u',
+            'ữ' => 'u',
+            'ự' => 'u',
+            'í' => 'i',
+            'ì' => 'i',
+            'ỉ' => 'i',
+            'ĩ' => 'i',
+            'ị' => 'i',
+            'ó' => 'o',
+            'ò' => 'o',
+            'ỏ' => 'o',
+            'õ' => 'o',
+            'ọ' => 'o',
+            'ô' => 'o',
+            'ố' => 'o',
+            'ồ' => 'o',
+            'ổ' => 'o',
+            'ỗ' => 'o',
+            'ộ' => 'o',
+            'á' => 'a',
+            'à' => 'a',
+            'ả' => 'a',
+            'ã' => 'a',
+            'ạ' => 'a',
+            'â' => 'a',
+            'ấ' => 'a',
+            'ầ' => 'a',
+            'ẩ' => 'a',
+            'ẫ' => 'a',
+            'ậ' => 'a',
+            'ă' => 'a',
+            'ắ' => 'a',
+            'ằ' => 'a',
+            'ẳ' => 'a',
+            'ẵ' => 'a',
+            'ặ' => 'a',
+            'ê' => 'e',
+            'ế' => 'e',
+            'ể' => 'e',
+            'ễ' => 'e',
+            'ệ' => 'e',
+            'ơ' => 'o',
+            'ớ' => 'o',
+            'ờ' => 'o',
+            'ở' => 'o',
+            'ỡ' => 'o',
+            'ợ' => 'o',
+            'É' => 'e',
+            'È' => 'e',
+            'Ẻ' => 'e',
+            'Ẽ' => 'e',
+            'Ẹ' => 'e',
+            'Ê' => 'e',
+            'Ế' => 'e',
+            'Ề' => 'e',
+            'Ể' => 'e',
+            'Ễ' => 'e',
+            'Ệ' => 'e',
+            'Ý' => 'y',
+            'Ỳ' => 'y',
+            'Ỷ' => 'y',
+            'Ỹ' => 'y',
+            'Ỵ' => 'y',
+            'Ú' => 'u',
+            'Ù' => 'u',
+            'Ủ' => 'u',
+            'Ũ' => 'u',
+            'Ụ' => 'u',
+            'Ư' => 'u',
+            'Ứ' => 'u',
+            'Ừ' => 'u',
+            'Ử' => 'u',
+            'Ữ' => 'u',
+            'Ự' => 'u',
+            'Í' => 'i',
+            'Ì' => 'i',
+            'Ỉ' => 'i',
+            'Ĩ' => 'i',
+            'Ị' => 'i',
+            'Ó' => 'o',
+            'Ò' => 'o',
+            'Ỏ' => 'o',
+            'Õ' => 'o',
+            'Ọ' => 'o',
+            'Ô' => 'o',
+            'Ố' => 'o',
+            'Ồ' => 'o',
+            'Ổ' => 'o',
+            'Ỗ' => 'o',
+            'Ộ' => 'o',
+            'Ơ' => 'o',
+            'Ớ' => 'o',
+            'Ờ' => 'o',
+            'Ở' => 'o',
+            'Ỡ' => 'o',
+            'Ợ' => 'o',
+            'Á' => 'a',
+            'À' => 'a',
+            'Ả' => 'a',
+            'Ã' => 'a',
+            'Ạ' => 'a',
+            'Â' => 'a',
+            'Ấ' => 'a',
+            'Ầ' => 'a',
+            'Ẩ' => 'a',
+            'Ẫ' => 'a',
+            'Ậ' => 'a',
+            'Ă' => 'a',
+            'Ắ' => 'a',
+            'Ằ' => 'a',
+            'Ẳ' => 'a',
+            'Ẵ' => 'a',
+            'Ặ' => 'a',
+            'đ' => 'd',
+            'Đ' => 'd',
+        );
+        $_Name = strtolower(preg_replace('/[^0-9a-zA-Z\_\-]/', '-', strtr(strtr($_Name, $vMap), array(' ' => '-'))));
+        $ii = 0;
+        $new = '';
+        while ($ii < strlen($_Name)) {
+            if ($_Name[$ii] == '-') {
+                $new = $new . $_Name[$ii];
+                $ii++;
+                while ($_Name[$ii] == '-' && $ii < strlen($_Name)) {
+                    $ii++;
+                }
+            } else {
+                $new = $new . $_Name[$ii];
+                $ii++;
+            }
+        }
+
+        return $new;
+    }
+
+}

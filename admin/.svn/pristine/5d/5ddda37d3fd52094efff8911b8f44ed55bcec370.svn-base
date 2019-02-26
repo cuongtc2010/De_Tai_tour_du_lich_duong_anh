@@ -1,0 +1,23 @@
+<?php
+
+class Sys_usesr_onesignalModel extends _CoreSys_usesr_onesignalModel {
+
+    public function getListAppIdByUngVien($where = '') {
+        
+        $sql = "SELECT AppId FROM
+                v_ung_vien JOIN sys_usesr_onesignal ON v_ung_vien.UserId=sys_usesr_onesignal.UserId
+                WHERE 1=1 and IsAdmin=0 and
+                " . $where;
+        return $this->_getList($sql);
+    }
+    public function getListAppIdAdmin($where = '') {
+        
+        $sql = "SELECT AppId FROM
+                  sys_usesr_onesignal 
+                WHERE 1=1 and IsAdmin=1
+                " . $where;
+        
+        return $this->_getList($sql);
+    }
+
+}

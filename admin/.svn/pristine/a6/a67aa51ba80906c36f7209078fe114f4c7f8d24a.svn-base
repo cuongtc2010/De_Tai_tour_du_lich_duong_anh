@@ -1,0 +1,335 @@
+<?php
+
+class _CoreQuang_caoModel extends BaseModel {
+
+    private $Id;
+    private $Name;
+    private $Url;
+    private $Image;
+    private $Description;
+    private $StartDate;
+    private $EndDate;
+    private $Order;
+    private $ViTriId;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    function getUrl() {
+        return $this->Url;
+    }
+
+    function setUrl($Url) {
+        $this->Url = $Url;
+    }
+
+    function getImage() {
+        return $this->Image;
+    }
+
+    function setImage($Image) {
+        $this->Image = $Image;
+    }
+
+    function getDescription() {
+        return $this->Description;
+    }
+
+    function setDescription($Description) {
+        $this->Description = $Description;
+    }
+
+    function getStartDate() {
+        return $this->StartDate;
+    }
+
+    function setStartDate($StartDate) {
+        $this->StartDate = $StartDate;
+    }
+
+    function getEndDate() {
+        return $this->EndDate;
+    }
+
+    function setEndDate($EndDate) {
+        $this->EndDate = $EndDate;
+    }
+
+    function getOrder() {
+        return $this->Order;
+    }
+
+    function setOrder($Order) {
+        $this->Order = $Order;
+    }
+
+    function getViTriId() {
+        return $this->ViTriId;
+    }
+
+    function setViTriId($ViTriId) {
+        $this->ViTriId = $ViTriId;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT * FROM quang_cao where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+
+        if (!is_null($this->getViTriId())) {
+            $sql .= " and ViTriId='{$this->getViTriId()}'";
+        }
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getListShowHome() {
+        $sql = "SELECT * FROM quang_cao where 1=1 ";        
+        if (!is_null($this->getViTriId())) {
+            $sql .= " and ViTriId='{$this->getViTriId()}'";
+        }
+        $sql.=" and DATE_FORMAT(NOW(),'%Y-%m-%d') BETWEEN StartDate AND IFNULL(EndDate,NOW())";
+
+        $sql .= " order by `Order` asc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM quang_cao 
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getName())) {
+            $sql .= " and Name LIKE '%{$this->getName()}%'";
+        }
+        if (!is_null($this->getUrl())) {
+            $sql .= " and Url LIKE '%{$this->getUrl()}%'";
+        }
+        if (!is_null($this->getImage())) {
+            $sql .= " and Image LIKE '%{$this->getImage()}%'";
+        }
+        if (!is_null($this->getDescription())) {
+            $sql .= " and Description LIKE '%{$this->getDescription()}%'";
+        }
+        if (!is_null($this->getStartDate())) {
+            $sql .= " and StartDate='{$this->getStartDate()}'";
+        }
+        if (!is_null($this->getEndDate())) {
+            $sql .= " and EndDate='{$this->getEndDate()}'";
+        }
+        if (!is_null($this->getOrder())) {
+            $sql .= " and Order='{$this->getOrder()}'";
+        }
+        if (!is_null($this->getViTriId())) {
+            $sql .= " and ViTriId='{$this->getViTriId()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM quang_cao where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into quang_cao(
+`Name`,
+`Url`,
+`Image`,
+`Description`,
+`StartDate`,
+`EndDate`,
+`Order`,
+`ViTriId`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy)
+ VALUES (
+'{$this->getName()}',
+'{$this->getUrl()}',
+'{$this->getImage()}',
+'{$this->getDescription()}',
+'{$this->getStartDate()}',
+'{$this->getEndDate()}',
+'{$this->getOrder()}',
+'{$this->getViTriId()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}'
+
+)";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `quang_cao` set UpdatedDate=now(),";
+            if (!is_null($this->getName())) {
+                $sql .= "`Name`='{$this->getName()}',";
+            }
+            if (!is_null($this->getUrl())) {
+                $sql .= "`Url`='{$this->getUrl()}',";
+            }
+            if (!is_null($this->getImage())) {
+                $sql .= "`Image`='{$this->getImage()}',";
+            }
+            if (!is_null($this->getDescription())) {
+                $sql .= "`Description`='{$this->getDescription()}',";
+            }
+            if (!is_null($this->getStartDate())) {
+                $sql .= "`StartDate`='{$this->getStartDate()}',";
+            }
+            if (!is_null($this->getEndDate())) {
+                $sql .= "`EndDate`='{$this->getEndDate()}',";
+            }
+            if (!is_null($this->getOrder())) {
+                $sql .= "`Order`='{$this->getOrder()}',";
+            }
+            if (!is_null($this->getViTriId())) {
+                $sql .= "`ViTriId`='{$this->getViTriId()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM quang_cao WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from quang_cao  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

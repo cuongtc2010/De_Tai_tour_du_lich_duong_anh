@@ -1,0 +1,3 @@
+<?php
+ class Post_nhom_tinModel extends _CorePost_nhom_tinModel{
+}

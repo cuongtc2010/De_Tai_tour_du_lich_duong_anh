@@ -1,0 +1,78 @@
+<?php
+$root_ctl = "Sys_role_permisions";
+?>
+<div class="main-content">
+    <div class="main-content-inner">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="<?= ROOT_ADMIN_URL ?>">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>">Sys_role_permisions</a>
+                </li>
+                <li class="active">
+                    <a href="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=update&id=<?= $id ?>">Cập nhật Sys_role_permisions</a>
+                </li>
+              
+            </ul><!-- /.breadcrumb -->
+        </div>
+        <form class="form-horizontal" method="post" action="<?= ROOT_ADMIN_URL ?>/index.php?ctl=<?= $root_ctl ?>&act=doUpdate&id=<?= !empty($_Id) ? "&id=" . $_Id : "" ?>">
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-md-5">
+							<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right lb-required ">MenuFunctionId</label>
+<div class="col-md-9">
+<input type="text" class="form-control input-sm NumberInt " placeholder="Tìm MenuFunctionId" name="MenuFunctionId" value="<?= isset($_MenuFunctionId) ? $_MenuFunctionId : "" ?>" required>
+</div>
+</div>
+<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right lb-required ">RoleId</label>
+<div class="col-md-9">
+<input type="text" class="form-control input-sm NumberInt " placeholder="Tìm RoleId" name="RoleId" value="<?= isset($_RoleId) ? $_RoleId : "" ?>" required>
+</div>
+</div>
+<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right "></label>
+<div class="col-md-9">
+<label><input type="checkbox"  name="IsView" <?=   isset($_IsView) ? (($_IsView) ? "checked" : "") : "" ?> > IsView</label>
+</div>
+</div>
+<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right "></label>
+<div class="col-md-9">
+<label><input type="checkbox"  name="IsUpdate" <?=   isset($_IsUpdate) ? (($_IsUpdate) ? "checked" : "") : "" ?> > IsUpdate</label>
+</div>
+</div>
+<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right "></label>
+<div class="col-md-9">
+<label><input type="checkbox"  name="IsDelete" <?=   isset($_IsDelete) ? (($_IsDelete) ? "checked" : "") : "" ?> > IsDelete</label>
+</div>
+</div>
+<div class="form-group">
+<label  class="col-md-3 control-label no-padding-right lb-required ">CompanyId</label>
+<div class="col-md-9">
+<input type="text" class="form-control input-sm  " placeholder="Tìm CompanyId" name="CompanyId" value="<?= isset($_CompanyId) ? $_CompanyId : "" ?>" required>
+</div>
+</div>
+
+                                                       
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label no-padding-right"></label>
+                                <div class="col-md-9">                                    
+                                    <button type="submit" class="btn btn-sm btn-primary" name="btnSave" value="save" ><i class="ace-icon fa fa-floppy-o"></i> Lưu </button>
+                                    <a href="index.php?ctl=<?= $root_ctl ?>" class="btn btn-sm btn-danger"><i class="ace-icon fa fa-arrow-left"></i> Quay lại </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.page-header -->
+            </div><!-- /.page-content -->
+        </form>
+    </div>
+
+</div>

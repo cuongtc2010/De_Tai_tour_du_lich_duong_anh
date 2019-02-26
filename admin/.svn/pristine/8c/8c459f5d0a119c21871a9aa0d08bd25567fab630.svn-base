@@ -1,0 +1,4 @@
+<?php
+ class Dm_goi_dich_vuModel extends _CoreDm_goi_dich_vuModel{
+	
+}

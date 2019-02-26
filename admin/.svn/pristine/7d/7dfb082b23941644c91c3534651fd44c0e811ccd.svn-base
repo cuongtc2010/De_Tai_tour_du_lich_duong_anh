@@ -1,0 +1,149 @@
+<?php
+
+
+class Sys_usesr_onesignalController {
+
+    const FOLDER_VIEW = 'Sys_usesr_onesignal';	
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Sys_usesr_onesignal_model = new Sys_usesr_onesignalModel();
+
+            
+			// lấy giá trị search
+            
+			$_UserId = isset($_POST["UserId"]) ? $_POST["UserId"] : "";
+$_AppId = isset($_POST["AppId"]) ? $_POST["AppId"] : "";
+
+			
+            // delete
+			if($_IsDelete){
+				if (isset($_POST["btnDelete"])) {
+					if (isset($_POST["checklist"])) {
+						$array_id = $_POST["checklist"];
+						if ($array_id != null) {
+							$array_delete = array();
+							foreach ($array_id as $value) {
+								$array_delete[] = $value;
+							}
+							if ($Sys_usesr_onesignal_model->delete_array($array_delete)) {
+
+								UtilityController::messageSuccess();
+							} else {
+								UtilityController::messageError();
+							}
+						}
+					}
+				}
+			}
+
+
+            // get list            
+			if (!empty($_UserId)) {$Sys_usesr_onesignal_model->setUserId($_UserId);}
+$Sys_usesr_onesignal_model->setAppId($_AppId);
+
+
+            $Sys_usesr_onesignal_model->setRowStart($start);
+            $Sys_usesr_onesignal_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Sys_usesr_onesignal_model->getList();
+
+            $rowrount = $Sys_usesr_onesignal_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Sys_usesr_onesignalController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];            
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+			
+            $_UserId="";
+$_AppId="";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Sys_usesr_onesignal_model = new Sys_usesr_onesignalModel();
+                $Sys_usesr_onesignal_model->setId($_Id);
+                $obj = $Sys_usesr_onesignal_model->getObj();
+				if (!is_null($obj)) {
+					$_UserId=$obj->getUserId();
+$_AppId=$obj->getAppId();
+
+				}
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Sys_usesr_onesignalController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) { 
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();            
+            $_IsUpdate = $obj_check_role["update"];            
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+			
+			$username=$_SESSION["user_info_admin"]["username"];
+            $_UserId = isset($_POST["UserId"]) ? $_POST["UserId"] : "";
+$_AppId = isset($_POST["AppId"]) ? $_POST["AppId"] : "";
+
+            $Sys_usesr_onesignal_model = new Sys_usesr_onesignalModel();
+			if (!empty($_UserId)) {$Sys_usesr_onesignal_model->setUserId($_UserId);}
+$Sys_usesr_onesignal_model->setAppId($_AppId);
+            
+			
+            $Sys_usesr_onesignal_model->setUpdatedBy($username);
+			$_Id="";
+			if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+			}
+            if (!empty($_Id)) {
+                $Sys_usesr_onesignal_model->setId($_Id);
+                if ($Sys_usesr_onesignal_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Sys_usesr_onesignal&act=update&id=".$_Id."&tabid=".$tabid);
+            } else {
+				$Sys_usesr_onesignal_model->setCreatedBy($username);
+                if ($Sys_usesr_onesignal_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Sys_usesr_onesignal&act=update&tabid=".$tabid);
+            }
+            
+        }
+    }
+
+}

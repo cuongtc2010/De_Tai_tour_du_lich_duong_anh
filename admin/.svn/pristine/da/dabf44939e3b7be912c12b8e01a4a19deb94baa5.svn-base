@@ -1,0 +1,3 @@
+<?php
+ class Dm_kinh_nghiemModel extends _CoreDm_kinh_nghiemModel{
+}

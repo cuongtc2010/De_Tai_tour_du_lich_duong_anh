@@ -1,0 +1,75 @@
+<?php
+
+class Sys_usersModel extends _CoreSys_usersModel {
+
+    private $ActiveCode;
+
+    function getActiveCode() {
+        return $this->ActiveCode;
+    }
+
+    function setActiveCode($ActiveCode) {
+        $this->ActiveCode = $ActiveCode;
+    }
+
+    public function updateLoginId() {
+        $pdo = $this->getPDO();
+        try {
+
+            $sql = "update sys_users set";
+            $sql .= " LastLoginDate=NOW(),";
+            $sql .= " UpdatedDate=NOW(),";
+            $sql .= " UpdatedBy='{$this->get_Username()}'";
+            $sql .= " WHERE Id=" . $this->getId();
+            $pdo->beginTransaction();
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function updatePass() {
+        $pdo = $this->getPDO();
+        try {
+
+            $sql = "update sys_users set";
+            $sql .= " `UserPassword`='{$this->get_Password()}',";
+            $sql .= " UpdatedDate=NOW(),";
+            $sql .= " UpdatedBy='{$this->getUpdatedBy()}'";
+            $sql .= " WHERE Id=" . $this->getId();
+            $pdo->beginTransaction();
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function ActiveUser() {
+        $pdo = $this->getPDO();
+        try {
+
+            $sql = "update sys_users set";
+            $sql .= " `IsActive`=1,";
+            $sql .= " ActiveCode=NULL,";
+            $sql .= " UpdatedBy='System'";
+            $sql .= " WHERE ActiveCode='" . $this->getActiveCode()."'";
+            $pdo->beginTransaction();
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

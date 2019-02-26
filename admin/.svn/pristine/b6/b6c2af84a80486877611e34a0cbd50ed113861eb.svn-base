@@ -1,0 +1,22 @@
+<?php
+ class Nha_tuyen_dungModel extends _CoreNha_tuyen_dungModel{
+     public function getThongTinGoiDichVu($ntd_id) {
+        $sql = "SELECT  
+                goi_dich_vu.Name,
+                goi_dich_vu.Code,
+                nha_tuyen_dung_goi_dich_vu.ApDungTu,
+                nha_tuyen_dung_goi_dich_vu.ApDungDen,
+                (nha_tuyen_dung_goi_dich_vu.SoLuongUngVien - (SELECT COUNT( DISTINCT UngVienId) FROM nha_tuyen_dung_xem_ung_vien WHERE NhaTuyenDungId='{$ntd_id}')) SoLuongUngVien,
+                nha_tuyen_dung_goi_dich_vu.SoLuongTinDang-(SELECT COUNT(Id) FROM tin_tuyen_dung WHERE UserId=(SELECT UserId FROM nha_tuyen_dung WHERE Id='{$ntd_id}')) AS SoLuongTinDang,
+                nha_tuyen_dung_goi_dich_vu.SoLuongTuyenGap-(SELECT COUNT(Id) FROM tin_tuyen_dung WHERE UserId=(SELECT UserId FROM nha_tuyen_dung WHERE Id='{$ntd_id}') AND IsTuyenGap=1) AS SoLuongTuyenGap
+                FROM nha_tuyen_dung_goi_dich_vu JOIN goi_dich_vu ON nha_tuyen_dung_goi_dich_vu.GoiDichVuId=goi_dich_vu.Id
+                WHERE NhaTuyenDungId='{$ntd_id}'
+                AND IsActive=1
+                AND DATE_FORMAT(NOW(),'%Y-%m-%d')<=ApDungDen
+                ORDER BY nha_tuyen_dung_goi_dich_vu.Id DESC
+                 LIMIT 0,1
+                ";
+        
+        return $this->_getObject($sql);
+    }
+}?>

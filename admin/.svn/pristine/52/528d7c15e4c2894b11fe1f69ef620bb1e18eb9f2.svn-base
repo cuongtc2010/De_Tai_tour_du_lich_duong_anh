@@ -1,0 +1,78 @@
+<aside id="sidebar" class="sidebar c-overflow">
+    <div class="s-profile">
+        <a href="" data-ma-action="profile-menu-toggle">
+            <div class="sp-pic">
+                <img src="templates/img/profile-pics/1.jpg" alt="">
+            </div>
+
+            <div class="sp-info">
+                Malinda Hollaway
+
+                <i class="zmdi zmdi-caret-down"></i>
+            </div>
+        </a>
+
+        <ul class="main-menu">
+            <li>
+                <a href="profile-about.html"><i class="zmdi zmdi-account"></i> View Profile</a>
+            </li>
+            <li>
+                <a href=""><i class="zmdi zmdi-input-antenna"></i> Privacy Settings</a>
+            </li>
+            <li>
+                <a href=""><i class="zmdi zmdi-settings"></i> Settings</a>
+            </li>
+            <li>
+                <a href=""><i class="zmdi zmdi-time-restore"></i> Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <ul class="main-menu">
+        <?php
+        $tabid = '';
+        $parentid = '';
+        $role = -1;
+        if (isset($_SESSION["user_info_admin"]["role"])) {
+            $role = $_SESSION["user_info_admin"]["role"];
+        }
+        if (isset($_GET['tabid'])) {
+            $tabid = intval($_GET['tabid']);
+            $Sys_menu_functions_model = new Sys_menu_functionsModel();
+            $Sys_menu_functions_model->setId($tabid);
+            $Sys_menu_functions_model->getObj();
+            $parentid = $Sys_menu_functions_model->getParentId();
+        }
+
+
+        $Sys_role_permisionsModel = new Sys_role_permisionsModel();
+        $list = $Sys_role_permisionsModel->getListMenuLeft($role);
+        if (count($list) > 0) {
+            foreach ($list as $value) {
+                $chil_list = $Sys_role_permisionsModel->getListMenuLeft($role, $value->getId());
+                if (count($chil_list) > 0) {
+                    ?>
+                    <li class="sub-menu <?= ($parentid == $value->getId()) ? 'active toggled' : '' ?>">
+                        <a href="" data-ma-action="submenu-toggle"><i class="zmdi <?= $value->getIcon() ?>"></i><?= $value->getName() ?></a>                        
+                        <ul>
+                            <?php foreach ($chil_list as $value_child) { ?>
+                                <li><a href="<?= $value_child->getUrl() ?>&tabid=<?= $value_child->getId() ?>" target="<?= $value_child->getTarget() ?>" class="<?= ($tabid == $value_child->getId()) ? 'active' : '' ?>"><?= $value_child->getName() ?></a></li>
+                            <?php }
+                            ?>
+                        </ul>
+                    </li>
+                <?php } else {
+                    ?>
+                    <li class="<?= ($tabid == $value->getId()) ? 'active' : '' ?>">
+                        <a href="<?= $value->getUrl() ?>&tabid=<?= $value->getId() ?>" target="<?= $value->getTarget() ?>">
+                            <i class="zmdi <?= $value->getIcon() ?>"></i>
+                            <?= $value->getName() ?>
+                        </a>
+                    </li>
+                    <?php
+                }
+            }
+        }
+        ?>
+    </ul>
+</aside>

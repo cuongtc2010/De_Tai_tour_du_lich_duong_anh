@@ -1,0 +1,247 @@
+<?php
+
+class Sys_usersController {
+
+    const FOLDER_VIEW = 'Sys_users';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Sys_users_model = new Sys_usersModel();
+
+
+            // lấy giá trị search
+
+            $_FullName = isset($_POST["FullName"]) ? $_POST["FullName"] : "";
+            $_Username = isset($_POST["Username"]) ? $_POST["Username"] : "";
+            $_Password = isset($_POST["Password"]) ? $_POST["Password"] : "";
+            $_RoleId = isset($_POST["RoleId"]) ? $_POST["RoleId"] : "";
+            $_Avartar = isset($_POST["Avartar"]) ? $_POST["Avartar"] : "";
+            $_IsActive = isset($_POST["IsActive"]) ? $_POST["IsActive"] : "-1";
+            $_LastLoginDate = isset($_POST["LastLoginDate"]) ? $_POST["LastLoginDate"] : "";
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Sys_users_model->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+            $Sys_roles_model = new Sys_rolesModel();
+            $list_role = $Sys_roles_model->getList();
+
+            // get list            
+            if (!empty($_FullName)) {
+                $Sys_users_model->setFullName($_FullName);
+            }
+            if (!empty($_Username)) {
+                $Sys_users_model->setUsername($_Username);
+            }
+            if (!empty($_Password)) {
+                $Sys_users_model->setPassword($_Password);
+            }
+            if (!empty($_CompanyId)) {
+                $Sys_users_model->setCompanyId($_CompanyId);
+            }
+            if (!empty($_RoleId)) {
+                $Sys_users_model->setRoleId($_RoleId);
+            }
+            if (!empty($_Avartar)) {
+                $Sys_users_model->setAvartar($_Avartar);
+            }
+            if (!empty($_LastLoginDate)) {
+                $Sys_users_model->setLastLoginDate($_LastLoginDate);
+            }
+            if ($_IsActive != -1) {
+                $Sys_users_model->setIsActive($_IsActive);
+            }
+
+
+            $Sys_users_model->setRowStart($start);
+            $Sys_users_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Sys_users_model->getList();
+
+            $rowrount = $Sys_users_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Sys_usersController::FOLDER_VIEW . DS . "List.php";
+        }
+    }
+
+    public function doimatkhau() {
+        $tabid = '';
+        if (isset($_GET["tabid"])) {
+            $tabid = $_GET["tabid"];
+        }
+        require_once ADMIN_VIEW_DIRECTORY . DS . Sys_usersController::FOLDER_VIEW . DS . "ChangePass.php";
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $_Id = "";
+            $_FullName = "";
+            $_Username = "";
+            $_Password = "";
+            $_CompanyId = "";
+            $_RoleId = "";
+            $_Avartar = "";
+            $_LastLoginDate = "";
+            $_IsActive = false;
+            $Sys_roles_model = new Sys_rolesModel();
+            $list_role = $Sys_roles_model->getList();
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Sys_users_model = new Sys_usersModel();
+                $Sys_users_model->setId($_Id);
+                $obj = $Sys_users_model->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->getId();
+                    $_FullName = $obj->getFullName();
+                    $_Username = $obj->getUsername();
+                    $_Password = $obj->getPassword();
+                    $_CompanyId = $obj->getCompanyId();
+                    $_RoleId = $obj->getRoleId();
+                    $_Avartar = $obj->getAvartar();
+                    $_IsActive = $obj->getIsActive();
+                    $_LastLoginDate = $obj->getLastLoginDate();
+                }
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Sys_usersController::FOLDER_VIEW . DS . "Update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_FullName = isset($_POST["FullName"]) ? $_POST["FullName"] : "";
+            $_Username = isset($_POST["Username"]) ? $_POST["Username"] : "";
+            $_OldUsername = isset($_POST["OldUsername"]) ? $_POST["OldUsername"] : "";
+            $_Password = isset($_POST["Password"]) ? $_POST["Password"] : "";
+            $_RoleId = isset($_POST["RoleId"]) ? $_POST["RoleId"] : "";
+            $_Avartar = isset($_POST["Avartar"]) ? $_POST["Avartar"] : "";
+            $_LastLoginDate = isset($_POST["LastLoginDate"]) ? $_POST["LastLoginDate"] : "";
+            $CheckDoiPass = isset($_POST["CheckDoiPass"]) ? true : false;
+            $_IsActive = isset($_POST["IsActive"]) ? true : false;
+            $Sys_users_model = new Sys_usersModel();
+            if (!empty($_FullName)) {
+                $Sys_users_model->setFullName($_FullName);
+            }
+            if (!empty($_Username)) {
+                $Sys_users_model->setUsername($_Username);
+            }
+            if ($CheckDoiPass) {
+                $Sys_users_model->setPassword(md5($_Password));
+            }
+            if (!empty($_RoleId)) {
+                $Sys_users_model->setRoleId($_RoleId);
+            }
+            if (!empty($_Avartar)) {
+                $Sys_users_model->setAvartar($_Avartar);
+            }
+            if (!empty($_LastLoginDate)) {
+                $Sys_users_model->setLastLoginDate($_LastLoginDate);
+            }
+            $Sys_users_model->setIsActive($_IsActive);
+
+            $Sys_users_model->setCreatedDate(date('Y-m-d H:i:s'));
+            $Sys_users_model->setUpdatedDate(date('Y-m-d H:i:s'));
+            $Sys_users_model->setCreatedBy($username);
+            $Sys_users_model->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Sys_users_model->setId($_Id);
+                if ($Sys_users_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Sys_users&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                if ($Sys_users_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Sys_users&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+    public function doChangePass() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $NewPass = isset($_POST["NewPass"]) ? $_POST["NewPass"] : "";
+            $userid = $_SESSION["user_info_admin"]["userid"];
+            $username = $_SESSION["user_info_admin"]["username"];
+            $Sys_user_model = new Sys_usersModel();
+            $Sys_user_model->setId($userid);
+            $Sys_user_model->setUpdatedBy($username);
+            $Sys_user_model->set_Password(md5($NewPass));
+            if ($Sys_user_model->updatePass()) {
+                UtilityController::message("Đã cập nhật thành công. Vui lòng đăng nhập lại");
+                session_destroy();
+                UtilityController::gotoPage("Login.php");
+            } else {
+                UtilityController::message("Không thể đổi mật khẩu");
+            }
+            
+        }
+    }
+
+}

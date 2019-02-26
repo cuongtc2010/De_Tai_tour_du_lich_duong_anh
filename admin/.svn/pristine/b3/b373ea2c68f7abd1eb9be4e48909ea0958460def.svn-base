@@ -1,0 +1,17 @@
+<?php
+
+class Dm_goi_dich_vuModel extends _CoreDm_goi_dich_vuModel {
+
+    public function get_den_ngay($tungay) {
+        $sql = "select DATE_ADD('{$tungay}',INTERVAL SoNgay DAY) as Ngay,
+            SoLuongUngVien,
+            SoLuongTinDang,
+            SoLuongTuyenGap
+            from goi_dich_vu where Id={$this->getId()}
+        ";
+        //echo $sql;
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+}

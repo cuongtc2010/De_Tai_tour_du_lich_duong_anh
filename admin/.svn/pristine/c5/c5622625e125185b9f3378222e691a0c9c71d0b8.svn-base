@@ -1,0 +1,255 @@
+<?php
+
+class _CoreNha_tuyen_dung_luu_ung_vienModel extends BaseModel {
+
+    private $Id;
+    private $NhaTuyenDungId;
+    private $UngVienId;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function getNhaTuyenDungId() {
+        return $this->NhaTuyenDungId;
+    }
+
+    function setNhaTuyenDungId($NhaTuyenDungId) {
+        $this->NhaTuyenDungId = $NhaTuyenDungId;
+    }
+
+    function getUngVienId() {
+        return $this->UngVienId;
+    }
+
+    function setUngVienId($UngVienId) {
+        $this->UngVienId = $UngVienId;
+    }
+
+    /* =========BEGIN:  THUOC TINH CHUNG ================ */
+
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    /* =========END:  THUOC TINH CHUNG ================ */
+
+    public function getList() {
+        $sql = "SELECT * FROM nha_tuyen_dung_luu_ung_vien where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        if (!is_null($this->getUngVienId())) {
+            $sql .= " and UngVienId='{$this->getUngVienId()}'";
+        }
+
+        $sql .= " order by CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM nha_tuyen_dung_luu_ung_vien 
+                where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id='{$this->getId()}'";
+        }
+        if (!is_null($this->getNhaTuyenDungId())) {
+            $sql .= " and NhaTuyenDungId='{$this->getNhaTuyenDungId()}'";
+        }
+        if (!is_null($this->getUngVienId())) {
+            $sql .= " and UngVienId='{$this->getUngVienId()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM nha_tuyen_dung_luu_ung_vien where 1=1 ";
+        if (!is_null($this->getId())) {
+            $sql .= " and Id = '{$this->getId()}'";
+        }
+        if (!is_null($this->getAlias())) {
+            $sql .= " and Alias = '{$this->getAlias()}'";
+        }
+        $value = $this->_getObject($sql);
+        return $value;
+    }
+
+    public function insert() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "insert into nha_tuyen_dung_luu_ung_vien(
+                `NhaTuyenDungId`,
+                `UngVienId`,
+                CreatedDate,
+                UpdatedDate,
+                CreatedBy,
+                UpdatedBy)
+                 VALUES (
+                '{$this->getNhaTuyenDungId()}',
+                '{$this->getUngVienId()}',
+                now(),
+                now(),
+                '{$this->getCreatedBy()}',
+                '{$this->getUpdatedBy()}'
+
+                )";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function insert_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {                
+                $sql="insert into nha_tuyen_dung_luu_ung_vien(
+                     Id,
+                    `NhaTuyenDungId`,
+                    `UngVienId`,
+                    CreatedDate,
+                    UpdatedDate,
+                    CreatedBy,
+                    UpdatedBy)
+                     VALUES ";
+                foreach ($array as $value) {
+                    $sql.= "(
+                    '".UtilityController::gen_uuid()."',
+                    '{$this->getNhaTuyenDungId()}',
+                    '{$value}',
+                    now(),
+                    now(),
+                    '{$this->getCreatedBy()}',
+                    '{$this->getUpdatedBy()}'
+                    ),";                    
+                }          
+                
+                $sql = rtrim($sql, ",");                
+                
+                $pdo->exec($sql);
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            
+        }
+        return false;
+    }
+
+    public function update() {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            $sql = "update `nha_tuyen_dung_luu_ung_vien` set UpdatedDate=now(),";
+            if (!is_null($this->getNhaTuyenDungId())) {
+                $sql .= "`NhaTuyenDungId`='{$this->getNhaTuyenDungId()}',";
+            }
+            if (!is_null($this->getUngVienId())) {
+                $sql .= "`UngVienId`='{$this->getUngVienId()}',";
+            }
+            $sql .= "UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function getMaxOrder() {
+        $sql = "SELECT IFNULL(MAX(`Order`),0)+1 AS MaxOrder FROM nha_tuyen_dung_luu_ung_vien WHERE 1=1  ";
+        return $this->_getMaxOrder($sql);
+    }
+
+    public function delete_array(array $array) {
+        $pdo = $this->getPDO();
+        try {
+            $pdo->beginTransaction();
+            if (is_array($array)) {
+                foreach ($array as $value) {
+                    $sql = "delete from nha_tuyen_dung_luu_ung_vien  where Id='{$value}'";
+                    $pdo->exec($sql);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

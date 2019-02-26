@@ -1,0 +1,65 @@
+<?php
+
+class Tin_tuyen_dung_ung_tuyenModel extends _CoreTin_tuyen_dung_ung_tuyenModel {
+
+    private $UserId;
+
+    function getUserId() {
+        return $this->UserId;
+    }
+
+    function setUserId($UserId) {
+        $this->UserId = $UserId;
+    }
+
+    public function getListTrangCaNhan() {
+        $sql = "SELECT 
+                v_ung_vien.*,
+                tin_tuyen_dung.Name AS TinTuyenDungTen,
+                tin_tuyen_dung.Alias AS TinTuyenDungAlias,
+                tin_tuyen_dung_ung_tuyen.CreatedDate AS NgayUngTuyen
+                FROM
+                tin_tuyen_dung_ung_tuyen
+                JOIN tin_tuyen_dung ON tin_tuyen_dung_ung_tuyen.TinTuyenDungId=tin_tuyen_dung.Id
+                JOIN v_ung_vien ON v_ung_vien.Id=tin_tuyen_dung_ung_tuyen.UngVienId where 1=1 ";
+        if (!is_null($this->getTinTuyenDung())) {
+            $sql .= " and TinTuyenDungId='{$this->getTinTuyenDung()}'";
+        }
+        if (!is_null($this->getUngVienId())) {
+            $sql .= " and UngVienId='{$this->getUngVienId()}'";
+        }
+        if (!is_null($this->getUserId())) {
+            $sql .= " and tin_tuyen_dung.UserId='{$this->getUserId()}'";
+        }
+
+        $sql .= " order by tin_tuyen_dung_ung_tuyen.CreatedDate desc";
+        if (!is_null($this->getRowStart()) && !is_null($this->getNumLinePerPage())) {
+            $sql .= " limit {$this->getRowStart()},{$this->getNumLinePerPage()}";
+        }
+        $result = $this->_getList($sql);
+        return $result;
+    }
+    
+
+    public function getCountTrangCaNhan() {
+        $sql = "
+                SELECT 
+                count(*) as RowCount
+                FROM
+                tin_tuyen_dung_ung_tuyen
+                JOIN tin_tuyen_dung ON tin_tuyen_dung_ung_tuyen.TinTuyenDungId=tin_tuyen_dung.Id
+                JOIN v_ung_vien ON v_ung_vien.Id=tin_tuyen_dung_ung_tuyen.UngVienId where 1=1 ";
+        if (!is_null($this->getTinTuyenDung())) {
+            $sql .= " and TinTuyenDungId='{$this->getTinTuyenDung()}'";
+        }
+        if (!is_null($this->getUngVienId())) {
+            $sql .= " and UngVienId='{$this->getUngVienId()}'";
+        }
+        if (!is_null($this->getUserId())) {
+            $sql .= " and tin_tuyen_dung.UserId='{$this->getUserId()}'";
+        }
+
+        return $this->_getCount($sql);
+    }
+
+}

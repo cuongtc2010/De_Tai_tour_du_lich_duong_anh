@@ -1,0 +1,3 @@
+﻿<?php
+ class Duyet_nha_tuyen_dung_goi_dich_vuModel extends _CoreDuyet_nha_tuyen_dung_goi_dich_vuModel{
+}

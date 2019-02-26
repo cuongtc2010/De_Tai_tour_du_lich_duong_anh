@@ -1,0 +1,83 @@
+RewriteEngine on
+RewriteRule ^dang-ky.html index.php?ctl=Dang_ky
+RewriteRule ^dang-ky/([a-zA-Z0-9_-]+).html index.php?ctl=Dang_ky&goi_dich_vu=$1
+
+RewriteRule ^dang-nhap.html index.php?ctl=Dang_nhap
+RewriteRule ^kich-hoat-tai-khoan/([a-zA-Z0-9_-]+).html index.php?ctl=Dang_ky&act=Active&code=$1
+
+RewriteRule ^dang-ky-thanh-cong.html index.php?ctl=Dang_ky&act=showDangKyThanhCong
+RewriteRule ^doi-mat-khau.html index.php?ctl=Dang_nhap&act=doi_mat_khau
+RewriteRule ^thoat.html index.php?ctl=Dang_nhap&act=doLogout
+
+RewriteRule ^ung-vien/([a-zA-Z0-9_-]+).html index.php?ctl=Trang_ca_nhan_ung_vien&id=$1
+RewriteRule ^ung-vien/([a-zA-Z0-9_-]+)/thong-bao.html index.php?ctl=Trang_ca_nhan_ung_vien&act=thong_bao_ca_nhan&id=$1
+RewriteRule ^ung-vien/([a-zA-Z0-9_-]+)/viec-lam-phu-hop.html index.php?ctl=Trang_ca_nhan_ung_vien&act=viec_lam_phu_hop&id=$1
+
+RewriteRule ^viec-lam/nganh-nghe/([a-zA-Z0-9_-]+).html index.php?ctl=Tin_tuyen_dung&act=tin_tuyen_dung_nganh_nghe&id=$1
+RewriteRule ^viec-lam/tinh-thanh/([a-zA-Z0-9_-]+).html index.php?ctl=Tin_tuyen_dung&act=tin_tuyen_dung_tinh_thanh&id=$1
+
+RewriteRule ^ung-vien/nganh-nghe/([a-zA-Z0-9_-]+).html index.php?ctl=Ung_vien&act=ds_ung_vien_nganh_nghe&id=$1
+RewriteRule ^ung-vien/tinh-thanh/([a-zA-Z0-9_-]+).html index.php?ctl=Ung_vien&act=ds_ung_vien_tinh_thanh&id=$1
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&id=$1
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung-het-han.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&type=hethan
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung-het-han/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&type=tuyengap&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung-tuyen-gap.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&type=tuyengap
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung-tuyen-gap/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&type=tuyengap&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung-da-khoa.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&type=dakhoa
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tin-tuyen-dung-da-khoa/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_tin_tuyen_dung&id=$1&type=dakhoa&page=$2
+
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/cap-nhat-tin-tuyen-dung.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=cap_nhat_tin_tuyen_dung&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/cap-nhat-tin-tuyen-dung/([a-zA-Z0-9_-]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=cap_nhat_tin_tuyen_dung&id=$1&ttdid=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/cap-nhat-tin-tuyen-dung-nang-cao.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=cap_nhat_tin_tuyen_dung&id=$1&type=nangcao
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/cap-nhat-tin-tuyen-dung-nang-cao/([a-zA-Z0-9_-]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=cap_nhat_tin_tuyen_dung&id=$1&ttdid=$2&type=nangcao
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/ung-vien-phu-hop.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_ung_vien_phu_hop&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/ung-vien-phu-hop/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_ung_vien_phu_hop&id=$1&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tim-kiem-ung-vien.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=tim_kiem_ung_vien&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/tim-kiem-ung-vien/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=tim_kiem_ung_vien&id=$1&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/ung-vien-ung-tuyen.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_ung_vien_ung_tuyen&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/ung-vien-ung-tuyen/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_ung_vien_ung_tuyen&id=$1&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/ung-vien-da-luu.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_ung_vien_da_luu&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/ung-vien-da-luu/trang-([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_ung_vien_da_luu&id=$1&page=$2
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/thong-bao.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=thong_bao_ca_nhan&id=$1
+
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/goi-dich-vu.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=ds_goi_dich_vu&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/cap-nhat-goi-dich-vu.html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=cap_nhat_goi_dich_vu&id=$1
+RewriteRule ^nha-tuyen-dung/([a-zA-Z0-9_-]+)/cap-nhat-goi-dich-vu/([0-9]+).html index.php?ctl=Trang_ca_nhan_nha_tuyen_dung&act=cap_nhat_goi_dich_vu&id=$1&gdvid=$2
+
+
+RewriteRule ^tin-tuyen-dung/([a-zA-Z0-9_-]+).html index.php?ctl=Tin_tuyen_dung&act=chi_tiet_tin_tuyen_dung&id=$1
+
+RewriteRule ^goi-dich-vu.html index.php?ctl=Goi_dich_vu
+
+RewriteRule ^tim-kiem-viec-lam.html$ index.php?ctl=Tim_kiem&act=tim_viec_lam
+RewriteRule ^tim-kiem-ung-vien.html$ index.php?ctl=Tim_kiem&act=tim_ung_vien
+
+
+
+
+RewriteRule ^bai-viet.html$ index.php?ctl=Post_bai_viet
+RewriteRule ^bai-viet/chi-tiet/([a-zA-Z0-9_-]+).html$ index.php?ctl=Post_bai_viet&act=chi_tiet_bai_viet&alias=$1
+RewriteRule ^bai-viet/nhom-bai-viet/([a-zA-Z0-9_-]+).html$ index.php?ctl=Post_bai_viet&act=ds_bai_viet_theo_nhom&alias=$1
+RewriteRule ^bai-viet/nhom-bai-viet/([a-zA-Z0-9_-]+)/trang-([0-9]+).html$ index.php?ctl=Post_bai_viet&act=ds_bai_viet_theo_nhom&alias=$1&page=$2
+
+
+
+
+
+
+
+

@@ -1,0 +1,187 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Cau_hinh_goi_dich_vu_nha_tuyen_dungController
+ *
+ * @author phuocnguyen
+ */
+class Cau_hinh_goi_dich_vu_nha_tuyen_dungController {
+
+    const FOLDER_VIEW = 'Cau_hinh_goi_dich_vu_nha_tuyen_dung';
+
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $ntd = '';
+            if (isset($_GET["ntd"])) {
+                $ntd = $_GET["ntd"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel = new Cau_hinh_goi_dich_vu_nha_tuyen_dungModel();
+
+
+            // lấy giá trị search
+
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+
+
+
+            // delete
+            if ($_IsDelete) {
+                if (isset($_POST["btnDelete"])) {
+                    if (isset($_POST["checklist"])) {
+                        $array_id = $_POST["checklist"];
+                        if ($array_id != null) {
+                            $array_delete = array();
+                            foreach ($array_id as $value) {
+                                $array_delete[] = $value;
+                            }
+                            if ($Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->delete_array($array_delete)) {
+
+                                UtilityController::messageSuccess();
+                            } else {
+                                UtilityController::messageError();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // get list    
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setNhaTuyenDungId($_GET['ntd']);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setName($_Name);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setRowStart($start);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setNumLinePerPage($num_rows_per_page);
+            $list = $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->getList();
+
+            $rowrount = $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Cau_hinh_goi_dich_vu_nha_tuyen_dungController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel = new Cau_hinh_goi_dich_vu_nha_tuyen_dungModel();
+            $List_goi_dich_vu = $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->getList();
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel = new Cau_hinh_goi_dich_vu_nha_tuyen_dungModel();
+            $_Id = "";
+            $_Name = "";
+            $_ApDungTu = "";
+            $_ApDungDen = "";
+            $_Description = "";
+            $_NhaTuyenDungId = "";
+            $_IsActive = "";
+            $_Order = $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->getMaxOrder();
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+
+                $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setId($_Id);
+                $obj = $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->getObj();
+                if (!is_null($obj)) {
+                    $_Id = $obj->Id;
+                    $_NhaTuyenDungId = $obj->NhaTuyenDungId;
+                    $_Name = $obj->Name;
+                    $_IsActive = $obj->IsActive;
+                    $_ApDungTu = $obj->ApDungTu;
+                    $_ApDungDen = $obj->ApDungDen;
+                    $_Description = $obj->Description;
+                    $_Order = $obj->Order;
+                }
+            }
+
+            require_once ADMIN_VIEW_DIRECTORY . DS . Cau_hinh_goi_dich_vu_nha_tuyen_dungController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) {
+            $tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsUpdate = $obj_check_role["update"];
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+
+            $username = $_SESSION["user_info_admin"]["username"];
+            $_Name = isset($_POST["Name"]) ? $_POST["Name"] : "";
+            $_Name_En = isset($_POST["Name_En"]) ? $_POST["Name_En"] : "";
+            $_Alias = isset($_POST["Alias"]) ? $_POST["Alias"] : "";
+            $_Description = isset($_POST["Description"]) ? $_POST["Description"] : "";
+            $_Order = isset($_POST["Order"]) ? $_POST["Order"] : "";
+            $_IsActive = isset($_POST["hoatdong"]) ? $_POST["hoatdong"] : "";
+            $_NhaTuyenDungId = isset($_GET['ntd']) ? $_POST["ntd"] : "";
+
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel = new Cau_hinh_goi_dich_vu_nha_tuyen_dungModel();
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setName($_Name);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setNhaTuyenDungId($_NhaTuyenDungId);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setIsActive($_IsActive);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setName_En($_Name_En);
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setAlias(UtilityController::convert2Alias($_Name));
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setDescription($_Description);
+            if (!empty($_Order)) {
+                $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setOrder($_Order);
+            }
+
+
+            $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setUpdatedBy($username);
+            $_Id = "";
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+            }
+            if (!empty($_Id)) {
+                $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setId($_Id);
+                if ($Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Cau_hinh_goi_dich_vu_nha_tuyen_dung&act=update&id=" . $_Id . "&tabid=" . $tabid);
+            } else {
+                $Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->setCreatedBy($username);
+                if ($Cau_hinh_goi_dich_vu_nha_tuyen_dungModel->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Cau_hinh_goi_dich_vu_nha_tuyen_dung&act=update&tabid=" . $tabid);
+            }
+        }
+    }
+
+}

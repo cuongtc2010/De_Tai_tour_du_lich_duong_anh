@@ -1,0 +1,5 @@
+<?php
+
+class Tin_tuyen_dung_nganh_ngheModel extends _CoreTin_tuyen_dung_nganh_ngheModel {
+    
+}

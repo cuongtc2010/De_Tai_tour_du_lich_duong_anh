@@ -1,0 +1,307 @@
+<?php
+
+class _CoreSys_role_permisionsModel extends BaseModel {
+
+    private $MenuFunctionId;
+    private $RoleId;
+    private $IsView;
+    private $IsUpdate;
+    private $IsDelete;
+    private $CreatedDate;
+    private $UpdatedDate;
+    private $CreatedBy;
+    private $UpdatedBy;
+    private $RowStart;
+    private $NumLinePerPage;
+    private $Id;
+    private $ParentId;
+    private $Name;
+                
+    function getMenuFunctionId() {
+        return $this->MenuFunctionId;
+    }
+
+    function setMenuFunctionId($MenuFunctionId) {
+        $this->MenuFunctionId = $MenuFunctionId;
+    }
+
+    function getRoleId() {
+        return $this->RoleId;
+    }
+
+    function setRoleId($RoleId) {
+        $this->RoleId = $RoleId;
+    }
+
+    function getIsView() {
+        return $this->IsView;
+    }
+
+    function setIsView($IsView) {
+        $this->IsView = $IsView;
+    }
+
+    function getIsUpdate() {
+        return $this->IsUpdate;
+    }
+
+    function setIsUpdate($IsUpdate) {
+        $this->IsUpdate = $IsUpdate;
+    }
+
+    function getIsDelete() {
+        return $this->IsDelete;
+    }
+
+    function setIsDelete($IsDelete) {
+        $this->IsDelete = $IsDelete;
+    }
+
+    // THUOC TINH CHUNG
+    function getCreatedDate() {
+        return $this->CreatedDate;
+    }
+
+    function getUpdatedDate() {
+        return $this->UpdatedDate;
+    }
+
+    function getCreatedBy() {
+        return $this->CreatedBy;
+    }
+
+    function getUpdatedBy() {
+        return $this->UpdatedBy;
+    }
+
+    function setCreatedDate($CreatedDate) {
+        $this->CreatedDate = $CreatedDate;
+    }
+
+    function setUpdatedDate($UpdatedDate) {
+        $this->UpdatedDate = $UpdatedDate;
+    }
+
+    function setCreatedBy($CreatedBy) {
+        $this->CreatedBy = $CreatedBy;
+    }
+
+    function setUpdatedBy($UpdatedBy) {
+        $this->UpdatedBy = $UpdatedBy;
+    }
+
+    function getRowStart() {
+        return $this->RowStart;
+    }
+
+    function getNumLinePerPage() {
+        return $this->NumLinePerPage;
+    }
+
+    function setRowStart($RowStart) {
+        $this->RowStart = $RowStart;
+    }
+
+    function setNumLinePerPage($NumLinePerPage) {
+        $this->NumLinePerPage = $NumLinePerPage;
+    }
+
+    function getId() {
+        return $this->Id;
+    }
+
+    function getParentId() {
+        return $this->ParentId;
+    }
+
+    function getName() {
+        return $this->Name;
+    }
+
+    function setId($Id) {
+        $this->Id = $Id;
+    }
+
+    function setParentId($ParentId) {
+        $this->ParentId = $ParentId;
+    }
+
+    function setName($Name) {
+        $this->Name = $Name;
+    }
+
+    public function getList() {
+        $sql = "SELECT sys_menu_functions.Id MenuFunctionId,
+                sys_menu_functions.ParentId,
+                sys_menu_functions.Name,
+                IFNULL(_sys_role_permisions.IsView,0) IsView,
+                IFNULL(_sys_role_permisions.IsUpdate,0) IsUpdate,
+                IFNULL(_sys_role_permisions.IsDelete,0) IsDelete
+                FROM sys_menu_functions LEFT JOIN  (SELECT * FROM  sys_role_permisions WHERE RoleId={$this->getRoleId()}) _sys_role_permisions
+                ON sys_menu_functions.Id=_sys_role_permisions.MenuFunctionId
+                WHERE 1=1 ";
+
+        
+
+        $sql .= " order by sys_menu_functions.Name asc";
+        $result = $this->_getList($sql);
+
+        $array = array();
+        if ($result != null) {
+            foreach ($result as $value) {
+                $obj = new Sys_role_permisionsModel();
+                $obj->setMenuFunctionId($value["MenuFunctionId"]);
+                $obj->setName($value["Name"]);
+                $obj->setParentId($value["ParentId"]);
+                $obj->setIsView($value["IsView"]);
+                $obj->setIsUpdate($value["IsUpdate"]);
+                $obj->setIsDelete($value["IsDelete"]);
+                $array[] = $obj;
+            }
+        }
+        return $array;
+    }
+
+    public function getCount() {
+        $sql = "SELECT count(*) as RowCount
+                FROM sys_role_permisions 
+                where 1=1 ";
+        if (!is_null($this->getMenuFunctionId())) {
+            $sql .= " and MenuFunctionId='{$this->getMenuFunctionId()}'";
+        }
+        if (!is_null($this->getRoleId())) {
+            $sql .= " and RoleId='{$this->getRoleId()}'";
+        }
+        if (!is_null($this->getIsView())) {
+            $sql .= " and IsView='{$this->getIsView()}'";
+        }
+        if (!is_null($this->getIsUpdate())) {
+            $sql .= " and IsUpdate='{$this->getIsUpdate()}'";
+        }
+        if (!is_null($this->getIsDelete())) {
+            $sql .= " and IsDelete='{$this->getIsDelete()}'";
+        }
+
+
+        $sql .= " and CompanyId='{$this->getCompanyId()}'";
+
+        return $this->_getCount($sql);
+    }
+
+    public function getObj() {
+        $sql = "SELECT * FROM sys_role_permisions where 1=1";
+
+
+        $value = $this->_getObject($sql);
+
+
+        if ($value) {
+            $this->setMenuFunctionId($value->MenuFunctionId);
+            $this->setRoleId($value->RoleId);
+            $this->setIsView($value->IsView);
+            $this->setIsUpdate($value->IsUpdate);
+            $this->setIsDelete($value->IsDelete);
+
+
+            $this->setCreatedDate($value->CreatedDate);
+            $this->setUpdatedDate($value->UpdatedDate);
+            $this->setCreatedBy($value->CreatedBy);
+            $this->setUpdatedBy($value->UpdatedBy);
+        }
+        return $this;
+    }
+
+    public function insert() {
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+            $sql = "insert into sys_role_permisions(
+`MenuFunctionId`,
+`RoleId`,
+`IsView`,
+`IsUpdate`,
+`IsDelete`,
+CreatedDate,
+UpdatedDate,
+CreatedBy,
+UpdatedBy
+)
+ VALUES (
+'{$this->getMenuFunctionId()}',
+'{$this->getRoleId()}',
+'{$this->getIsView()}',
+'{$this->getIsUpdate()}',
+'{$this->getIsDelete()}',
+now(),
+now(),
+'{$this->getCreatedBy()}',
+'{$this->getUpdatedBy()}'
+
+)";
+
+            $pdo->exec($sql);
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function update() {
+
+        try {
+            $pdo = $this->getPDO();
+            $pdo->beginTransaction();
+
+            $sql = "update `sys_role_permisions` set UpdatedDate=now(),";
+            if (!is_null($this->getMenuFunctionId())) {
+                $sql .= "`MenuFunctionId`='{$this->getMenuFunctionId()}',";
+            }
+            if (!is_null($this->getRoleId())) {
+                $sql .= "`RoleId`='{$this->getRoleId()}',";
+            }
+            if (!is_null($this->getIsView())) {
+                $sql .= "`IsView`='{$this->getIsView()}',";
+            }
+            if (!is_null($this->getIsUpdate())) {
+                $sql .= "`IsUpdate`='{$this->getIsUpdate()}',";
+            }
+            if (!is_null($this->getIsDelete())) {
+                $sql .= "`IsDelete`='{$this->getIsDelete()}',";
+            }
+
+            $sql .= " UpdatedBy='{$this->getUpdatedBy()}'  Where Id='{$this->getId()}'";
+
+            $pdo->exec($sql);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+    public function delete_array(array $ids) {
+
+        try {
+            $pdo = $this->getPDO();$pdo->beginTransaction();
+            if (is_array($ids)) {
+                foreach ($ids as $value) {
+                    $sql_datxe = "delete from sys_role_permisions  where Id={$value} ";
+                    $pdo->exec($sql_datxe);
+                }
+                $pdo->commit();
+            }
+            return true;
+        } catch (Exception $exc) {
+            $pdo->rollBack();
+            echo $exc->getTraceAsString();
+        }
+        return false;
+    }
+
+}

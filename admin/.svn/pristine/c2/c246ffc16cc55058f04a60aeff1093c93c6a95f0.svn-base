@@ -1,0 +1,169 @@
+<?php
+
+
+class Tin_nhan_thong_baoController {
+
+    const FOLDER_VIEW = 'Tin_nhan_thong_bao';	
+    public function index() {
+        if (isset($_SESSION["user_info_admin"])) {
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];
+            $_IsDelete = $obj_check_role["delete"];
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+            // Get số trang
+            $page = isset($_POST["page"]) ? ((intval($_POST["page"]) < 0) ? 0 : intval($_POST["page"])) : 1;
+            $start = ($page - 1) * SOTRANG;
+            $num_rows_per_page = SOTRANG;
+
+            $Tin_nhan_thong_bao_model = new Tin_nhan_thong_baoModel();
+
+            
+			// lấy giá trị search
+            
+			$_SendUserId = isset($_POST["SendUserId"]) ? $_POST["SendUserId"] : "";
+$_RecivedUserId = isset($_POST["RecivedUserId"]) ? $_POST["RecivedUserId"] : "";
+$_IsRead = isset($_POST["IsRead"]) ? 1 : 0;
+$_NoiDung = isset($_POST["NoiDung"]) ? $_POST["NoiDung"] : "";
+$_Url = isset($_POST["Url"]) ? $_POST["Url"] : "";
+
+			
+            // delete
+			if($_IsDelete){
+				if (isset($_POST["btnDelete"])) {
+					if (isset($_POST["checklist"])) {
+						$array_id = $_POST["checklist"];
+						if ($array_id != null) {
+							$array_delete = array();
+							foreach ($array_id as $value) {
+								$array_delete[] = $value;
+							}
+							if ($Tin_nhan_thong_bao_model->delete_array($array_delete)) {
+
+								UtilityController::messageSuccess();
+							} else {
+								UtilityController::messageError();
+							}
+						}
+					}
+				}
+			}
+
+
+            // get list            
+			if (!empty($_SendUserId)) {$Tin_nhan_thong_bao_model->setSendUserId($_SendUserId);}
+if (!empty($_RecivedUserId)) {$Tin_nhan_thong_bao_model->setRecivedUserId($_RecivedUserId);}
+$Tin_nhan_thong_bao_model->setIsRead($_IsRead);
+$Tin_nhan_thong_bao_model->setNoiDung($_NoiDung);
+$Tin_nhan_thong_bao_model->setUrl($_Url);
+
+
+            $Tin_nhan_thong_bao_model->setRowStart($start);
+            $Tin_nhan_thong_bao_model->setNumLinePerPage($num_rows_per_page);
+            $list = $Tin_nhan_thong_bao_model->getList();
+
+            $rowrount = $Tin_nhan_thong_bao_model->getCount();
+            $phantrang = UtilityController::phantrang($rowrount, $num_rows_per_page, $page);
+            require_once ADMIN_VIEW_DIRECTORY . DS . Tin_nhan_thong_baoController::FOLDER_VIEW . DS . "list.php";
+        }
+    }
+
+    public function update() {
+        if (isset($_SESSION["user_info_admin"])) {
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();
+            $_IsView = $obj_check_role["view"];
+            $_IsUpdate = $obj_check_role["update"];            
+            if (!$_IsView) {
+                UtilityController::gotoPage("index.php");
+            }
+			
+            $_Id="";
+$_SendUserId="";
+$_RecivedUserId="";
+$_IsRead="";
+$_NoiDung="";
+$_Url="";
+
+            if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+                $Tin_nhan_thong_bao_model = new Tin_nhan_thong_baoModel();
+                $Tin_nhan_thong_bao_model->setId($_Id);
+                $obj = $Tin_nhan_thong_bao_model->getObj();
+				if (!is_null($obj)) {
+					$_Id=$obj->getId();
+$_SendUserId=$obj->getSendUserId();
+$_RecivedUserId=$obj->getRecivedUserId();
+$_IsRead=$obj->getIsRead();
+$_NoiDung=$obj->getNoiDung();
+$_Url=$obj->getUrl();
+
+				}
+            }
+            require_once ADMIN_VIEW_DIRECTORY . DS . Tin_nhan_thong_baoController::FOLDER_VIEW . DS . "update.php";
+        }
+    }
+
+    public function doUpdate() {
+        if (isset($_SESSION["user_info_admin"])) { 
+			$tabid = '';
+            if (isset($_GET["tabid"])) {
+                $tabid = $_GET["tabid"];
+            }
+            $obj_check_role = UtilityController::checkRole();            
+            $_IsUpdate = $obj_check_role["update"];            
+            if (!$_IsUpdate) {
+                UtilityController::gotoPage("index.php");
+            }
+			
+			$username=$_SESSION["user_info_admin"]["username"];
+            $_SendUserId = isset($_POST["SendUserId"]) ? $_POST["SendUserId"] : "";
+$_RecivedUserId = isset($_POST["RecivedUserId"]) ? $_POST["RecivedUserId"] : "";
+$_IsRead = isset($_POST["IsRead"]) ? 1 : 0;
+$_NoiDung = isset($_POST["NoiDung"]) ? $_POST["NoiDung"] : "";
+$_Url = isset($_POST["Url"]) ? $_POST["Url"] : "";
+
+            $Tin_nhan_thong_bao_model = new Tin_nhan_thong_baoModel();
+			if (!empty($_SendUserId)) {$Tin_nhan_thong_bao_model->setSendUserId($_SendUserId);}
+if (!empty($_RecivedUserId)) {$Tin_nhan_thong_bao_model->setRecivedUserId($_RecivedUserId);}
+$Tin_nhan_thong_bao_model->setIsRead($_IsRead);
+$Tin_nhan_thong_bao_model->setNoiDung($_NoiDung);
+$Tin_nhan_thong_bao_model->setUrl($_Url);
+            
+			
+            $Tin_nhan_thong_bao_model->setUpdatedBy($username);
+			$_Id="";
+			if (isset($_GET["id"])) {
+                $_Id = $_GET["id"];
+			}
+            if (!empty($_Id)) {
+                $Tin_nhan_thong_bao_model->setId($_Id);
+                if ($Tin_nhan_thong_bao_model->update()) {
+                    UtilityController::message("Đã cập nhật thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Tin_nhan_thong_bao&act=update&id=".$_Id."&tabid=".$tabid);
+            } else {
+				$Tin_nhan_thong_bao_model->setCreatedBy($username);
+                if ($Tin_nhan_thong_bao_model->insert()) {
+                    UtilityController::message("Đã thêm mới thành công");
+                } else {
+                    UtilityController::messageError();
+                }
+                UtilityController::gotoPage("index.php?ctl=Tin_nhan_thong_bao&act=update&tabid=".$tabid);
+            }
+            
+        }
+    }
+
+}
